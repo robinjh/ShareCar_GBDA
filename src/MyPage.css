@@ -1,0 +1,51 @@
+.mypage-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 30px;
+    font-family: 'Arial', sans-serif;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .mypage-header {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .mypage-menu {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+  }
+  
+  .mypage-menu button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+  
+  .mypage-menu button:hover {
+    background-color: #0056b3;
+  }
+  
+  .mypage-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .mypage-section h3 {
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .mypage-placeholder {
+    color: #888;
+    font-style: italic;
+  }
