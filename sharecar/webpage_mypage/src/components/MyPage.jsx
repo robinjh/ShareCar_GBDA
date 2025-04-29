@@ -5,10 +5,9 @@ import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
 import '../styles/MyPage.css';
 
-function MyPage({ isDarkMode, setIsDarkMode }) {
+function MyPage({ isDarkMode, toggleMode }) {
   const [modalContent, setModalContent] = useState(null);
 
-  const toggleMode = () => setIsDarkMode((prev) => !prev);
   const openModal = (key) => setModalContent(key);
   const closeModal = () => setModalContent(null);
 
