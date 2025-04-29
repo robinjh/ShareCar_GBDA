@@ -1,4 +1,4 @@
-/* 전체 화면 컨테이너 */
+/* === 전체 레이아웃 === */
 .mypage-container {
   max-width: 900px;
   margin: auto;
@@ -6,7 +6,7 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
-/* 헤더 */
+/* === 헤더 영역 === */
 .mypage-header-row {
   display: flex;
   justify-content: space-between;
@@ -18,7 +18,7 @@
   margin: 0;
 }
 
-/* 모드 토글 버튼 */
+/* === 모드 토글 버튼 (다크/라이트) === */
 .mode-toggle {
   padding: 8px 14px;
   font-size: 14px;
@@ -40,7 +40,7 @@
   border-color: #666;
 }
 
-/* 메뉴 리스트 */
+/* === 메뉴 버튼 리스트 === */
 .mypage-menu-list {
   margin-top: 40px;
   display: flex;
@@ -48,10 +48,10 @@
   gap: 20px;
 }
 
+/* === 메뉴 버튼 공통 스타일 === */
 .menu-button {
   text-align: left;
-  background: #f3f3f3;
-  border: 1px solid #ccc;
+  border: 1px solid;
   padding: 20px;
   border-radius: 10px;
   cursor: pointer;
@@ -59,10 +59,29 @@
   font-size: 16px;
 }
 
-.menu-button:hover {
+/* 💡 라이트 모드 메뉴 버튼 스타일 */
+.light .menu-button {
+  background: #f3f3f3;
+  color: #000;
+  border-color: #ccc;
+}
+
+.light .menu-button:hover {
   background-color: #e0ecff;
 }
 
+/* 🌙 다크 모드 메뉴 버튼 스타일 */
+.dark .menu-button {
+  background: #2b2b2b;
+  color: #f9f9f9;
+  border-color: #555;
+}
+
+.dark .menu-button:hover {
+  background-color: #3a3a3a;
+}
+
+/* === 메뉴 버튼 안 텍스트 === */
 .menu-label {
   font-size: 20px;
   font-weight: bold;
@@ -74,7 +93,7 @@
   color: #666;
 }
 
-/* 모달 */
+/* === 모달 오버레이 및 기본 모달 스타일 === */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -90,24 +109,27 @@
   background: white;
   padding: 30px;
   border-radius: 12px;
-  width: 400px;
+  width: 700px;
   max-width: 90%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.3s ease;
-  color: #000; /* 기본 라이트 모드 기준 */
+  color: #000; /* 기본 라이트 모드 텍스트 */
 }
 
-/* 🌙 다크모드 전용 */
+/* 🌙 다크 모드용 모달 스타일 */
 .dark .modal {
   background: #2a2a2a;
   color: #f5f5f5;
 }
 
+/* === 모달 안 콘텐츠 === */
 .modal-content {
   margin-top: 10px;
   font-size: 16px;
 }
 
+/* === 모달 안 액션 버튼 === */
 .action-button {
   margin-top: 15px;
   background-color: #007bff;
@@ -118,6 +140,7 @@
   cursor: pointer;
 }
 
+/* === 모달 닫기 버튼 (X) === */
 .close-button {
   position: absolute;
   top: 10px; right: 10px;
@@ -128,11 +151,7 @@
   color: inherit;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
+/* === 다크/라이트 기본 배경색 및 텍스트색 === */
 .dark {
   background-color: #1c1c1c;
   color: #f5f5f5;
@@ -143,35 +162,9 @@
   color: #000000;
 }
 
-/* 기본 스타일 유지 */
-.menu-button {
-  text-align: left;
-  border: 1px solid;
-  padding: 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  font-size: 16px;
-}
-
-/* 💡 라이트 모드 메뉴 버튼 */
-.light .menu-button {
-  background: #f3f3f3;
-  color: #000;
-  border-color: #ccc;
-}
-
-.light .menu-button:hover {
-  background-color: #e0ecff;
-}
-
-/* 🌙 다크 모드 메뉴 버튼 */
-.dark .menu-button {
-  background: #2b2b2b;
-  color: #f9f9f9;
-  border-color: #555;
-}
-
-.dark .menu-button:hover {
-  background-color: #3a3a3a;
+/* === 다크모드에서 select 박스 스타일 === */
+.mypage-container.dark select {
+  background-color: #333;
+  color: #f5f5f5;
+  border: 1px solid #777;
 }

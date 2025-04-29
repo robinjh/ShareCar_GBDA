@@ -3,6 +3,7 @@ import Modal from './Modal';
 import VehicleManager from './VehicleManager';
 import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
+import RentalHistory from './RentalHistory';
 import '../styles/MyPage.css';
 
 function MyPage({ isDarkMode, toggleMode }) {
@@ -19,7 +20,7 @@ function MyPage({ isDarkMode, toggleMode }) {
   ];
 
   return (
-    <div className="mypage-container">
+    <div className={`mypage-container ${isDarkMode ? 'dark' : 'light'}`}>
       <div className="mypage-header-row">
         <h1 className="mypage-header">마이페이지</h1>
         <button
@@ -50,14 +51,7 @@ function MyPage({ isDarkMode, toggleMode }) {
           title={menus.find((m) => m.key === modalContent).label}
           onClose={closeModal}
         >
-          {modalContent === 'rental' && (
-            <>
-              <ul>
-                <li>현대 아이오닉5 - 2024.02.13 ~ 2024.02.15</li>
-                <li>기아 EV6 - 2024.03.01 ~ 2024.03.02</li>
-              </ul>
-            </>
-          )}
+          {modalContent === 'rental' && <RentalHistory />}
           {modalContent === 'vehicles' && <VehicleManager />}
           {modalContent === 'payments' && <PaymentManager />}
           {modalContent === 'requests' && <RequestManager />}
