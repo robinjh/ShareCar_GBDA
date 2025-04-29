@@ -9,6 +9,35 @@
     margin-left: 30px; 
 }
 
+:root {
+    /* 라이트 모드 기본값 */
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --header-bg: #f8f9fa;
+    --header-text: #212529;
+}
+
+/* 요소들에 변수 적용 */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+}
+
+/* 다크 모드 클래스 스타일 */
+
+/* body 태그에 'dark-mode' 클래스가 붙었을 때 적용될 변수 값 */
+body.dark-mode {
+    --bg-color: #1e1e1e;
+    --text-color: #eeeeee;
+    --header-bg: #343a40;
+    --header-text: #ffffff;
+}
+
 html, body, div, span, applet, object,
 iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
 pre, a, abbr, acronym, address, big, cite,
