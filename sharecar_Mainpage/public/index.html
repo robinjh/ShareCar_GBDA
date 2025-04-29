@@ -258,5 +258,28 @@
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 
+		<script>
+const toggleButton = document.getElementById('dark-mode-toggle');
+const body = document.body;
+
+toggleButton.addEventListener('click', () => {
+    // body 태그에 'dark-mode' 클래스가 있으면 제거하고, 없으면 추가
+    body.classList.toggle('dark-mode');
+
+    if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+} else if (savedTheme === 'light') {
+    body.classList.remove('dark-mode');  // light 모드도 명시적으로 설정
+}
+</script>
+
 	</body>
 </html>
