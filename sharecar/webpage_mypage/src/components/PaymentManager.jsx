@@ -18,7 +18,17 @@ function PaymentManager() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+  
+    const cleanedValue =
+    name === 'number' || name === 'cvc'
+      ? value.replace(/[^\d]/g, '') // 숫자만 남김
+      : name === 'bankNumber'
+        ? value.replace(/[^\d]/g, '')
+        : name === 'expiry'
+          ? value.replace(/[^\d\/]/g, '') // 숫자 + 슬래시만 허용
+          : value;
+  
+    setForm((prev) => ({ ...prev, [name]: cleanedValue }));
   };
 
   const handleSubmit = () => {
@@ -109,15 +119,19 @@ function PaymentManager() {
                 </select>
                 <br />
                 <input
+                  type="text"
                   name="number"
                   placeholder="카드번호 (숫자 16자리)"
+                  value={form.number || ''}
                   maxLength={16}
                   pattern="\d*"
                   onChange={handleInputChange}
                 /><br />
                 <input
+                  type="text"
                   name="expiry"
                   placeholder="유효기간 (MM/YY)"
+                  value={form.expiry || ''}
                   maxLength={5}
                   onChange={handleInputChange}
                 /><br />
@@ -128,8 +142,10 @@ function PaymentManager() {
                   onChange={handleInputChange}
                 /><br />
                 <input
+                  type="text"
                   name="cvc"
                   placeholder="CVC (3자리)"
+                  value={form.cvc || ''}
                   maxLength={3}
                   pattern="\d*"
                   onChange={handleInputChange}
@@ -152,7 +168,9 @@ function PaymentManager() {
                   <option value="광주은행">광주은행</option>
                 </select><br />
                 <input
+                  type="text"
                   name="number"
+                  value={form.number || ''}
                   placeholder="계좌번호 (12~14자리)"
                   minLength={12}
                   maxLength={14}
