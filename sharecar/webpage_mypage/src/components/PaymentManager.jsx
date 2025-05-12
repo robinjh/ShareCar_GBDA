@@ -22,10 +22,21 @@ function PaymentManager() {
   };
 
   const handleSubmit = () => {
+    const requiredFields =
+      modalType === 'card'
+        ? ['company', 'number', 'expiry', 'owner', 'cvc']
+        : ['bank', 'number', 'owner'];
+
+    const hasEmpty = requiredFields.some((field) => !form[field]?.trim());
+    if (hasEmpty) {
+      alert('⚠️ 모든 항목을 입력해주세요.');
+      return;
+    }
+
     if (modalType === 'card') {
-      setCards(prev => [...prev, form]);
-    } else if (modalType === 'account') {
-      setAccounts(prev => [...prev, form]);
+      setCards((prev) => [...prev, form]);
+    } else {
+      setAccounts((prev) => [...prev, form]);
     }
     closeModal();
   };
@@ -77,12 +88,26 @@ function PaymentManager() {
 
             {modalType === 'card' ? (
               <>
-                <input
+                <select
                   name="company"
-                  placeholder="카드사"
-                  maxLength={20}
+                  defaultValue=""
                   onChange={handleInputChange}
-                /><br />
+                >
+                  <option value="" disabled>카드사 선택</option>
+                  <option value="국민카드">국민카드</option>
+                  <option value="신한카드">신한카드</option>
+                  <option value="삼성카드">삼성카드</option>
+                  <option value="현대카드">현대카드</option>
+                  <option value="롯데카드">롯데카드</option>
+                  <option value="하나카드">하나카드</option>
+                  <option value="우리카드">우리카드</option>
+                  <option value="비자카드">비자카드</option>
+                  <option value="마스터카드">마스터카드</option>
+                  <option value="아멕스">아멕스</option>
+                  <option value="카카오뱅크카드">카카오뱅크카드</option>
+                  <option value="토스카드">토스카드</option>
+                </select>
+                <br />
                 <input
                   name="number"
                   placeholder="카드번호 (숫자 16자리)"
