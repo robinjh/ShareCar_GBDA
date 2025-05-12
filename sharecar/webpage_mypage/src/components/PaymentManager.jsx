@@ -112,9 +112,34 @@ function PaymentManager() {
               </>
             ) : (
               <>
-                <input name="bank" placeholder="은행명" onChange={handleInputChange} /><br />
-                <input name="number" placeholder="계좌번호" onChange={handleInputChange} /><br />
-                <input name="owner" placeholder="예금주" onChange={handleInputChange} /><br />
+                <select name="bank" onChange={handleInputChange} defaultValue="">
+                  <option value="" disabled>은행 선택</option>
+                  <option value="국민은행">국민은행</option>
+                  <option value="신한은행">신한은행</option>
+                  <option value="우리은행">우리은행</option>
+                  <option value="카카오뱅크">카카오뱅크</option>
+                  <option value="IBK기업은행">IBK기업은행</option>
+                  <option value="농협은행">농협은행</option>
+                  <option value="SC제일은행">SC제일은행</option>
+                  <option value="토스뱅크">토스뱅크</option>
+                  <option value="부산은행">부산은행</option>
+                  <option value="대구은행">대구은행</option>
+                  <option value="광주은행">광주은행</option>
+                </select><br />
+                <input
+                  name="number"
+                  placeholder="계좌번호 (12~14자리)"
+                  minLength={12}
+                  maxLength={14}
+                  pattern="\d*"
+                  onChange={handleInputChange}
+                /><br />
+                <input
+                  name="owner"
+                  placeholder="예금주명"
+                  maxLength={20}
+                  onChange={handleInputChange}
+                /><br />
               </>
             )}
 
