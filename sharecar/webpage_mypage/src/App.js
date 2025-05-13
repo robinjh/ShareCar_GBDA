@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import MyPage from './components/MyPage';
+import KakaoMapComponent from './components/KakaoMapComponent';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
+
   });
 
   useEffect(() => {
@@ -18,7 +20,10 @@ function App() {
   return (
     <div className={isDarkMode ? 'dark' : 'light'}>
       <MyPage isDarkMode={isDarkMode} toggleMode={toggleMode} />
-    </div>
+        <div>
+          <KakaoMapComponent />
+        </div>
+     </div>    
   );
 }
 
