@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MyPage from './components/mypage/MyPage';
-import KakaoMapComponent from './components/recomendation/KakaoMapComponent';
+import PlaceRecommendation from './components/recomendation/PlaceRecommendation';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -19,10 +19,10 @@ function App() {
   return (
     <div className={isDarkMode ? 'dark' : 'light'}>
       <MyPage isDarkMode={isDarkMode} toggleMode={toggleMode} />
-        <div>
-          <KakaoMapComponent />
-        </div>
-     </div>    
+      <div>
+        <PlaceRecommendation />
+      </div>
+    </div>
   );
 }
 
