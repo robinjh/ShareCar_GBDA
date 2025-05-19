@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/MyPage.css'; // 스타일 통일
+import '../../styles/MyPage.css'; // 스타일 통일
 
 function PaymentManager() {
   const [cards, setCards] = useState([]);

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import MyPage from './components/MyPage';
-import KakaoMapComponent from './components/KakaoMapComponent';
+import MyPage from './components/mypage/MyPage';
+import KakaoMapComponent from './components/recomendation/KakaoMapComponent';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
-
   });
 
   useEffect(() => {
