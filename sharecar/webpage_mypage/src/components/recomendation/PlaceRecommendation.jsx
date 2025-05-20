@@ -2,23 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import tagToKeywordMap from '../../utils/tagKeywordMap';
 import { searchPlacesByKeyword } from '../../api/kakaoSearch';
 import useKakaoLoader from './useKakaoLoader';
+import '../../styles/PlaceRecommendation.css';
 
-function PlaceRecommendation() {
+function PlaceRecommendation({ isDarkMode }) {
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState([]);
-  const [isKakaoLoaded, setIsKakaoLoaded] = useState(false); // SDK 로드 완료 체크
+  const [selectedIdx, setSelectedIdx] = useState(null);
+  const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
-  // ✅ SDK 로드 후에만 setIsKakaoLoaded(true)로!
   useKakaoLoader(() => {
     setIsKakaoLoaded(true);
   });
 
-  // ✅ SDK가 로드된 후에만 지도 생성!
   useEffect(() => {
     if (!isKakaoLoaded) return;
-
     const container = document.getElementById('map');
     if (container && !mapRef.current) {
       const options = {
@@ -27,18 +26,17 @@ function PlaceRecommendation() {
       };
       mapRef.current = new window.kakao.maps.Map(container, options);
     }
-  }, [isKakaoLoaded]); // ← isKakaoLoaded가 true일 때만 실행
+  }, [isKakaoLoaded]);
 
-  // 이하 동일
   const clearMarkers = () => {
-    markersRef.current.forEach(marker => marker.setMap(null));
+    markersRef.current.forEach(obj => obj.marker.setMap(null));
     markersRef.current = [];
   };
 
   const displayMarkers = (places) => {
     if (!mapRef.current || !places || places.length === 0) return;
     clearMarkers();
-    places.forEach((place) => {
+    places.forEach((place, idx) => {
       const marker = new window.kakao.maps.Marker({
         map: mapRef.current,
         position: new window.kakao.maps.LatLng(place.y, place.x),
@@ -46,14 +44,30 @@ function PlaceRecommendation() {
       const infowindow = new window.kakao.maps.InfoWindow({
         content: `<div style="padding:5px; font-size:13px;">${place.place_name}</div>`,
       });
+      marker.customIdx = idx;
       window.kakao.maps.event.addListener(marker, 'click', () => {
         infowindow.open(mapRef.current, marker);
+        setSelectedIdx(idx);
       });
-      markersRef.current.push(marker);
+      markersRef.current.push({ marker, infowindow });
     });
     if (places[0]) {
       mapRef.current.setCenter(new window.kakao.maps.LatLng(places[0].y, places[0].x));
     }
+  };
+
+  const handleListClick = (idx) => {
+    setSelectedIdx(idx);
+    const place = places[idx];
+    if (!place || !mapRef.current) return;
+    mapRef.current.setCenter(new window.kakao.maps.LatLng(place.y, place.x));
+    markersRef.current.forEach((obj, i) => {
+      if (i === idx) {
+        obj.infowindow.open(mapRef.current, obj.marker);
+      } else {
+        obj.infowindow.close();
+      }
+    });
   };
 
   const handleInputSearch = async () => {
@@ -61,6 +75,7 @@ function PlaceRecommendation() {
       if (!keyword.trim()) return;
       const results = await searchPlacesByKeyword(keyword);
       setPlaces(results);
+      setSelectedIdx(null);
       displayMarkers(results);
     } catch (err) {
       console.error(err);
@@ -76,7 +91,8 @@ function PlaceRecommendation() {
       return;
     }
     const ps = new window.kakao.maps.services.Places();
-    setPlaces([]); // 초기화
+    setPlaces([]);
+    setSelectedIdx(null);
     let combined = [];
     let callCount = 0;
     keywords.forEach((word) => {
@@ -94,36 +110,62 @@ function PlaceRecommendation() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>장소 추천</h2>
-      <input
-        type="text"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        placeholder="예: 커플 데이트, 조용한 카페 등"
-      />
-      <button onClick={handleInputSearch} style={{ marginRight: '10px' }}>
-        직접 검색
-      </button>
-      <button onClick={handleTagSearch}>태그 기반 추천</button>
-
-      <ul style={{ marginTop: '20px' }}>
-        {places.map((place) => (
-          <li key={place.id}>
-            <strong>{place.place_name}</strong> - {place.address_name}
-          </li>
-        ))}
-      </ul>
-
-      <div
-        id="map"
-        style={{
-          width: '100%',
-          height: '400px',
-          marginTop: '20px',
-          border: '1px solid #ccc',
-        }}
-      ></div>
+    <div className={`recommend-container${isDarkMode ? ' dark' : ' light'}`}>
+      <div className="recommend-list">
+        <h2>장소 추천</h2>
+        <div style={{ marginBottom: 12 }}>
+          <input
+            type="text"
+            className="recommend-input"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="예: 커플 데이트, 조용한 카페 등"
+          />
+          <button className="recommend-btn" onClick={handleInputSearch}>직접 검색</button>
+          <button className="recommend-btn" onClick={handleTagSearch}>태그 기반 추천</button>
+        </div>
+        <ul>
+          {places.length === 0 ? (
+            <li style={{ color: isDarkMode ? '#aaa' : '#888', textAlign: 'center', marginTop: 32 }}>
+              검색 결과가 없습니다.
+            </li>
+          ) : (
+            places.map((place, idx) => (
+              <li
+                key={place.id}
+                className={selectedIdx === idx ? "selected" : ""}
+                onClick={() => handleListClick(idx)}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 500 }}>{place.place_name}</div>
+                  <div style={{ fontSize: 13, color: isDarkMode ? '#eee' : '#888' }}>
+                    {place.road_address_name || place.address_name}
+                  </div>
+                </div>
+                <a
+                  href={place.place_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="recommend-link"
+                  onClick={e => e.stopPropagation()}
+                >
+                  카카오맵에서 보기
+                </a>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
+      <div className="recommend-map-area">
+        <div
+          id="map"
+          style={{
+            width: '100%',
+            height: '100%',
+            minHeight: 500,
+          }}
+        />
+      </div>
     </div>
   );
 }

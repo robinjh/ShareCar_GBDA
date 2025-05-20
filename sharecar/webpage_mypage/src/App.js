@@ -20,7 +20,7 @@ function App() {
     <div className={isDarkMode ? 'dark' : 'light'}>
       <MyPage isDarkMode={isDarkMode} toggleMode={toggleMode} />
       <div>
-        <PlaceRecommendation />
+        <PlaceRecommendation isDarkMode={isDarkMode} />
       </div>
     </div>
   );
