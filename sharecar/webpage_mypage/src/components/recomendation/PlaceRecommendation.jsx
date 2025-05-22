@@ -28,21 +28,43 @@ function PlaceRecommendation({ isDarkMode }) {
     }
   }, [isKakaoLoaded]);
 
+  // 다크/라이트 모드별 InfoWindow 스타일 함수
+  const getInfoWindowContent = (name) => {
+    return `
+      <div style="
+        padding:8px 16px;
+        font-size:14px;
+        border-radius:8px;
+        font-weight:bold;
+        color:${isDarkMode ? '#fff' : '#222'};
+        background:${isDarkMode ? '#232428' : '#fff'};
+        box-shadow:0 2px 8px rgba(0,0,0,0.20);
+        text-align:center;
+        min-width:80px;
+        max-width:200px;
+        word-break:break-all;
+      ">
+        ${name}
+      </div>
+    `;
+  };
+
   const clearMarkers = () => {
     markersRef.current.forEach(obj => obj.marker.setMap(null));
     markersRef.current = [];
   };
 
-  const displayMarkers = (places) => {
-    if (!mapRef.current || !places || places.length === 0) return;
+  // 마커 + 인포윈도우 생성 함수
+  const displayMarkers = (placesArr) => {
+    if (!mapRef.current || !placesArr || placesArr.length === 0) return;
     clearMarkers();
-    places.forEach((place, idx) => {
+    placesArr.forEach((place, idx) => {
       const marker = new window.kakao.maps.Marker({
         map: mapRef.current,
         position: new window.kakao.maps.LatLng(place.y, place.x),
       });
       const infowindow = new window.kakao.maps.InfoWindow({
-        content: `<div style="padding:5px; font-size:13px;">${place.place_name}</div>`,
+        content: getInfoWindowContent(place.place_name),
       });
       marker.customIdx = idx;
       window.kakao.maps.event.addListener(marker, 'click', () => {
@@ -51,11 +73,12 @@ function PlaceRecommendation({ isDarkMode }) {
       });
       markersRef.current.push({ marker, infowindow });
     });
-    if (places[0]) {
-      mapRef.current.setCenter(new window.kakao.maps.LatLng(places[0].y, places[0].x));
+    if (placesArr[0]) {
+      mapRef.current.setCenter(new window.kakao.maps.LatLng(placesArr[0].y, placesArr[0].x));
     }
   };
 
+  // 리스트에서 항목 클릭시 지도이동 및 인포윈도우
   const handleListClick = (idx) => {
     setSelectedIdx(idx);
     const place = places[idx];
@@ -70,6 +93,7 @@ function PlaceRecommendation({ isDarkMode }) {
     });
   };
 
+  // 직접 검색
   const handleInputSearch = async () => {
     try {
       if (!keyword.trim()) return;
@@ -83,6 +107,7 @@ function PlaceRecommendation({ isDarkMode }) {
     }
   };
 
+  // 태그 기반 추천
   const handleTagSearch = () => {
     const selectedTag = '가족과 함께';
     const keywords = tagToKeywordMap[selectedTag] || [];
@@ -108,6 +133,18 @@ function PlaceRecommendation({ isDarkMode }) {
       });
     });
   };
+
+  // 테마 바뀔 때 인포윈도우 내용 업데이트(선택된 마커만)
+  useEffect(() => {
+    // 리스트에서 이미 선택된 상태라면, 테마 바뀔 때 인포윈도우 재갱신
+    if (selectedIdx !== null && markersRef.current[selectedIdx]) {
+      markersRef.current.forEach(obj => obj.infowindow.close());
+      const { marker, infowindow } = markersRef.current[selectedIdx];
+      infowindow.setContent(getInfoWindowContent(places[selectedIdx]?.place_name));
+      infowindow.open(mapRef.current, marker);
+    }
+    // eslint-disable-next-line
+  }, [isDarkMode]);
 
   return (
     <div className={`recommend-container${isDarkMode ? ' dark' : ' light'}`}>
