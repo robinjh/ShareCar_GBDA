@@ -1,0 +1,37 @@
+.payment-manager {
+  margin-top: 8px;
+}
+
+.payment-btn-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+/* 모달 내 form 세로 배치 */
+.payment-modal .modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* input과 select의 너비 통일 */
+.payment-modal .input {
+  width: 96%;
+  min-width: 150px;    /* 최소 너비 */
+  max-width: 330px;    /* 최대 너비 */
+  height: 38px;        /* 입력칸 높이 줄이기 */
+  padding: 6px 10px;   /* 패딩 줄이기 */
+  font-size: 0.98rem;  /* 폰트 사이즈 소폭 감소 */
+  margin-bottom: 6px;  /* 입력칸간 간격 좁게 */
+}
+
+
+
+/* 반응형: 좁은 화면에서는 최대 95vw로 */
+@media (max-width: 650px) {
+  .payment-modal .input {
+    max-width: 95vw;
+  }
+}
