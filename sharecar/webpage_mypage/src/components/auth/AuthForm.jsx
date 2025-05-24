@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -11,7 +11,6 @@ import {
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { UserContext } from "../../UserContext";
-import '../../styles/AuthForm.css';
 
 function AuthForm() {
   const [name, setName] = useState("");
@@ -26,12 +25,6 @@ function AuthForm() {
 
   const user = useContext(UserContext);
 
-      useEffect(() => {
-    // user가 있고 인증이 안되어 있으면, reload로 최신 상태 반영
-    if (user && !user.emailVerified) {
-      auth.currentUser.reload();
-    }
-  }, [user]);
 
   // 구글 로그인/회원가입
   const handleGoogleLogin = async () => {
@@ -45,18 +38,53 @@ function AuthForm() {
     }
   };
 
+  // 이름: 한글 2~10자 또는 영문 2~20자, 특수문자/숫자 불가
+  function validateName(name) {
+    return /^[가-힣]{2,10}$/.test(name) || /^[a-zA-Z]{2,20}( [a-zA-Z]{2,20})?$/.test(name);
+  }
+
+  // 생년월일: YYYY-MM-DD, 실제 날짜, 1900년~현재
+  function validateBirth(birth) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(birth)) return false;
+    const [year, month, day] = birth.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    if (
+      date.getFullYear() !== year ||
+      date.getMonth() + 1 !== month ||
+      date.getDate() !== day
+    ) return false;
+    const now = new Date();
+    return year >= 1900 && date <= now;
+  }
+
+  // 주소: 5자 이상 입력
+  function validateAddress(address) {
+    return address.trim().length >= 5;
+  }
+
+  // 비밀번호: 8자 이상, 영문/숫자/특수문자 포함
+  function validatePassword(password) {
+    return (
+      password.length >= 8 &&
+      /[a-zA-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[!@#$%^&*(),.?":{}|<>]/.test(password)
+    );
+  }
+
   // 로그인/회원가입 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); setInfo("");
+    if (!validateName(name)) return setError("이름은 한글 2~10자 또는 영문 2~20자(이름/성)만 입력 가능합니다.");
+    if (!validateBirth(birth)) return setError("생년월일을 YYYY-MM-DD 형식의 실제 날짜로 입력해 주세요.");
+    if (!validateAddress(address)) return setError("주소는 5자 이상 입력해 주세요.");
+    if (!validatePassword(password)) return setError("비밀번호는 8자 이상, 영문/숫자/특수문자를 모두 포함해야 합니다.");
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
         setInfo("로그인 성공!");
       } else {
-        if (!name.trim()) return setError("이름을 입력해 주세요.");
-        if (!birth.match(/^\d{4}-\d{2}-\d{2}$/)) return setError("생년월일을 YYYY-MM-DD 형식으로 입력해 주세요.");
-        if (!address.trim()) return setError("주소를 입력해 주세요.");
         const result = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(result.user, { displayName: name });
         await sendEmailVerification(result.user);
@@ -96,19 +124,7 @@ function AuthForm() {
     setShowReset(false);
   };
 
-  // 로그인 중 화면
-  if (user) {
-    return (
-      <div className="auth-box">
-        <h3>Welcome, {user.displayName || user.email}!</h3>
-        {!user.emailVerified && (
-          <div className="auth-warn">이메일 인증 후 모든 기능을 사용할 수 있습니다.</div>
-        )}
-        <button className="main-btn" onClick={handleLogout}>로그아웃</button>
-      </div>
-    );
-  }
-
+  // 로그인/회원가입 폼
   return (
     <div className="auth-box">
       <form onSubmit={handleSubmit} className="auth-form">
