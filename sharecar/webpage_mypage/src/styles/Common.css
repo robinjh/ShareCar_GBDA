@@ -11,7 +11,7 @@
     --color-primary: #5978e7;
     --color-accent: #41a5ee;
 
-    --color-border: #353566;
+    --color-border: #e6e7ec;
     --color-border-dark: #353566;
 
     --color-input: #f9f9fb;
@@ -22,8 +22,7 @@
 
     --color-focus:#ff5c5c;
     --color-kakao: #fee500;
-    --color-kakaocheck: #fecf00;
-
+    --color-kakaocheck: #fee500;
 
     --radius: 12px;
     --transition: 0.3s;
