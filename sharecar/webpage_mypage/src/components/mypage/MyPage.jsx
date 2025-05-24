@@ -4,7 +4,7 @@ import VehicleManager from './VehicleManager';
 import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
 import RentalHistory from './RentalHistory';
-import '../../styles/Common.css';
+import '../../styles/MyPage.css';
 
 function MyPage({ isDarkMode, toggleMode }) {
   const [modalContent, setModalContent] = useState(null);
