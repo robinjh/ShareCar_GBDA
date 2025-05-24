@@ -9,6 +9,11 @@ function AuthForm() {
   const [isLogin, setIsLogin] = useState(true); // 로그인/회원가입 전환
   const [error, setError] = useState("");
   const user = useContext(UserContext);
+  const isValidEmail = email =>
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+  const isValidPassword = pwd =>
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>/?]).{8,}$/.test(pwd);
+
 
   // 로그인/회원가입 처리
   const handleSubmit = async (e) => {
@@ -60,22 +65,52 @@ function AuthForm() {
           onChange={e => setEmail(e.target.value)}
           placeholder="이메일"
           required
-          style={{ width: "100%", margin: "8px 0", padding: 8 }}
+          style={{
+            width: "100%",
+            margin: "8px 0",
+            padding: 8,
+            borderColor: email === "" ? "#ccc" : isValidEmail(email) ? "#3a6ff7" : "#ff4444"
+          }}
         />
+        {email && !isValidEmail(email) && (
+          <div style={{ color: "#ff4444", marginBottom: 4 }}>
+            올바른 이메일 형식(aaa@bbb.com)이 아닙니다.
+          </div>
+        )}
         <input
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="비밀번호"
+          placeholder="비밀번호 (영문+숫자+특수문자 8자 이상)"
           required
-          style={{ width: "100%", margin: "8px 0", padding: 8 }}
+          style={{
+            width: "100%",
+            margin: "8px 0",
+            padding: 8,
+            borderColor: password === "" ? "#ccc" : isValidPassword(password) ? "#3a6ff7" : "#ff4444"
+          }}
         />
-        {error && <div style={{ color: "red", marginBottom: 10 }}>{error}</div>}
-        <button type="submit" style={{ width: "100%", padding: 8, marginBottom: 8 }}>
+        {password && !isValidPassword(password) && (
+          <div style={{ color: "#ff4444", marginBottom: 4 }}>
+            비밀번호는 8자 이상, 영문+숫자+특수문자를 모두 포함해야 합니다.
+          </div>
+        )}
+
+        {error && (
+          <div style={{ color: "red", marginBottom: 10 }}>{error}</div>
+        )}
+        <button
+          type="submit"
+          style={{ width: "100%", padding: 8, marginBottom: 8 }}
+          disabled={!isValidEmail(email) || !isValidPassword(password)}
+        >
           {isLogin ? "로그인" : "회원가입"}
         </button>
         <div style={{ textAlign: "right" }}>
-          <span style={{ cursor: "pointer", color: "#1890ff" }} onClick={() => setIsLogin(!isLogin)}>
+          <span
+            style={{ cursor: "pointer", color: "#1890ff" }}
+            onClick={() => setIsLogin(!isLogin)}
+          >
             {isLogin ? "회원가입" : "로그인"}으로 전환
           </span>
         </div>
