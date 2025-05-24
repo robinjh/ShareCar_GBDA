@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { UserContext } from "./UserContext";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
-import "./styles/Common.css";
+import "./styles/Header.css";
 
 function Header({ isDarkMode, toggleMode }) {
   const user = useContext(UserContext);

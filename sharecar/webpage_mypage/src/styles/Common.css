@@ -1,26 +1,33 @@
 :root {
-    --color-bg-light: #fff;
+    --color-bg: #fff;
     --color-bg-dark: #181829;
-    --color-card-light: #f8fafd;
-    --color-card-dark: #232338;
+
+    --color-surface: #f8fafd;
+    --color-surface-dark: #232338;
+
     --color-text: #181829;
-    --color-text-dark: #f7f8fa;
-    --color-btn-text-light: #fff;
-    --color-btn-text-dark: #181829;
+    --color-text-dark: #fff;
+
     --color-primary: #5978e7;
     --color-accent: #41a5ee;
-    --color-border: #ececec;
+
+    --color-border: #e6e7ec;
     --color-border-dark: #353566;
-    --color-input-light: #f9f9fb;
+
+    --color-input: #f9f9fb;
     --color-input-dark: #22223b;
+
     --color-desc: #767f9d;
     --color-desc-dark: #adb1c7;
-    --color-header-bg-light: #f3f3fa;
-    --color-header-bg-dark: #24243b;
-    --color-border: #e6e7ec;
-    --color-border-dark: #222;
+
     --radius: 12px;
     --transition: 0.3s;
+}
+
+body,
+.light,
+.dark {
+    transition: background var(--transition), color var(--transition);
 }
 
 body,
@@ -29,7 +36,7 @@ body,
 .light .section,
 .light .modal {
     color: var(--color-text);
-    background: var(--color-bg-light);
+    background: var(--color-bg);
 }
 
 .dark,
@@ -40,27 +47,26 @@ body,
     background: var(--color-bg-dark);
 }
 
-/* 카드/섹션 */
+/* 카드/섹션/모달 공통 */
 .card,
 .section,
 .modal {
-    background: var(--color-card-light);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     transition: background var(--transition), color var(--transition), border-color var(--transition);
 }
-
 .dark .card,
 .dark .section,
 .dark .modal {
-    background: var(--color-card-dark);
+    background: var(--color-surface-dark);
     border: 1px solid var(--color-border-dark);
 }
 
-/* 버튼 */
+/* 버튼 공통 */
 .btn,
 button {
     background: var(--color-primary);
-    color: var(--color-btn-text-light);
+    color: var(--color-text-dark);
     border: none;
     border-radius: var(--radius);
     padding: 10px 20px;
@@ -85,15 +91,15 @@ button:disabled {
 
 .dark .btn,
 .dark button {
-    color: var(--color-btn-text-dark);
+    color: var(--color-bg-dark);
 }
 
-/* 입력 */
+/* 입력 필드 */
 .input,
 input,
 select,
 textarea {
-    background: var(--color-input-light);
+    background: var(--color-input);
     color: var(--color-text);
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius);
@@ -129,13 +135,11 @@ textarea:focus {
     color: inherit;
     transition: color var(--transition);
 }
-
 .table th,
 .table td {
     border-bottom: 1px solid var(--color-border);
     padding: 13px 10px;
 }
-
 .table th {
     white-space: nowrap;
     text-align: center;
@@ -143,29 +147,23 @@ textarea:focus {
     font-size: 1.08em;
     letter-spacing: 0.01em;
     color: var(--color-text);
-    /* 라이트 모드용 컬러 */
     background: transparent;
 }
-
 .dark .table th {
     color: var(--color-text-dark);
-    /* 다크 모드용 컬러 */
 }
-
 .table tr:last-child td {
     border-bottom: none;
 }
-
 .table tr:hover {
-    background: var(--color-card-light);
+    background: var(--color-surface);
     transition: background var(--transition);
 }
-
 .dark .table tr:hover {
-    background: var(--color-card-dark);
+    background: var(--color-surface-dark);
 }
 
-/* 모달/오버레이 */
+/* 모달 오버레이, 팝업 효과 등 공통 */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -179,17 +177,10 @@ textarea:focus {
     z-index: 9999;
     animation: fadeInOverlay 0.26s;
 }
-
 @keyframes fadeInOverlay {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
-
 .modal {
     min-width: 350px;
     max-width: 90vw;
@@ -203,19 +194,10 @@ textarea:focus {
     border: 1.5px solid var(--color-border);
     animation: popupShow 0.22s;
 }
-
 @keyframes popupShow {
-    from {
-        transform: scale(0.97) translateY(10px);
-        opacity: 0.1;
-    }
-
-    to {
-        transform: scale(1) translateY(0);
-        opacity: 1;
-    }
+    from { transform: scale(0.97) translateY(10px); opacity: 0.1; }
+    to   { transform: scale(1) translateY(0);     opacity: 1; }
 }
-
 .close-button {
     position: absolute;
     top: 14px;
@@ -227,101 +209,8 @@ textarea:focus {
     cursor: pointer;
 }
 
-.menu-title {
-    font-size: 1.13em;
-    font-weight: 700;
-    color: var(--color-text);
-    /* 라이트 모드 기준 색상 */
-    transition: color var(--transition);
-}
-
-.dark .menu-title {
-    color: var(--color-text-dark);
-    /* 다크 모드 기준 색상 */
-}
-
-.menu-desc {
-    font-size: 0.98em;
-    margin-top: 5px;
-    color: var(--color-desc);
-    /* 라이트 모드용 설명색 */
-    transition: color var(--transition);
-}
-
-.dark .menu-desc {
-    color: var(--color-desc-dark);
-    /* 다크 모드용 설명색 */
-}
-
-.header {
-  width: 100%;
-  background: var(--color-header-bg-light);
-  color: var(--color-text);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 13px 24px;
-  border-bottom: 1px solid var(--color-border);
-  font-weight: 600;
-  font-size: 1.05rem;
-  transition: background var(--transition), border-color var(--transition);
-}
-.dark .header {
-  background: var(--color-header-bg-dark);
-  color: var(--color-text-dark);
-  border-bottom: 1px solid var(--color-border-dark);
-}
-.header-title {
-  color: var(--color-text);
-  font-size: 1.14em;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.dark .header-title {
-  color: var(--color-text-dark);
-}
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.header-user {
-  color: var(--color-primary);
-  font-weight: 500;
-  margin-right: 6px;
-}
-.header-logout-btn {
-  background: var(--color-primary);
-  color: var(--color-btn-text-light);
-  border: none;
-  border-radius: 8px;
-  padding: 7px 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background var(--transition), color var(--transition);
-}
-.header-logout-btn:hover {
-  background: var(--color-accent);
-}
-
-.flex-row {
-    display: flex;
-    flex-direction: row;
-    gap: 14px;
-}
-
-.flex-col {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.bold {
-    font-weight: 700;
-}
-
-.centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/* 공통 레이아웃 */
+.flex-row { display: flex; flex-direction: row; gap: 14px; }
+.flex-col { display: flex; flex-direction: column; gap: 14px; }
+.bold { font-weight: 700; }
+.centered { display: flex; align-items: center; justify-content: center; }
