@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../../firebase";
 import { UserContext } from "../../UserContext";
+import { sendEmailVerification } from "firebase/auth";
 
 function AuthForm() {
   const [email, setEmail] = useState("");
@@ -13,18 +14,22 @@ function AuthForm() {
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
   const isValidPassword = pwd =>
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};':"\\|,.<>/?]).{8,}$/.test(pwd);
+  const [info, setInfo] = useState(""); // 안내 메시지 상태 추가
 
 
   // 로그인/회원가입 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setInfo(""); // 안내 메시지 초기화
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
         // user 상태는 Context에서 자동 반영됨
       } else {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const result = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(result.user);
+        setInfo("회원가입 완료! 이메일 인증을 해주세요.");
       }
     } catch (err) {
       if (err.code === "auth/invalid-email") setError("올바른 이메일 형식이 아닙니다.");
@@ -33,7 +38,7 @@ function AuthForm() {
       else if (err.code === "auth/email-already-in-use")
         setError("이미 사용 중인 이메일입니다.");
       else if (err.code === "auth/weak-password")
-        setError("비밀번호는 6자 이상이어야 합니다.");
+        setError("비밀번호는 8자 이상, 영문+숫자+특수문자를 모두 포함해야 합니다.");
       else setError("오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
@@ -72,6 +77,11 @@ function AuthForm() {
             borderColor: email === "" ? "#ccc" : isValidEmail(email) ? "#3a6ff7" : "#ff4444"
           }}
         />
+        {info && (
+          <div style={{ color: "#388e3c", marginBottom: 10 }}>
+            {info}
+          </div>
+        )}
         {email && !isValidEmail(email) && (
           <div style={{ color: "#ff4444", marginBottom: 4 }}>
             올바른 이메일 형식(aaa@bbb.com)이 아닙니다.
