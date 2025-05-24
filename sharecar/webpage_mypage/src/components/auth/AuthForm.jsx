@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -6,7 +6,8 @@ import {
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
-  sendEmailVerification
+  sendEmailVerification,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import { auth } from "../../firebase";
 import { UserContext } from "../../UserContext";
@@ -21,7 +22,16 @@ function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
+  const [showReset, setShowReset] = useState(false);
+
   const user = useContext(UserContext);
+
+      useEffect(() => {
+    // user가 있고 인증이 안되어 있으면, reload로 최신 상태 반영
+    if (user && !user.emailVerified) {
+      auth.currentUser.reload();
+    }
+  }, [user]);
 
   // 구글 로그인/회원가입
   const handleGoogleLogin = async () => {
@@ -66,6 +76,24 @@ function AuthForm() {
 
   const handleLogout = async () => {
     await signOut(auth);
+  };
+
+  // 비밀번호 재설정(가입 이메일로만)
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setError(""); setInfo("");
+    if (!email) {
+      setError("비밀번호 재설정은 먼저 이메일을 입력해야 합니다.");
+      setShowReset(false);
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setInfo("비밀번호 재설정 메일이 전송되었습니다.");
+    } catch (err) {
+      setError("재설정 메일 전송 실패: " + err.message);
+    }
+    setShowReset(false);
   };
 
   // 로그인 중 화면
@@ -141,12 +169,28 @@ function AuthForm() {
         >
           {isLogin ? "로그인" : "회원가입"}
         </button>
-        <div style={{ textAlign: "right" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span className="switch-link" onClick={() => setIsLogin(!isLogin)}>
             {isLogin ? "회원가입" : "로그인"}으로 전환
           </span>
+          <span className="switch-link" onClick={() => setShowReset(true)}>
+            비밀번호 재설정
+          </span>
         </div>
       </form>
+      {/* 비밀번호 재설정은 이메일이 입력된 경우에만 가능 */}
+      {showReset && (
+        <form className="reset-form" onSubmit={handlePasswordReset}>
+          <input
+            type="email"
+            value={email}
+            readOnly
+            style={{ background: "#ececec", color: "#aaa" }}
+          />
+          <button type="submit" className="main-btn" style={{ marginTop: 6 }}>재설정 메일 전송</button>
+          <span className="switch-link" onClick={() => setShowReset(false)}>닫기</span>
+        </form>
+      )}
     </div>
   );
 }
