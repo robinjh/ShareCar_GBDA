@@ -4,7 +4,7 @@ import VehicleManager from './VehicleManager';
 import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
 import RentalHistory from './RentalHistory';
-import '../../styles/MyPage.css';
+import '../../styles/Common.css';
 
 function MyPage({ isDarkMode, toggleMode }) {
   const [modalContent, setModalContent] = useState(null);
@@ -20,26 +20,32 @@ function MyPage({ isDarkMode, toggleMode }) {
   ];
 
   return (
-    <div className={`mypage-container ${isDarkMode ? 'dark' : 'light'}`}>
-      <div className="mypage-header-row">
-        <h1 className="mypage-header">마이페이지</h1>
-        <button
-          className={`mode-toggle ${isDarkMode ? 'dark' : 'light'}`}
-          onClick={toggleMode}
-        >
+    <div className={isDarkMode ? 'dark card' : 'light card'}>
+      <div className="flex-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+        <h1 className="bold" style={{ fontSize: "2rem", margin: 0 }}>마이페이지</h1>
+        <button className="btn" onClick={toggleMode}>
           {isDarkMode ? '☀️ Light' : '🌙 Dark'}
         </button>
       </div>
 
-      <div className="mypage-menu-list">
+      <div className="flex-col" style={{ gap: 18, marginTop: 24 }}>
         {menus.map((menu) => (
           <button
             key={menu.key}
-            className="menu-button"
+            className="btn"
             onClick={() => openModal(menu.key)}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              padding: "18px 24px",
+              border: "1.5px solid #e3e7f6",
+              background: "inherit",
+              boxShadow: "none"
+            }}
           >
-            <div className="menu-label">{menu.label}</div>
-            <div className="menu-description">
+            <div className="bold" style={{ fontSize: "1.15em" }}>{menu.label}</div>
+            <div style={{ color: "#888", fontSize: "0.99em", marginTop: 5 }}>
               클릭하여 {menu.label.replace(/^[^\s]+/, '').trim()}을 확인하거나 수정하세요.
             </div>
           </button>
