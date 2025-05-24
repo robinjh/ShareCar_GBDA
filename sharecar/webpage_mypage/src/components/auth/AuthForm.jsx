@@ -25,6 +25,7 @@ function AuthForm() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        setInfo("로그인 성공!");
         // user 상태는 Context에서 자동 반영됨
       } else {
         const result = await createUserWithEmailAndPassword(auth, email, password);
@@ -54,6 +55,9 @@ function AuthForm() {
     return (
       <div style={{ maxWidth: 400, margin: "30px auto", padding: 24, border: "1px solid #eee", borderRadius: 10 }}>
         <h3>Welcome, {user.email}!</h3>
+        {!user.emailVerified && (
+          <div style={{ color: "#ffae42", marginBottom: 10 }}>이메일 인증 후 모든 기능을 사용할 수 있습니다.</div>
+        )}
         <button onClick={handleLogout}>로그아웃</button>
       </div>
     );
