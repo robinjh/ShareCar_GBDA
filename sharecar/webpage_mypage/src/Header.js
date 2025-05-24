@@ -21,13 +21,6 @@ function Header({ isDarkMode, toggleMode }) {
         }}>
             <span>ShareCar 프로젝트</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                    {user && (
-                        <span style={{ color: "#5978e7", fontWeight: 500 }}>
-                            {user.displayName || user.email}
-                        </span>
-                    )}
-                </div>
                 {user && (
                     <>
                         <span style={{ color: "#5978e7", fontWeight: 500 }}>
@@ -63,7 +56,6 @@ function Header({ isDarkMode, toggleMode }) {
                 >
                     {isDarkMode ? "라이트모드" : "다크모드"}
                 </button>
-                {/* 나중에 계정정보/로그아웃/모드변경 등 추가 */}
             </div>
         </header>
     );
