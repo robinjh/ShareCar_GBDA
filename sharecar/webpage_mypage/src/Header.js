@@ -28,6 +28,41 @@ function Header({ isDarkMode, toggleMode }) {
                         </span>
                     )}
                 </div>
+                {user && (
+                    <>
+                        <span style={{ color: "#5978e7", fontWeight: 500 }}>
+                            {user.displayName || user.email}
+                        </span>
+                        <button
+                            style={{
+                                background: "#5978e7",
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: 8,
+                                padding: "7px 15px",
+                                fontWeight: 600,
+                                cursor: "pointer",
+                            }}
+                            onClick={() => signOut(auth)}
+                        >
+                            로그아웃
+                        </button>
+                    </>
+                )}
+                <button
+                    style={{
+                        background: "none",
+                        color: isDarkMode ? "#fff" : "#222",
+                        border: "1px solid #bbc5e2",
+                        borderRadius: 8,
+                        padding: "7px 14px",
+                        cursor: "pointer",
+                        marginLeft: 10,
+                    }}
+                    onClick={toggleMode}
+                >
+                    {isDarkMode ? "라이트모드" : "다크모드"}
+                </button>
                 {/* 나중에 계정정보/로그아웃/모드변경 등 추가 */}
             </div>
         </header>
