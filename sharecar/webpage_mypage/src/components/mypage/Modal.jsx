@@ -1,16 +1,13 @@
-// components/Modal.jsx
-import React from 'react';
-import '../../styles/MyPage.css'; // 모달 스타일 포함되어 있다고 가정
+import React from "react";
+import "../../styles/Common.css";
 
-function Modal({ title, onClose, children }) {
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <button className="close-button" onClick={onClose}>X</button>
-        <div className="modal-content">
-          <h3>{title}</h3>
-          {children}
-        </div>
+        <button className="close-button" onClick={onClose}>×</button>
+        {children}
       </div>
     </div>
   );
