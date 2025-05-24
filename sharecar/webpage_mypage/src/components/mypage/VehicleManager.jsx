@@ -13,24 +13,20 @@ function VehicleManager() {
   };
 
   return (
-    <div className="section">
-      <h3>차량 관리</h3>
-      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '18px' }}>
-        <input
-          className="input"
-          type="text"
-          placeholder="차량 이름 입력"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <button className="btn" onClick={handleAdd}>등록</button>
-      </div>
+    <>
+      <input
+        type="text"
+        placeholder="차량 이름 입력"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button className="action-button" onClick={handleAdd}>등록</button>
       <ul style={{ marginTop: '15px' }}>
         {vehicles.map((v, idx) => (
           <li key={idx}>{v}</li>
         ))}
       </ul>
-    </div>
+    </>
   );
 }
 
