@@ -20,16 +20,13 @@ function MyPage({ isDarkMode, toggleMode }) {
   ];
 
   return (
-    <div className={isDarkMode ? 'dark card' : 'light card'}>
+    <div className={isDarkMode ? "dark card" : "light card"}>
       <div className="flex-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
         <h1 className="bold" style={{ fontSize: "2rem", margin: 0 }}>마이페이지</h1>
-        <button className="btn" onClick={toggleMode}>
-          {isDarkMode ? '☀️ Light' : '🌙 Dark'}
-        </button>
       </div>
 
       <div className="flex-col" style={{ gap: 18, marginTop: 24 }}>
-        {menus.map((menu) => (
+        {menus.map(menu => (
           <button
             key={menu.key}
             className="btn"
@@ -39,30 +36,29 @@ function MyPage({ isDarkMode, toggleMode }) {
               flexDirection: "column",
               alignItems: "flex-start",
               padding: "18px 24px",
-              border: "1.5px solid #e3e7f6",
+              border: `1.5px solid ${isDarkMode ? 'var(--color-border-dark)' : 'var(--color-border)'}`,
               background: "inherit",
               boxShadow: "none"
             }}
           >
-            <div className="bold" style={{ fontSize: "1.15em" }}>{menu.label}</div>
-            <div style={{ color: "#888", fontSize: "0.99em", marginTop: 5 }}>
+            <div className="menu-title">{menu.label}</div>
+            <div className="menu-desc">
               클릭하여 {menu.label.replace(/^[^\s]+/, '').trim()}을 확인하거나 수정하세요.
             </div>
           </button>
         ))}
       </div>
 
-      {modalContent && (
-        <Modal
-          title={menus.find((m) => m.key === modalContent).label}
-          onClose={closeModal}
-        >
-          {modalContent === 'rental' && <RentalHistory />}
-          {modalContent === 'vehicles' && <VehicleManager />}
-          {modalContent === 'payments' && <PaymentManager />}
-          {modalContent === 'requests' && <RequestManager />}
-        </Modal>
-      )}
+      <Modal
+        isOpen={!!modalContent}
+        onClose={closeModal}
+        title={menus.find(m => m.key === modalContent)?.label}
+      >
+        {modalContent === 'rental' && <RentalHistory />}
+        {modalContent === 'vehicles' && <VehicleManager />}
+        {modalContent === 'payments' && <PaymentManager />}
+        {modalContent === 'requests' && <RequestManager />}
+      </Modal>
     </div>
   );
 }
