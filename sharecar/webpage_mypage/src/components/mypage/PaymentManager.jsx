@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/MyPage.css'; // 스타일 통일
+import '../../styles/Common.css';
 
 function PaymentManager() {
   const [cards, setCards] = useState([]);
@@ -18,16 +18,15 @@ function PaymentManager() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
     const cleanedValue =
-    name === 'number' || name === 'cvc'
-      ? value.replace(/[^\d]/g, '') // 숫자만 남김
-      : name === 'bankNumber'
-        ? value.replace(/[^\d]/g, '')
-        : name === 'expiry'
-          ? value.replace(/[^\d\/]/g, '') // 숫자 + 슬래시만 허용
-          : value;
-  
+      name === 'number' || name === 'cvc'
+        ? value.replace(/[^\d]/g, '') // 숫자만 남김
+        : name === 'bankNumber'
+          ? value.replace(/[^\d]/g, '')
+          : name === 'expiry'
+            ? value.replace(/[^\d\/]/g, '') // 숫자 + 슬래시만 허용
+            : value;
+
     setForm((prev) => ({ ...prev, [name]: cleanedValue }));
   };
 
@@ -98,11 +97,7 @@ function PaymentManager() {
 
             {modalType === 'card' ? (
               <>
-                <select
-                  name="company"
-                  defaultValue=""
-                  onChange={handleInputChange}
-                >
+                <select className="input" name="company" defaultValue="" onChange={handleInputChange}>
                   <option value="" disabled>카드사 선택</option>
                   <option value="국민카드">국민카드</option>
                   <option value="신한카드">신한카드</option>
@@ -117,8 +112,8 @@ function PaymentManager() {
                   <option value="카카오뱅크카드">카카오뱅크카드</option>
                   <option value="토스카드">토스카드</option>
                 </select>
-                <br />
                 <input
+                  className="input"
                   type="text"
                   name="number"
                   placeholder="카드번호 (숫자 16자리)"
@@ -126,22 +121,25 @@ function PaymentManager() {
                   maxLength={16}
                   pattern="\d*"
                   onChange={handleInputChange}
-                /><br />
+                />
                 <input
+                  className="input"
                   type="text"
                   name="expiry"
                   placeholder="유효기간 (MM/YY)"
                   value={form.expiry || ''}
                   maxLength={5}
                   onChange={handleInputChange}
-                /><br />
+                />
                 <input
+                  className="input"
                   name="owner"
                   placeholder="소유자명"
                   maxLength={20}
                   onChange={handleInputChange}
-                /><br />
+                />
                 <input
+                  className="input"
                   type="text"
                   name="cvc"
                   placeholder="CVC (3자리)"
@@ -149,11 +147,11 @@ function PaymentManager() {
                   maxLength={3}
                   pattern="\d*"
                   onChange={handleInputChange}
-                /><br />
+                />
               </>
             ) : (
               <>
-                <select name="bank" onChange={handleInputChange} defaultValue="">
+                <select className="input" name="bank" onChange={handleInputChange} defaultValue="">
                   <option value="" disabled>은행 선택</option>
                   <option value="국민은행">국민은행</option>
                   <option value="신한은행">신한은행</option>
@@ -166,8 +164,9 @@ function PaymentManager() {
                   <option value="부산은행">부산은행</option>
                   <option value="대구은행">대구은행</option>
                   <option value="광주은행">광주은행</option>
-                </select><br />
+                </select>
                 <input
+                  className="input"
                   type="text"
                   name="number"
                   value={form.number || ''}
@@ -176,18 +175,19 @@ function PaymentManager() {
                   maxLength={14}
                   pattern="\d*"
                   onChange={handleInputChange}
-                /><br />
+                />
                 <input
+                  className="input"
                   name="owner"
                   placeholder="예금주명"
                   maxLength={20}
                   onChange={handleInputChange}
-                /><br />
+                />
               </>
             )}
 
             <div style={{ marginTop: '20px' }}>
-              <button className="action-button" onClick={handleSubmit}>등록</button>
+              <button className="btn" onClick={handleSubmit}>등록</button>
             </div>
           </div>
         </div>
