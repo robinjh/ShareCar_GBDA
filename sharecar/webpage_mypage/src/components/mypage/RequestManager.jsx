@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/Common.css';
+import '../../styles/RentalHistory.css';  // 행 구분선 및 표 스타일 재활용
 
-// 샘플 대여 요청 데이터
 const sampleRequests = [
   {
     id: 1,
@@ -48,27 +48,31 @@ function RequestManager() {
   const closeModal = () => setSelected(null);
 
   return (
-    <div className="section">
-      <table className="table">
+    <div className="rental-history-container">
+      <table className="rental-history-table" style={{ tableLayout: "fixed" }}>
         <thead>
           <tr>
-            <th>요청자</th>
-            <th>대여 기간</th>
-            <th>지역</th>
-            <th>작업</th>
+            <th style={{ width: "20%" }}>요청자</th>
+            <th style={{ width: "33%" }}>대여 기간</th>
+            <th style={{ width: "27%" }}>지역</th>
+            <th style={{ width: "20%" }}>작업</th>
           </tr>
         </thead>
         <tbody>
           {requests.map(r => (
             <tr key={r.id}>
-              <td>{r.user}</td>
-              <td>{r.start} ~ {r.end}</td>
-              <td>{r.location}</td>
+              <td style={{ whiteSpace: "nowrap" }}>{r.user}</td>
+              <td style={{ whiteSpace: "nowrap" }}>{r.start} ~ {r.end}</td>
+              <td style={{ whiteSpace: "nowrap" }}>{r.location}</td>
               <td>
                 {r.status === '대기' ? (
-                  <button className="btn" onClick={() => setSelected(r)}>자세히 보기</button>
+                  <button className="btn" style={{ whiteSpace: "nowrap" }} onClick={() => setSelected(r)}>자세히 보기</button>
                 ) : (
-                  <span style={{ fontWeight: 'bold', color: r.status === '승인' ? 'green' : 'red' }}>
+                  <span style={{
+                    fontWeight: 'bold',
+                    color: r.status === '승인' ? 'green' : 'red',
+                    whiteSpace: "nowrap"
+                  }}>
                     {r.status}
                   </span>
                 )}
@@ -79,8 +83,8 @@ function RequestManager() {
       </table>
       {/* 모달 */}
       {selected && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
             <button className="close-button" onClick={closeModal}>X</button>
             <h4>요청 상세 정보</h4>
             <p><strong>요청자:</strong> {selected.user}</p>
@@ -89,9 +93,20 @@ function RequestManager() {
             <p><strong>지역:</strong> {selected.location}</p>
             <p><strong>요금:</strong> {selected.price}</p>
             {selected.status === '대기' && (
-              <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <div style={{
+                marginTop: '20px',
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'center',
+                whiteSpace: 'nowrap'
+              }}>
                 <button className="btn" onClick={() => approveRequest(selected.id)}>승인</button>
                 <button className="btn" onClick={() => rejectRequest(selected.id)}>거부</button>
+              </div>
+            )}
+            {selected.status !== '대기' && (
+              <div style={{ marginTop: 20, textAlign: "center", fontWeight: 600, color: selected.status === "승인" ? "green" : "red" }}>
+                처리 결과: {selected.status}
               </div>
             )}
           </div>
