@@ -22,7 +22,14 @@ function AuthForm() {
         await createUserWithEmailAndPassword(auth, email, password);
       }
     } catch (err) {
-      setError(err.message);
+      if (err.code === "auth/invalid-email") setError("올바른 이메일 형식이 아닙니다.");
+      else if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password")
+        setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      else if (err.code === "auth/email-already-in-use")
+        setError("이미 사용 중인 이메일입니다.");
+      else if (err.code === "auth/weak-password")
+        setError("비밀번호는 6자 이상이어야 합니다.");
+      else setError("오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
