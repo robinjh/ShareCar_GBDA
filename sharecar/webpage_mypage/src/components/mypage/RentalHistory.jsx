@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/rentalTable.css';
+import '../../styles/Common.css';
 const sampleRentals = [
   {
     id: 1,
@@ -38,8 +38,9 @@ function RentalHistory() {
   const deleteAll = () => setRentals([]);
 
   return (
-    <div>
-      <table className="rental-table">
+    <div className="section">
+      <h3>대여 기록</h3>
+      <table className="table">
         <thead>
           <tr>
             <th>차량명</th>
@@ -54,26 +55,29 @@ function RentalHistory() {
               <td>{r.car}</td>
               <td>{r.from} ~ {r.to}</td>
               <td>
-              <select value={r.rating} onChange={e => updateRating(r.id, e.target.value)} 
-                disabled={r.rating !== 0}> // ⭐ 이미 값이 있으면 비활성화
-               
+                <select
+                  className="input"
+                  value={r.rating}
+                  onChange={e => updateRating(r.id, e.target.value)}
+                  disabled={r.rating !== 0}
+                >
                   {[1, 2, 3, 4, 5].map(n => (
                     <option key={n} value={n}>{'⭐'.repeat(n)}</option>
                   ))}
                 </select>
               </td>
               <td>
-                <div className="action-buttons">
-                  <button onClick={() => setSelected(r)}>자세히 보기</button>
-                  <button onClick={() => deleteRental(r.id)}>삭제</button>
+                <div className="flex-row">
+                  <button className="btn" onClick={() => setSelected(r)}>자세히 보기</button>
+                  <button className="btn" onClick={() => deleteRental(r.id)}>삭제</button>
                 </div>
-             </td>
-             </tr>
-        ))}
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       {rentals.length > 0 && (
-        <button onClick={deleteAll} style={{ marginTop: '10px' }}>전체 삭제</button>
+        <button className="btn" onClick={deleteAll} style={{ marginTop: '10px' }}>전체 삭제</button>
       )}
 
       {selected && (
