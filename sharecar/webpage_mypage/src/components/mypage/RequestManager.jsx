@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../../styles/MyPage.css'; // 기존 스타일과 통일
+import '../../styles/Common.css';
 
 // 샘플 대여 요청 데이터
 const sampleRequests = [
@@ -29,7 +29,6 @@ function RequestManager() {
   const [requests, setRequests] = useState(sampleRequests);
   const [selected, setSelected] = useState(null);
 
-  // 승인 처리
   const approveRequest = (id) => {
     setRequests(prev =>
       prev.map(r => r.id === id ? { ...r, status: '승인' } : r)
@@ -38,7 +37,6 @@ function RequestManager() {
     setSelected(null);
   };
 
-  // 거부 처리
   const rejectRequest = (id) => {
     setRequests(prev =>
       prev.map(r => r.id === id ? { ...r, status: '거부' } : r)
@@ -47,13 +45,12 @@ function RequestManager() {
     setSelected(null);
   };
 
-  // 모달만 닫기
   const closeModal = () => setSelected(null);
 
   return (
-    <div>
+    <div className="section">
       <h3>📥 대여 요청 목록</h3>
-      <table className="rental-table">
+      <table className="table">
         <thead>
           <tr>
             <th>요청자</th>
@@ -69,9 +66,8 @@ function RequestManager() {
               <td>{r.start} ~ {r.end}</td>
               <td>{r.location}</td>
               <td>
-                {/* 상태에 따라 버튼 또는 승인/거부 표시 */}
                 {r.status === '대기' ? (
-                  <button onClick={() => setSelected(r)}>자세히 보기</button>
+                  <button className="btn" onClick={() => setSelected(r)}>자세히 보기</button>
                 ) : (
                   <span style={{ fontWeight: 'bold', color: r.status === '승인' ? 'green' : 'red' }}>
                     {r.status}
@@ -82,8 +78,7 @@ function RequestManager() {
           ))}
         </tbody>
       </table>
-
-      {/* 자세히 보기 모달 */}
+      {/* 모달 */}
       {selected && (
         <div className="modal-overlay">
           <div className="modal">
@@ -94,11 +89,10 @@ function RequestManager() {
             <p><strong>대여 기간:</strong> {selected.start} ~ {selected.end}</p>
             <p><strong>지역:</strong> {selected.location}</p>
             <p><strong>요금:</strong> {selected.price}</p>
-
             {selected.status === '대기' && (
               <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                <button className="action-button" onClick={() => approveRequest(selected.id)}>승인</button>
-                <button className="action-button" onClick={() => rejectRequest(selected.id)}>거부</button>
+                <button className="btn" onClick={() => approveRequest(selected.id)}>승인</button>
+                <button className="btn" onClick={() => rejectRequest(selected.id)}>거부</button>
               </div>
             )}
           </div>
