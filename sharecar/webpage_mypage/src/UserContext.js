@@ -10,11 +10,15 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     // Firebase 인증 상태 변경 감지 (자동 로그인, 로그아웃 모두 반영)
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
+    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return () => unsub();
   }, []);
 
   return (
-    <UserContext.Provider value={user}>{children}</UserContext.Provider>
+    <UserContext.Provider value={user}>
+      {children}
+    </UserContext.Provider>
   );
 }
