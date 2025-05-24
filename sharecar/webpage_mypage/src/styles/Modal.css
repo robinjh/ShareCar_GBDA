@@ -53,5 +53,15 @@
     color: var(--color-primary);
     cursor: pointer;
     z-index: 1;
+    transition: color 0.2s;
+}
+
+.dark .close-button {
+    color: var(--color-accent);  /* 💡 노란색(눈에 잘 띄는 색)으로 변경 */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--color-focus);  /* hover 시 빨간색 등으로 */
 }
 .modal-content { padding-bottom: 10px; }
