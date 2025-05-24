@@ -87,10 +87,15 @@ function AuthForm() {
             width: "100%",
             margin: "8px 0",
             padding: 8,
-            borderColor: password === "" ? "#ccc" : isValidPassword(password) ? "#3a6ff7" : "#ff4444"
+            borderColor:
+              !isLogin && password !== ""
+                ? isValidPassword(password)
+                  ? "#3a6ff7"
+                  : "#ff4444"
+                : "#ccc"
           }}
         />
-        {password && !isValidPassword(password) && (
+        {!isLogin && password && !isValidPassword(password) && (
           <div style={{ color: "#ff4444", marginBottom: 4 }}>
             비밀번호는 8자 이상, 영문+숫자+특수문자를 모두 포함해야 합니다.
           </div>
@@ -102,7 +107,10 @@ function AuthForm() {
         <button
           type="submit"
           style={{ width: "100%", padding: 8, marginBottom: 8 }}
-          disabled={!isValidEmail(email) || !isValidPassword(password)}
+          disabled={
+            !isValidEmail(email) ||
+            (!isLogin && !isValidPassword(password))
+          }
         >
           {isLogin ? "로그인" : "회원가입"}
         </button>
