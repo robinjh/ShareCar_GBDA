@@ -1,0 +1,61 @@
+.rental-history-container {
+    background: inherit;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 24px 16px 40px 16px;
+    margin: 0 auto;
+    max-width: 98%;
+    box-sizing: border-box;
+    min-width: 500px;
+}
+
+.rental-history-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: inherit;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* 버튼 가로 배치 */
+.rental-btn-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.rental-table-bottom {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.rental-table-bottom .btn {
+    min-width: 100px;
+    font-size: 1.03em;
+    border-radius: 12px;
+}
+
+.rental-history-table th,
+.rental-history-table td {
+    padding: 13px 8px;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.rental-history-table tr {
+    border-bottom: 1.5px solid var(--color-border);
+}
+
+.rental-history-table td {
+    border-bottom: 1.5px solid var(--color-border);
+}
+
+.rental-history-table tr:last-child {
+    border-bottom: none;
+}

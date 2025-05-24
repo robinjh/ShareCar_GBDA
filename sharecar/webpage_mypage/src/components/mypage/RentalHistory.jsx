@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/Common.css';
+import '../../styles/RentalHistory.css';
+
 const sampleRentals = [
   {
     id: 1,
@@ -27,7 +29,9 @@ function RentalHistory() {
 
   const updateRating = (id, value) => {
     setRentals(prev =>
-      prev.map(r => r.id === id ? { ...r, rating: Number(value) } : r)
+      prev.map(r =>
+        r.id === id && r.rating === 0 ? { ...r, rating: Number(value) } : r
+      )
     );
   };
 
@@ -38,28 +42,28 @@ function RentalHistory() {
   const deleteAll = () => setRentals([]);
 
   return (
-    <div className="section">
-      <h3>대여 기록</h3>
-      <table className="table">
+    <div className="rental-history-container">
+      <table className="rental-history-table" style={{ tableLayout: "fixed" }}>
         <thead>
           <tr>
-            <th>차량명</th>
-            <th>기간</th>
-            <th>평점</th>
-            <th>작업</th>
+            <th style={{ width: "23%" }}>차량명</th>
+            <th style={{ width: "27%" }}>기간</th>
+            <th style={{ width: "17%" }}>평점</th>
+            <th style={{ width: "33%" }}>작업</th>
           </tr>
         </thead>
         <tbody>
           {rentals.map(r => (
             <tr key={r.id}>
-              <td>{r.car}</td>
-              <td>{r.from} ~ {r.to}</td>
+              <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.car}</td>
+              <td style={{ whiteSpace: "nowrap" }}>{r.from} ~ {r.to}</td>
               <td>
                 <select
                   className="input"
                   value={r.rating}
                   onChange={e => updateRating(r.id, e.target.value)}
                   disabled={r.rating !== 0}
+                  style={{ minWidth: 80, textAlign: "center" }}
                 >
                   {[1, 2, 3, 4, 5].map(n => (
                     <option key={n} value={n}>{'⭐'.repeat(n)}</option>
@@ -67,7 +71,7 @@ function RentalHistory() {
                 </select>
               </td>
               <td>
-                <div className="flex-row">
+                <div style={{ display: "flex", gap: 8, justifyContent: "center", whiteSpace: "nowrap" }}>
                   <button className="btn" onClick={() => setSelected(r)}>자세히 보기</button>
                   <button className="btn" onClick={() => deleteRental(r.id)}>삭제</button>
                 </div>
@@ -77,12 +81,14 @@ function RentalHistory() {
         </tbody>
       </table>
       {rentals.length > 0 && (
-        <button className="btn" onClick={deleteAll} style={{ marginTop: '10px' }}>전체 삭제</button>
+        <div className="rental-table-bottom" style={{ display: "flex", justifyContent: "center", marginTop: 18 }}>
+          <button className="btn" onClick={deleteAll}>전체 삭제</button>
+        </div>
       )}
 
       {selected && (
-        <div className="modal-overlay">
-          <div className="modal">
+        <div className="modal-overlay" onClick={() => setSelected(null)}>
+          <div className="modal" onClick={e => e.stopPropagation()}>
             <button className="close-button" onClick={() => setSelected(null)}>X</button>
             <h4>{selected.car} 상세 정보</h4>
             <p>대여 기간: {selected.from} ~ {selected.to}</p>

@@ -49,7 +49,6 @@ function RequestManager() {
 
   return (
     <div className="section">
-      <h3>📥 대여 요청 목록</h3>
       <table className="table">
         <thead>
           <tr>

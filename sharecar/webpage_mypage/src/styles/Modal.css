@@ -57,11 +57,11 @@
 }
 
 .dark .close-button {
-    color: var(--color-accent);  /* 💡 노란색(눈에 잘 띄는 색)으로 변경 */
+    color: var(--color-accent);
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: var(--color-focus);  /* hover 시 빨간색 등으로 */
+    color: var(--color-focus);
 }
 .modal-content { padding-bottom: 10px; }

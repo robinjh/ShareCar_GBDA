@@ -52,8 +52,6 @@ function PaymentManager() {
 
   return (
     <div>
-      <h3>💳 결제 수단 관리</h3>
-
       {/* 카드 목록 */}
       <h4>카드 목록</h4>
       {cards.length === 0 ? (
