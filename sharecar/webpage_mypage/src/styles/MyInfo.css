@@ -1,0 +1,16 @@
+.myinfo-box {
+  padding: 30px 20px 18px 20px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border: 1.2px solid var(--color-border);
+  box-shadow: 0 3px 12px 0 rgba(60,80,130,0.08);
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.myinfo-title {
+  font-size: 1.25em;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
