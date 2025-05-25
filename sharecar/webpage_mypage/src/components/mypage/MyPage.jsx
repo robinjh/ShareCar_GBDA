@@ -4,6 +4,7 @@ import VehicleManager from './VehicleManager';
 import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
 import RentalHistory from './RentalHistory';
+import MyInfo from './MyInfo';
 import '../../styles/MyPage.css';
 
 function MyPage({ isDarkMode, toggleMode }) {
@@ -17,6 +18,7 @@ function MyPage({ isDarkMode, toggleMode }) {
     { key: 'vehicles', label: '🚗 차량 관리' },
     { key: 'requests', label: '📥 대여 요청' },
     { key: 'payments', label: '💳 결제 수단' },
+    { key: 'myinfo', label: '👤 내 정보'}
   ];
 
   return (
@@ -25,7 +27,7 @@ function MyPage({ isDarkMode, toggleMode }) {
         <h1 className="bold" style={{ fontSize: "2rem", margin: 0 }}>마이페이지</h1>
       </div>
 
-      <div className="flex-col" style={{ gap: 18, marginTop: 24 }}>
+      <div className="my-page-menu-list">
         {menus.map(menu => (
           <button
             key={menu.key}
@@ -58,6 +60,7 @@ function MyPage({ isDarkMode, toggleMode }) {
         {modalContent === 'vehicles' && <VehicleManager />}
         {modalContent === 'payments' && <PaymentManager />}
         {modalContent === 'requests' && <RequestManager />}
+        {modalContent === 'myinfo' && <MyInfo />}
       </Modal>
     </div>
   );
