@@ -73,3 +73,20 @@
   border: 1.3px solid var(--color-primary, #5978e7);
   outline: none;
 }
+.myinfo-msg-error {
+  color: #e84545;
+  margin-bottom: 8px;
+  font-size: 0.97em;
+  text-align: center;
+}
+.myinfo-msg-info {
+  color: #2cbf6a;
+  margin-bottom: 8px;
+  font-size: 0.97em;
+  text-align: center;
+}
+.myinfo-edit-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;   /* 기존 18px → 28px 등으로만 수정 */
+}

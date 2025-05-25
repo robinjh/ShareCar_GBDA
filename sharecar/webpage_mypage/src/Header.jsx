@@ -5,7 +5,8 @@ import { auth } from "./firebase";
 import "./styles/Header.css";
 
 function Header({ isDarkMode, toggleMode }) {
-  const user = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  console.log("Header user:", user);
 
   return (
     <header className="header">
@@ -16,16 +17,13 @@ function Header({ isDarkMode, toggleMode }) {
             <span className="header-user">
               {user.displayName || user.email}
             </span>
-            <button
-              className="header-logout-btn"
-              onClick={() => signOut(auth)}
-            >
+            <button className="header-logout-btn" onClick={() => signOut(auth)}>
               로그아웃
             </button>
           </>
         )}
         <button className="btn" onClick={toggleMode}>
-          {isDarkMode ? '☀️ Light' : '🌙 Dark'}
+          {isDarkMode ? "☀️ Light" : "🌙 Dark"}
         </button>
       </div>
     </header>

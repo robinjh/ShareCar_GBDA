@@ -2,10 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../UserContext";
 import { db } from "../../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../../firebase";
 import "../../styles/MyInfo.css";
 
 function MyInfo() {
-  const user = useContext(UserContext);
+  const { user, setRefreshUser } = useContext(UserContext);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -41,6 +43,11 @@ function MyInfo() {
         birth: editProfile.birth,
         address: editProfile.address,
       });
+      await updateProfile(auth.currentUser, {
+        displayName: editProfile.name,
+      });
+      await auth.currentUser.reload();
+      setRefreshUser((v) => !v);
       setProfile(editProfile);
       setEditMode(false);
       setMsg("정보가 성공적으로 저장되었습니다.");

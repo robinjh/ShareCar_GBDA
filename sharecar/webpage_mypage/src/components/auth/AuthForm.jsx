@@ -25,8 +25,7 @@ function AuthForm() {
   const [info, setInfo] = useState("");
   const [showReset, setShowReset] = useState(false);
 
-  const user = useContext(UserContext);
-
+  const { user } = useContext(UserContext);
 
   // 구글 로그인/회원가입
   const handleGoogleLogin = async () => {
