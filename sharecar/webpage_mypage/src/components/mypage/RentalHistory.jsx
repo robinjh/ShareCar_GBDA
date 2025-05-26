@@ -52,7 +52,7 @@ function RentalHistory() {
       // 1. archives
       const archQ = query(
         collection(db, "archives"),
-        where("requesterID", "==", user.uid),
+        where("guestID", "==", user.uid),
         where("show", "in", [true, null])
       );
       const archSnap = await getDocs(archQ);
@@ -65,7 +65,7 @@ function RentalHistory() {
       // 2. requests (대기중)
       const reqQ = query(
         collection(db, "requests"),
-        where("requesterID", "==", user.uid),
+        where("guestID", "==", user.uid),
         where("status", "==", "대기중")
       );
       const reqSnap = await getDocs(reqQ);
@@ -134,7 +134,7 @@ function RentalHistory() {
         <table className="table rental-table">
           <thead>
             <tr>
-              <th>차량번호</th>
+              <th>차 이름</th>
               <th>대여기간</th>
               <th>상태</th>
               <th>평점</th>
@@ -145,7 +145,7 @@ function RentalHistory() {
           <tbody>
             {rentals.map((r) => (
               <tr key={r.id}>
-                <td>{r.carNumber}</td>
+                <td>{r.carName}</td>
                 <td>
                   {formatDate(r.startTime)} ~ {formatDate(r.endTime)}
                 </td>
@@ -203,14 +203,31 @@ function RentalHistory() {
               X
             </button>
             <h4>대여 상세 정보</h4>
-            <p>차량번호: {detail.carNumber}</p>
             <p>
-              대여 기간: {formatDate(detail.startTime)} ~{" "}
+              <b>제조사:</b> {detail.carBrand}
+            </p>
+            <p>
+              <b>차 이름:</b> {detail.carName}
+            </p>
+            <p>
+              <b>차량번호:</b> {detail.carNumber}
+            </p>
+            <p>
+              <b>대여 기간:</b> {formatDate(detail.startTime)} ~{" "}
               {formatDate(detail.endTime)}
             </p>
-            <p>요금: {detail.fee}원</p>
-            <p>상태: {detail.status}</p>
-            <p>태그: {detail.tags && detail.tags.join(", ")}</p>
+            <p>
+              <b>요금:</b> {detail.totalFee}원
+            </p>
+            <p>
+              <b>장소:</b> {detail.address || "-"}
+            </p>
+            <p>
+              <b>상태:</b> {detail.status}
+            </p>
+            <p>
+              <b>태그:</b> {detail.tags && detail.tags.join(", ")}
+            </p>
             {detail.status === "사용중" && (
               <div className="centered" style={{ marginTop: 20 }}>
                 <button className="btn" onClick={() => handleFinish(detail)}>
