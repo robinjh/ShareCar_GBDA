@@ -1,61 +1,89 @@
 .rental-history-container {
-    background: inherit;
-    border: 1.5px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 24px 16px 40px 16px;
-    margin: 0 auto;
-    max-width: 98%;
-    box-sizing: border-box;
-    min-width: 500px;
+  background: inherit;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px 16px 40px 16px;
+  margin: 0 auto;
+  max-width: 98%;
+  box-sizing: border-box;
+  min-width: 500px;
 }
 
 .rental-history-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background: inherit;
-    border-radius: var(--radius);
-    overflow: hidden;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: inherit;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 /* 버튼 가로 배치 */
 .rental-btn-group {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .rental-table-bottom {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .rental-table-bottom .btn {
-    min-width: 100px;
-    font-size: 1.03em;
-    border-radius: 12px;
+  min-width: 100px;
+  font-size: 1.03em;
+  border-radius: 12px;
 }
 
 .rental-history-table th,
 .rental-history-table td {
-    padding: 13px 8px;
-    vertical-align: middle;
-    text-align: center;
-    white-space: nowrap;
+  padding: 13px 8px;
+  vertical-align: middle;
+  text-align: center;
+  white-space: nowrap;
+  width: auto;
 }
 
 .rental-history-table tr {
-    border-bottom: 1.5px solid var(--color-border);
+  border-bottom: 1.5px solid var(--color-border);
 }
 
 .rental-history-table td {
-    border-bottom: 1.5px solid var(--color-border);
+  border-bottom: 1.5px solid var(--color-border);
 }
 
 .rental-history-table tr:last-child {
-    border-bottom: none;
+  border-bottom: none;
+}
+.star-rating {
+  display: inline-block;
+  font-size: 1.18em;
+  letter-spacing: 1px;
+  vertical-align: middle;
+}
+.star-rating .star {
+  transition: color 0.18s;
+}
+.star-rating .on {
+  color: var(--color-kakao); /* 별점 준 별은 노란색 */
+}
+.star-rating .off {
+  color: var(--color-desc); /* 라이트 기본: 연회색 */
+}
+.dark .star-rating .off {
+  color: var(--color-desc-dark); /* 다크 기본: 진회색 */
+}
+
+@media (max-width: 600px) {
+  .rental-history-table button,
+  .rental-history-table .btn {
+    min-width: 56px;
+    font-size: 0.97em;
+    padding: 6px 7px;
+  }
 }
