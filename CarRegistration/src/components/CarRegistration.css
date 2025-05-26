@@ -1,0 +1,44 @@
+.registration-container {
+  padding: 2rem 0;
+}
+
+.registration-paper {
+  padding: 2rem;
+}
+
+.registration-title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.alert {
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  margin-top: 1rem;
+}
+
+.tag-section {
+  margin: 1rem 0;
+}
+
+.tag-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-chip {
+  margin: 0.25rem;
+}
+
+.submit-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.submit-button {
+  min-width: 200px;
+} 
