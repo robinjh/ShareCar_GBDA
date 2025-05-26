@@ -11,9 +11,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { UserContext } from "../../UserContext";
-import "../../styles/RequestManager.css";
 
-// 날짜 포맷 유틸
+// 날짜 포맷
 function formatDate(s) {
   if (!s) return "";
   const d = new Date(s);
@@ -27,12 +26,17 @@ function formatDate(s) {
   });
 }
 
+// 기간 겹침 판정
+function isOverlap(aStart, aEnd, bStart, bEnd) {
+  return new Date(aStart) < new Date(bEnd) && new Date(bStart) < new Date(aEnd);
+}
+
 function RequestManager() {
   const { user } = useContext(UserContext);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 대기중인 내 차량의 대여 요청만 불러오기
+  // 대기중인 내 차량의 대여 요청 불러오기
   useEffect(() => {
     if (!user) return;
     const fetchRequests = async () => {
@@ -72,7 +76,7 @@ function RequestManager() {
     await deleteDoc(doc(db, "requests", req.id));
   };
 
-  // 승인 처리
+  // 승인 처리 (겹치는 요청 자동 거부)
   const handleApprove = async (req) => {
     // 1. 차량 상태 갱신
     await updateDoc(doc(db, "registrations", req.carNumber), {
@@ -81,11 +85,36 @@ function RequestManager() {
       startTime: req.startTime,
       endTime: req.endTime,
     });
-    // 2. archives로 복사
+
+    // 2. "승인"된 요청 아카이브로 복사
     await archiveRequest(req, "사용중");
-    // 3. 화면 갱신
-    setRequests(prev => prev.filter(r => r.id !== req.id));
-    alert("승인되었습니다!");
+
+    // 3. 겹치는 기간의 같은 차량 다른 대기중 요청 모두 자동 거부 처리
+    const q = query(
+      collection(db, "requests"),
+      where("carNumber", "==", req.carNumber),
+      where("status", "==", "대기중")
+    );
+    const snap = await getDocs(q);
+    const overlapReqs = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(other =>
+        other.id !== req.id && isOverlap(
+          req.startTime, req.endTime,
+          other.startTime, other.endTime
+        )
+      );
+    for (const other of overlapReqs) {
+      await archiveRequest(other, "거부");
+    }
+
+    // 4. 화면 갱신 (대기중 → 모두 삭제)
+    setRequests(prev => prev.filter(r =>
+      r.id === req.id // 내가 승인한 건 이미 아카이브로 이동
+      ? false
+      : !overlapReqs.some(orq => orq.id === r.id) // 자동 거부된 것도 빼기
+    ));
+    alert("승인 및 겹치는 기간 요청 자동 거부 완료!");
   };
 
   // 거부 처리
