@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { UserContext } from "../../UserContext"; // user 가져오는 곳
+import { UserContext } from "../../UserContext";
 import '../../styles/Common.css';
 
 function VehicleManager() {
@@ -9,13 +9,13 @@ function VehicleManager() {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 차량 목록 불러오기
+  // 차량 목록 불러오기 (신규 구조)
   useEffect(() => {
     if (!user) return;
     const fetchCars = async () => {
       const q = query(
         collection(db, "registrations"),
-        where("4_statusInfo.hostID", "==", user.uid)
+        where("hostID", "==", user.uid)
       );
       const snapshot = await getDocs(q);
       setCars(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -42,11 +42,10 @@ function VehicleManager() {
         <ul>
           {cars.map(car => (
             <li key={car.id}>
-              {/* 안전하게 중첩 map 접근 + 기본값 처리 */}
-              {car["1_basicInfo"]?.name || "차명 없음"} /
-              {car["1_basicInfo"]?.carNumber || "번호 없음"} /
-              {car["1_basicInfo"]?.rentalFee || "요금 없음"}원 /
-              상태: {car["4_statusInfo"]?.status || "정보 없음"}
+              {car.carBrand} / {car.carName} / {car.carNumber} / {car.carType} / {car.rentalFee}원
+              {car.tags && car.tags.length > 0 && (
+                <> / {car.tags.join(", ")}</>
+              )}
               <button onClick={() => handleDelete(car.id)}>삭제</button>
             </li>
           ))}

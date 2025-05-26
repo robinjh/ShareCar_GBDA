@@ -1,102 +1,75 @@
-import React, { useState } from 'react';
-import '../../styles/Common.css';
-import '../../styles/RentalHistory.css';
-
-const sampleRentals = [
-  {
-    id: 1,
-    car: '현대 아이오닉5',
-    from: '2024-02-13',
-    to: '2024-02-15',
-    rating: 0,
-    location: '서울 강남구',
-    price: '120,000원',
-  },
-  {
-    id: 2,
-    car: '기아 EV6',
-    from: '2024-03-01',
-    to: '2024-03-02',
-    rating: 4,
-    location: '부산 해운대구',
-    price: '90,000원',
-  }
-];
+import React, { useState, useEffect, useContext } from "react";
+import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { UserContext } from "../../UserContext";
 
 function RentalHistory() {
-  const [rentals, setRentals] = useState(sampleRentals);
-  const [selected, setSelected] = useState(null);
+  const { user } = useContext(UserContext);
+  const [rentals, setRentals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateRating = (id, value) => {
+  useEffect(() => {
+    if (!user) return;
+    const fetchRentals = async () => {
+      const q = query(
+        collection(db, "archives"),
+        where("requesterID", "==", user.uid),
+        where("show", "in", [true, null]) // show === false가 아닌 문서만
+      );
+      const snapshot = await getDocs(q);
+      setRentals(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    };
+    fetchRentals();
+  }, [user]);
+
+  // 평점 남기기
+  const handleRate = async (id, score) => {
+    await updateDoc(doc(db, "archive", id), { rate: score });
     setRentals(prev =>
-      prev.map(r =>
-        r.id === id && r.rating === 0 ? { ...r, rating: Number(value) } : r
-      )
+      prev.map(r => (r.id === id ? { ...r, rate: score } : r))
     );
   };
 
-  const deleteRental = (id) => {
+  // 소프트 삭제
+  const handleDelete = async (id) => {
+    if (!window.confirm("정말로 기록을 삭제하시겠습니까?")) return;
+    await updateDoc(doc(db, "archive", id), { show: false });
     setRentals(prev => prev.filter(r => r.id !== id));
   };
 
-  const deleteAll = () => setRentals([]);
-
   return (
-    <div className="rental-history-container">
-      <table className="rental-history-table" style={{ tableLayout: "fixed" }}>
-        <thead>
-          <tr>
-            <th style={{ width: "23%" }}>차량명</th>
-            <th style={{ width: "27%" }}>기간</th>
-            <th style={{ width: "17%" }}>평점</th>
-            <th style={{ width: "33%" }}>작업</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div>
+      <h2>내 대여 기록</h2>
+      {loading ? (
+        <p>로딩 중...</p>
+      ) : rentals.length === 0 ? (
+        <p>대여 기록이 없습니다.</p>
+      ) : (
+        <ul>
           {rentals.map(r => (
-            <tr key={r.id}>
-              <td style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.car}</td>
-              <td style={{ whiteSpace: "nowrap" }}>{r.from} ~ {r.to}</td>
-              <td>
+            <li key={r.id}>
+              {/* 중첩 구조면, 예: r["1_basicInfo"]?.name 등 접근 */}
+              {r["1_basicInfo"]?.name || r.carNumber || "차명 없음"} /
+              {r.startTime} ~ {r.endTime} /
+              상태: {r.status}
+              {r.rate == null && r.status === "완료" && (
                 <select
-                  className="input"
-                  value={r.rating}
-                  onChange={e => updateRating(r.id, e.target.value)}
-                  disabled={r.rating !== 0}
-                  style={{ minWidth: 80, textAlign: "center" }}
+                  onChange={e => handleRate(r.id, Number(e.target.value))}
+                  defaultValue=""
                 >
-                  {[1, 2, 3, 4, 5].map(n => (
-                    <option key={n} value={n}>{'⭐'.repeat(n)}</option>
+                  <option value="" disabled>평점 선택</option>
+                  {[1,2,3,4,5].map(n => (
+                    <option key={n} value={n}>{n}</option>
                   ))}
                 </select>
-              </td>
-              <td>
-                <div style={{ display: "flex", gap: 8, justifyContent: "center", whiteSpace: "nowrap" }}>
-                  <button className="btn" onClick={() => setSelected(r)}>자세히 보기</button>
-                  <button className="btn" onClick={() => deleteRental(r.id)}>삭제</button>
-                </div>
-              </td>
-            </tr>
+              )}
+              {r.rate != null && ` 평점: ${r.rate}`}
+              <button onClick={() => handleDelete(r.id)}>삭제</button>
+              <button onClick={() => {/* 자세히 보기 모달 등 구현 */}}>자세히</button>
+            </li>
           ))}
-        </tbody>
-      </table>
-      {rentals.length > 0 && (
-        <div className="rental-table-bottom" style={{ display: "flex", justifyContent: "center", marginTop: 18 }}>
-          <button className="btn" onClick={deleteAll}>전체 삭제</button>
-        </div>
-      )}
-
-      {selected && (
-        <div className="modal-overlay" onClick={() => setSelected(null)}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
-            <button className="close-button" onClick={() => setSelected(null)}>X</button>
-            <h4>{selected.car} 상세 정보</h4>
-            <p>대여 기간: {selected.from} ~ {selected.to}</p>
-            <p>지역: {selected.location}</p>
-            <p>요금: {selected.price}</p>
-            <p>현재 평점: {'⭐'.repeat(selected.rating)}</p>
-          </div>
-        </div>
+        </ul>
       )}
     </div>
   );
