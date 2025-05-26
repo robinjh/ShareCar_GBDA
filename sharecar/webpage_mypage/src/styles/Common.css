@@ -1,0 +1,263 @@
+:root {
+  --color-bg: #fff;
+  --color-bg-dark: #181829;
+
+  --color-surface: #f8fafd;
+  --color-surface-dark: #232338;
+
+  --color-text: #181829;
+  --color-text-dark: #fff;
+
+  --color-primary: #5978e7;
+  --color-accent: #41a5ee;
+
+  --color-border: #e6e7ec;
+  --color-border-dark: #353566;
+
+  --color-input: #f9f9fb;
+  --color-input-dark: #22223b;
+
+  --color-desc: #767f9d;
+  --color-desc-dark: #adb1c7;
+
+  --color-focus: #ff5c5c;
+  --color-danger: #e84545;
+
+  --color-kakao: #fee500;
+  --color-kakaocheck: #fee500;
+
+  --radius: 12px;
+  --transition: 0.3s;
+}
+
+body,
+.light,
+.dark {
+  transition: background var(--transition), color var(--transition);
+}
+
+body,
+.light,
+.light .card,
+.light .section,
+.light .modal {
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.dark,
+.dark .card,
+.dark .section,
+.dark .modal {
+  color: var(--color-text-dark);
+  background: var(--color-bg-dark);
+}
+
+/* 카드/섹션/모달 공통 */
+.card,
+.section,
+.modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition: background var(--transition), color var(--transition),
+    border-color var(--transition);
+}
+.dark .card,
+.dark .section,
+.dark .modal {
+  background: var(--color-surface-dark);
+  border: 1px solid var(--color-border-dark);
+}
+
+/* 버튼 공통 */
+.btn,
+button {
+  background: var(--color-primary);
+  color: var(--color-text-dark);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 7px 0;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.btn:hover,
+button:hover {
+  background: var(--color-accent);
+}
+
+.btn:disabled,
+button:disabled {
+  background: #bcc3e7;
+  color: #eee;
+  cursor: not-allowed;
+}
+
+.dark .btn,
+.dark button {
+  color: var(--color-bg-dark);
+}
+
+/* 입력 필드 */
+.input,
+input,
+select,
+textarea {
+  background: var(--color-input);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 1rem;
+  margin-bottom: 14px;
+  outline: none;
+  transition: border var(--transition), background var(--transition),
+    color var(--transition);
+}
+
+.input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  border: 1.5px solid var(--color-primary);
+}
+
+.dark .input,
+.dark input,
+.dark select,
+.dark textarea {
+  background: var(--color-input-dark);
+  color: var(--color-text-dark);
+  border: 1.5px solid var(--color-border-dark);
+}
+
+/* 테이블 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  background: transparent;
+  color: inherit;
+  transition: color var(--transition);
+}
+.table th,
+.table td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 13px 10px;
+}
+.table th {
+  white-space: nowrap;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.08em;
+  letter-spacing: 0.01em;
+  color: var(--color-text);
+  background: transparent;
+}
+.dark .table th {
+  color: var(--color-text-dark);
+}
+.table tr:last-child td {
+  border-bottom: none;
+}
+.table tr:hover {
+  background: var(--color-surface);
+  transition: background var(--transition);
+}
+.dark .table tr:hover {
+  background: var(--color-surface-dark);
+}
+
+/* 모달 오버레이, 팝업 효과 등 공통 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(32, 32, 50, 0.33);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeInOverlay 0.26s;
+}
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modal {
+  min-width: 350px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  background: inherit;
+  color: inherit;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 32px rgba(40, 60, 120, 0.18);
+  border: 1.5px solid var(--color-border);
+  animation: popupShow 0.22s;
+}
+@keyframes popupShow {
+  from {
+    transform: scale(0.97) translateY(10px);
+    opacity: 0.1;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 1.3em;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  z-index: 1;
+  transition: color 0.2s;
+}
+
+.dark .close-button {
+  color: var(--color-accent);
+}
+
+.close-button:hover,
+.close-button:focus {
+  color: var(--color-focus);
+}
+.modal-content {
+  padding-bottom: 10px;
+}
+
+/* 공통 레이아웃 */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  gap: 14px;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bold {
+  font-weight: 700;
+}
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
