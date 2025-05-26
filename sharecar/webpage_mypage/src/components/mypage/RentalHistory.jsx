@@ -160,9 +160,11 @@ function RentalHistory() {
             <p>상태: {detail.status}</p>
             <p>태그: {detail.tags && detail.tags.join(", ")}</p>
             {detail.status === "사용중" && (
+              <div className="centered" style={{ marginTop: 20 }}>
               <button className="btn" onClick={() => handleFinish(detail)}>
                 사용 완료로 처리
               </button>
+              </div>
             )}
             {detail.status === "완료" && detail.rate == null && (
               <div style={{ marginTop: 12 }}>

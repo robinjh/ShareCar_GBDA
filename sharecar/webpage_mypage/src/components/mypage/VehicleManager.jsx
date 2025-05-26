@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import { UserContext } from "../../UserContext";
-import '../../styles/Common.css';
+import "../../styles/VehicleManager.css";
 
 function VehicleManager() {
   const { user } = useContext(UserContext);
@@ -18,7 +25,7 @@ function VehicleManager() {
         where("hostID", "==", user.uid)
       );
       const snapshot = await getDocs(q);
-      setCars(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setCars(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       setLoading(false);
     };
     fetchCars();
@@ -28,32 +35,40 @@ function VehicleManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("정말로 차량을 삭제하시겠습니까?")) return;
     await deleteDoc(doc(db, "registrations", id));
-    setCars(prev => prev.filter(car => car.id !== id));
+    setCars((prev) => prev.filter((car) => car.id !== id));
   };
 
   return (
     <div>
-      <h2>내 차량 목록</h2>
       {loading ? (
         <p>로딩 중...</p>
       ) : cars.length === 0 ? (
         <p>등록한 차량이 없습니다.</p>
       ) : (
-        <ul>
-          {cars.map(car => (
+        <ul className="vehicle-list">
+          {cars.map((car) => (
             <li key={car.id}>
-              {car.carBrand} / {car.carName} / {car.carNumber} / {car.carType} / {car.rentalFee}원
-              {car.tags && car.tags.length > 0 && (
-                <> / {car.tags.join(", ")}</>
-              )}
-              <button onClick={() => handleDelete(car.id)}>삭제</button>
+              {car.carBrand} / {car.carName} / {car.carNumber} / {car.carType} /{" "}
+              {car.rentalFee}원
+              {car.tags && car.tags.length > 0 && <> / {car.tags.join(", ")}</>}
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(car.id)}
+              >
+                삭제
+              </button>
             </li>
           ))}
         </ul>
       )}
-      <button onClick={() => window.location.href = "/register-car"}>
-        차량 등록
-      </button>
+      <div className="vehicle-manager-bottom">
+        <button
+          className="btn"
+          onClick={() => (window.location.href = "/register-car")}
+        >
+          차량 등록
+        </button>
+      </div>
     </div>
   );
 }
