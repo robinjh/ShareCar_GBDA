@@ -1,5 +1,13 @@
-.payment-manager {
-  margin-top: 8px;
+.payment-manager ul {
+  padding-left: 24px;
+  margin: 0 0 12px 0;
+}
+
+.payment-manager ul li{
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 정보는 왼쪽, 삭제는 오른쪽 */
+  gap: 15px;
 }
 
 .payment-btn-row {
@@ -7,6 +15,7 @@
   gap: 14px;
   margin-top: 20px;
   margin-bottom: 0;
+  justify-content: center;
 }
 
 /* 모달 내 form 세로 배치 */
@@ -26,8 +35,6 @@
   font-size: 0.98rem;  /* 폰트 사이즈 소폭 감소 */
   margin-bottom: 6px;  /* 입력칸간 간격 좁게 */
 }
-
-
 
 /* 반응형: 좁은 화면에서는 최대 95vw로 */
 @media (max-width: 650px) {
