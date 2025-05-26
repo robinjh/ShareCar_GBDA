@@ -5,6 +5,7 @@ import PaymentManager from './PaymentManager';
 import RequestManager from './RequestManager';
 import RentalHistory from './RentalHistory';
 import MyInfo from './MyInfo';
+import '../../styles/Common.css';
 import '../../styles/MyPage.css';
 
 function MyPage({ isDarkMode, toggleMode }) {
