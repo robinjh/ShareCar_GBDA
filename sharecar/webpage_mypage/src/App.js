@@ -8,6 +8,9 @@ import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 
+import { seedTestData } from "./seedTestData"; 
+// 테스트용 데이터 넣는 코드 반드시 삭제할것것
+
 function AppContent({ toggleMode }) {
   const { user } = useContext(UserContext);
 
@@ -83,6 +86,7 @@ function App() {
   });
 
   useEffect(() => {
+    //seedTestData(); // 테스트 데이터 넣는 코드 반드시 삭제할 것
     localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
