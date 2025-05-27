@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/MyPage.css'; // 기존 스타일과 통일
+import '../../styles/MyPage.css'; // 기존 스타일과 통일
 
 // 샘플 대여 요청 데이터
 const sampleRequests = [

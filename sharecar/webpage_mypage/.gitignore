@@ -31,3 +31,6 @@ public/logo192.png
 public/logo512.png
 public/manifest.json
 public/robots.txt
+
+#키 유출 방지용
+.env

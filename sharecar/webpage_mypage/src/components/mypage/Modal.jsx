@@ -1,6 +1,6 @@
 // components/Modal.jsx
 import React from 'react';
-import '../styles/MyPage.css'; // 모달 스타일 포함되어 있다고 가정
+import '../../styles/MyPage.css'; // 모달 스타일 포함되어 있다고 가정
 
 function Modal({ title, onClose, children }) {
   return (

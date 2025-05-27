@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/rentalTable.css';
+import '../../styles/rentalTable.css';
 const sampleRentals = [
   {
     id: 1,
