@@ -19,7 +19,7 @@
 .env.production.local
 
 # Firebase
-/sharecar-gbda-firebase-adminsdk-fbsvc-e244f6d788.json
+**/sharecar-gbda-firebase-adminsdk-fbsvc-e244f6d788.json
 **/firebase-adminsdk-*.json
 !**/firebase-adminsdk-template.json
 **/firebase.js
