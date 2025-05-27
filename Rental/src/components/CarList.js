@@ -33,6 +33,69 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import './CarList.css';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import PlaceRecommendation from "./PlaceRecommendation";
+
+function CarCard({ car, onRent, onCancel, onReturn, onExtend, onReview, onReport, onDelete, onEdit, onTagClick }) {
+  return (
+    <Card className="car-card" sx={{ 
+      height: '100%', 
+      display: 'flex', 
+      flexDirection: 'column',
+      minHeight: '400px'
+    }}>
+      <CardContent sx={{ 
+        flexGrow: 1, 
+        display: 'flex', 
+        flexDirection: 'column',
+        height: '100%'
+      }}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography variant="h5" component="h2" gutterBottom>
+            {car.carName}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            차량번호: {car.carNumber}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            분류: {car.carType}
+          </Typography>
+          <Typography color="textSecondary" gutterBottom>
+            제조사: {car.carBrand}
+          </Typography>
+          <Typography variant="h6" color="primary" gutterBottom>
+            대여료: {car.rentalFee}원/일
+          </Typography>
+          <Stack 
+            direction="row" 
+            spacing={1} 
+            flexWrap="wrap" 
+            useFlexGap 
+            className="tag-stack" 
+            sx={{ 
+              mb: 2,
+              minHeight: '60px',
+              alignItems: 'flex-start'
+            }}
+          >
+            {car.tags && car.tags.map((tag, index) => (
+              <Chip key={index} label={tag} size="small" className="tag-chip" onClick={() => onTagClick(tag)} />
+            ))}
+          </Stack>
+        </Box>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => onRent(car)}
+          className="rent-button"
+          disabled={!onRent}
+        >
+          대여하기
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
 
 function CarList() {
   const { user } = useContext(UserContext);
@@ -41,7 +104,9 @@ function CarList() {
   const [loading, setLoading] = useState(true);
   const [selectedCar, setSelectedCar] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openFilterDialog, setOpenFilterDialog] = useState(false);
+  const [openRecommendationDialog, setOpenRecommendationDialog] = useState(false);
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [rentalData, setRentalData] = useState({
     startTime: new Date(),
     endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
@@ -232,20 +297,12 @@ function CarList() {
   };
 
   const handleTagClick = (tag) => {
-    setRentalData(prev => {
-      const currentTags = prev.tags;
-      if (currentTags.includes(tag)) {
-        return {
-          ...prev,
-          tags: currentTags.filter(t => t !== tag)
-        };
-      } else {
-        return {
-          ...prev,
-          tags: [...currentTags, tag]
-        };
-      }
-    });
+    setRentalData(prev => ({
+      ...prev,
+      tags: prev.tags.includes(tag) 
+        ? prev.tags.filter(t => t !== tag)
+        : [...prev.tags, tag]
+    }));
   };
 
   const handleTagFilterClick = (tag) => {
@@ -380,7 +437,7 @@ function CarList() {
       };
 
       const now = new Date();
-      const requestDateTime = now.toISOString().replace(/[:.]/g, '-'); // YYYY-MM-DDTHH-mm-ss-sssZ 형식
+      const requestDateTime = now.toISOString().replace(/[:.]/g, '-');
       const docId = `${user.uid}.${selectedCar.carNumber}.${requestDateTime}`;
       const docRef = await setDoc(doc(requestsRef, docId), requestData);
       
@@ -389,6 +446,7 @@ function CarList() {
         setSuccess('');
       }, 5000);
       handleCloseDialog();
+      setOpenRecommendationDialog(true);
     } catch (err) {
       console.error('대여 요청 실패:', err);
       setError(err.message);
@@ -415,11 +473,11 @@ function CarList() {
   const handleOpenFilterDialog = () => {
     setTempFilters(filters);
     setTempRentalFeeRange(rentalFeeRange);
-    setOpenFilterDialog(true);
+    setFilterDialogOpen(true);
   };
 
   const handleCloseFilterDialog = () => {
-    setOpenFilterDialog(false);
+    setFilterDialogOpen(false);
   };
 
   const handleTempFilterChange = (e) => {
@@ -475,7 +533,11 @@ function CarList() {
   const handleApplyFilters = () => {
     setFilters(tempFilters);
     setRentalFeeRange(tempRentalFeeRange);
-    setOpenFilterDialog(false);
+    setFilterDialogOpen(false);
+  };
+
+  const handleCloseRecommendationDialog = () => {
+    setOpenRecommendationDialog(false);
   };
 
   if (loading) {
@@ -489,7 +551,7 @@ function CarList() {
   return (
     <Container maxWidth="lg" className="car-list-container" sx={{ pt: 4 }}>
       <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2, mt: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
           <Typography variant="h4" component="h1" sx={{ mb: 1 }}>
             차량 대여
           </Typography>
@@ -504,42 +566,8 @@ function CarList() {
         </Box>
 
         {error && (
-          <Alert 
-            severity="error" 
-            className="alert" 
-            sx={{ 
-              position: 'fixed',
-              top: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 9999,
-              minWidth: '300px',
-              maxWidth: '80%',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              '& .MuiAlert-message': {
-                whiteSpace: 'pre-line'
-              }
-            }}
-          >
+          <Alert severity="error" sx={{ mb: 2 }}>
             {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert 
-            severity="success" 
-            className="alert"
-            sx={{ 
-              position: 'fixed',
-              top: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 9999,
-              minWidth: '300px',
-              maxWidth: '80%',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            {success}
           </Alert>
         )}
 
@@ -572,275 +600,152 @@ function CarList() {
           </Grid>
         </Box>
 
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-            <CircularProgress />
-          </Box>
-        ) : filteredCars.length === 0 ? (
-          <Alert severity="info" sx={{ mt: 2 }}>
-            {searchTerm ? '검색 결과가 없습니다.' : '등록된 차량이 없습니다.'}
-          </Alert>
-        ) : (
-          <>
-            <Grid container spacing={3}>
-              {getCurrentPageCars().map((car) => (
-                <Grid item xs={12} sm={6} md={4} key={car.id}>
-                  <Card className="car-card" sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    minHeight: '400px'
-                  }}>
-                    <CardContent sx={{ 
-                      flexGrow: 1, 
-                      display: 'flex', 
-                      flexDirection: 'column',
-                      height: '100%'
-                    }}>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h5" component="h2" gutterBottom>
-                          {car.carName}
-                        </Typography>
-                        <Typography color="textSecondary" gutterBottom>
-                          차량번호: {car.carNumber}
-                        </Typography>
-                        <Typography color="textSecondary" gutterBottom>
-                          분류: {car.carType}
-                        </Typography>
-                        <Typography color="textSecondary" gutterBottom>
-                          제조사: {car.carBrand}
-                        </Typography>
-                        <Typography variant="h6" color="primary" gutterBottom>
-                          대여료: {car.rentalFee}원/일
-                        </Typography>
-                        <Stack 
-                          direction="row" 
-                          spacing={1} 
-                          flexWrap="wrap" 
-                          useFlexGap 
-                          className="tag-stack" 
-                          sx={{ 
-                            mb: 2,
-                            minHeight: '60px',
-                            alignItems: 'flex-start'
-                          }}
-                        >
-                          {car.tags && car.tags.map((tag, index) => (
-                            <Chip key={index} label={tag} size="small" className="tag-chip" />
-                          ))}
-                        </Stack>
-                      </Box>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={() => handleRentClick(car)}
-                        className="rent-button"
-                        disabled={!user}
-                      >
-                        대여하기
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
-            </Grid>
-
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 2 }}>
-              <Pagination 
-                count={Math.ceil(filteredCars.length / itemsPerPage)} 
-                page={page} 
-                onChange={handlePageChange}
-                color="primary"
-                size="large"
+        <Grid container spacing={3}>
+          {filteredCars.map((car) => (
+            <Grid item xs={12} sm={6} md={4} key={car.id}>
+              <CarCard
+                car={car}
+                onRent={handleRentClick}
+                onCancel={handleCloseDialog}
+                onReturn={handleSubmit}
+                onExtend={handleCloseDialog}
+                onReview={handleCloseDialog}
+                onReport={handleCloseDialog}
+                onDelete={handleCloseDialog}
+                onEdit={handleCloseDialog}
+                onTagClick={handleTagClick}
               />
-            </Box>
-          </>
-        )}
+            </Grid>
+          ))}
+        </Grid>
       </Paper>
 
-      <Dialog open={openFilterDialog} onClose={handleCloseFilterDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>필터 설정</DialogTitle>
+      <Dialog
+        open={filterDialogOpen}
+        onClose={handleCloseFilterDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        {/* Filter dialog content */}
+      </Dialog>
+
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            minHeight: '600px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ textAlign: 'center' }}>차량 대여</DialogTitle>
         <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <TextField 
-              select
-              fullWidth 
-              label="분류"
-              name="carType"
-              value={tempFilters.carType}
-              onChange={handleTempFilterChange}
-              sx={{ mb: 2 }}
-            >
-              <MenuItem value="">전체</MenuItem>
-              <MenuItem value="소형">소형</MenuItem>
-              <MenuItem value="중형">중형</MenuItem>
-              <MenuItem value="대형">대형</MenuItem>
-              <MenuItem value="SUV">SUV</MenuItem>
-            </TextField>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+          
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>이름</Typography>
+            <TextField
+              fullWidth
+              value={rentalData.guestName}
+              onChange={handleInputChange}
+              name="guestName"
+              placeholder="이름을 입력하세요"
+            />
+          </Box>
 
-            <TextField 
-              select
-              fullWidth 
-              label="제조사"
-              name="carBrand"
-              value={tempFilters.carBrand}
-              onChange={handleTempFilterChange}
-              sx={{ mb: 2 }}
-            >
-              <MenuItem value="">전체</MenuItem>
-              <MenuItem value="현대">현대</MenuItem>
-              <MenuItem value="기아">기아</MenuItem>
-              <MenuItem value="쌍용">쌍용</MenuItem>
-              <MenuItem value="제네시스">제네시스</MenuItem>
-              <MenuItem value="BMW">BMW</MenuItem>
-              <MenuItem value="벤츠">벤츠</MenuItem>
-              <MenuItem value="아우디">아우디</MenuItem>
-            </TextField>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>주소</Typography>
+            <TextField
+              fullWidth
+              value={rentalData.address}
+              onChange={handleInputChange}
+              name="address"
+              placeholder="주소를 입력하세요"
+            />
+          </Box>
 
-            <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="최소 대여료(1일)"
-                  name="minRentalFee"
-                  type="number"
-                  value={tempFilters.minRentalFee}
-                  onChange={handleTempRentalFeeInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">원</InputAdornment>,
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>대여 기간</Typography>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <DateTimePicker
+                  label="시작 시간"
+                  value={rentalData.startTime}
+                  onChange={handleDateChange('startTime')}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                />
+                <DateTimePicker
+                  label="종료 시간"
+                  value={rentalData.endTime}
+                  onChange={handleDateChange('endTime')}
+                  renderInput={(params) => <TextField {...params} fullWidth />}
+                />
+              </Box>
+            </LocalizationProvider>
+          </Box>
+
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>태그 선택</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+              {selectedCar?.tags?.map((tag) => (
+                <Chip
+                  key={tag}
+                  label={tag}
+                  onClick={() => handleTagClick(tag)}
+                  color={rentalData.tags.includes(tag) ? "primary" : "default"}
+                  sx={{
+                    transition: 'all 0.3s ease',
+                    transform: rentalData.tags.includes(tag) ? 'scale(1.05)' : 'scale(1)',
+                    backgroundColor: rentalData.tags.includes(tag) ? '#1976d2' : '#e0e0e0',
+                    color: rentalData.tags.includes(tag) ? 'white' : 'black',
+                    '&:hover': {
+                      backgroundColor: rentalData.tags.includes(tag) ? '#1565c0' : '#d5d5d5',
+                    }
                   }}
                 />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label="최대 대여료(1일)"
-                  name="maxRentalFee"
-                  type="number"
-                  value={tempFilters.maxRentalFee}
-                  onChange={handleTempRentalFeeInputChange}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">원</InputAdornment>,
-                  }}
-                />
-              </Grid>
-            </Grid>
-
-            <Box sx={{ width: '90%', mx: 'auto' }}>
-              <Slider
-                value={tempRentalFeeRange}
-                onChange={handleTempRentalFeeChange}
-                valueLabelDisplay="auto"
-                min={0}
-                max={100}
-                step={1}
-                valueLabelFormat={(value) => `${logScale(value).toLocaleString()}원`}
-              />
+              ))}
             </Box>
-
-            <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
-              태그 필터
-            </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              {allTags
-                .filter(tag => !['#도심 드라이브', '#장거리 운전용'].includes(tag))
-                .map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    onClick={() => handleTempTagFilterClick(tag)}
-                    color={tempFilters.selectedTags.includes(tag) ? "primary" : "default"}
-                    className="tag-chip"
-                  />
-                ))}
-            </Stack>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleApplyFilters} variant="contained" color="primary">
-            검색
+          <Button 
+            onClick={handleSubmit} 
+            variant="contained" 
+            color="primary"
+            disabled={!rentalData.tags.length}
+          >
+            대여 요청
           </Button>
-          <Button onClick={handleCloseFilterDialog}>취소</Button>
+          <Button onClick={handleCloseDialog}>취소</Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>차량 대여</DialogTitle>
+      <Dialog 
+        open={openRecommendationDialog} 
+        onClose={handleCloseRecommendationDialog}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            minHeight: '600px'
+          }
+        }}
+      >
+        <DialogTitle sx={{ textAlign: 'center' }}>추천 장소</DialogTitle>
         <DialogContent>
-          {selectedCar && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                {selectedCar.carName}
-              </Typography>
-              <Typography color="textSecondary" gutterBottom>
-                차량번호: {selectedCar.carNumber}
-              </Typography>
-              <Typography color="textSecondary" gutterBottom>
-                대여료: {selectedCar.rentalFee}원/일
-              </Typography>
-
-              <TextField
-                fullWidth
-                label="이름"
-                name="guestName"
-                value={rentalData.guestName}
-                onChange={handleInputChange}
-                margin="normal"
-                required
-              />
-
-              <TextField
-                fullWidth
-                label="주소"
-                name="address"
-                value={rentalData.address}
-                onChange={handleInputChange}
-                margin="normal"
-                required
-                placeholder="차량을 받을 주소를 입력해주세요"
-              />
-
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Box sx={{ mt: 2 }}>
-                  <DateTimePicker
-                    label="대여 시작 시간"
-                    value={rentalData.startTime}
-                    onChange={handleDateChange('startTime')}
-                    slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
-                  />
-                </Box>
-                <Box sx={{ mt: 2 }}>
-                  <DateTimePicker
-                    label="대여 종료 시간"
-                    value={rentalData.endTime}
-                    onChange={handleDateChange('endTime')}
-                    slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
-                  />
-                </Box>
-              </LocalizationProvider>
-
-              <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
-                태그 선택
-              </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                {selectedCar.tags && selectedCar.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    onClick={() => handleTagClick(tag)}
-                    color={rentalData.tags.includes(tag) ? "primary" : "default"}
-                    className="tag-chip"
-                  />
-                ))}
-              </Stack>
-            </Box>
-          )}
+          {console.log("장소 추천 다이얼로그 태그:", rentalData.tags)}
+          <PlaceRecommendation 
+            tags={rentalData.tags}
+            address={rentalData.address}
+            isDarkMode={false}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>취소</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            대여 요청
+          <Button onClick={handleCloseRecommendationDialog} color="primary">
+            닫기
           </Button>
         </DialogActions>
       </Dialog>

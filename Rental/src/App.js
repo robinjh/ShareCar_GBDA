@@ -6,6 +6,7 @@ import Login from './components/Login';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './App.css';
+import PlaceRecommendationPage from './pages/PlaceRecommendationPage';
 
 const theme = createTheme({
   palette: {
@@ -33,6 +34,7 @@ function AppContent() {
             path="/"
             element={user ? <CarRent /> : <Login />}
           />
+          <Route path="/place-recommendation" element={<PlaceRecommendationPage />} />
         </Routes>
       </div>
     </Router>
