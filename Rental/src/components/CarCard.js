@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   Card, 
   CardContent, 
@@ -12,9 +12,11 @@ import {
 } from '@mui/material';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { UserContext } from '../UserContext';
 import './CarCard.css';
 
 function CarCard({ car, onStatusUpdate }) {
+  const { user } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
   const [localStatus, setLocalStatus] = useState(car["4_statusInfo"].status);
 
@@ -49,7 +51,8 @@ function CarCard({ car, onStatusUpdate }) {
       await updateDoc(carRef, {
         "4_statusInfo": {
           ...car["4_statusInfo"],
-          status: '확정'
+          status: '확정',
+          guestID: user?.uid || ''
         }
       });
       
