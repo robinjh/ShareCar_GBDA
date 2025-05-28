@@ -6,7 +6,6 @@ import "./styles/Header.css";
 
 function Header({ isDarkMode, toggleMode }) {
   const { user } = useContext(UserContext);
-  console.log("Header user:", user);
 
   return (
     <header className="header">
