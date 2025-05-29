@@ -4,15 +4,32 @@ import Header from "./Header";
 import AuthForm from "./components/auth/AuthForm";
 import MyPage from "./components/mypage/MyPage";
 import PlaceRecommendation from "./components/recomendation/PlaceRecommendation";
+import MainPage from "./components/mainpage/MainPage"; // MainPage component 추가
 import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 
 function AppContent({ toggleMode }) {
   const { user } = useContext(UserContext);
+   const [showAuthForm, setShowAuthForm] = useState(false); // userState를 false로 초기화하여 AuthForm 컴포넌트를 숨김
+
+  const handleShowAuthForm = () => {
+    setShowAuthForm(true);
+  };
+  // MainPage 컴포넌트의 로그인 버튼이 클릭되면 false -> true AuthForm 보임
+
+  const handleHideAuthForm = () => {
+    setShowAuthForm(false);
+  };
+  // 다시 true -> false
+
+  if (showAuthForm) {
+    return <AuthForm onLoginSuccess={handleHideAuthForm} />;
+  }
+  // showAuthForm == true AuthForm 랜더링
 
   if (!user) {
-    return <AuthForm />;
+    return <MainPage onShowLoginClick={handleShowAuthForm} />;
   }
 
   // 이메일 미인증 상태 안내 및 로그아웃만
