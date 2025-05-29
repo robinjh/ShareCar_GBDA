@@ -22,7 +22,6 @@
 # Firebase
 **/firebase-adminsdk-*.json
 **/firebase-config.js
-/src/firebase.js
 
 # logs
 npm-debug.log*

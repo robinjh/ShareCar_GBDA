@@ -1,0 +1,256 @@
+/* 전체 페이지 스타일 */
+.rental-container {
+  min-height: 100vh;
+  padding: 3rem 0;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 검색 및 필터링 영역 */
+.search-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
+.filter-button {
+  min-width: 120px !important;
+  height: 56px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(25, 118, 210, 0.2) !important;
+  color: #1976d2 !important;
+  font-weight: 500 !important;
+  font-size: 0.95rem !important;
+  text-transform: none !important;
+  padding: 0 20px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 2px rgba(25, 118, 210, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}
+
+.filter-button:hover {
+  background: rgba(25, 118, 210, 0.04) !important;
+  color: #1976d2 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.15) !important;
+  border-color: rgba(25, 118, 210, 0.3) !important;
+}
+
+.filter-button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 1px 2px rgba(25, 118, 210, 0.1) !important;
+}
+
+.filter-button .MuiSvgIcon-root {
+  font-size: 1.2rem !important;
+  transition: transform 0.2s ease !important;
+}
+
+.filter-button:hover .MuiSvgIcon-root {
+  transform: rotate(90deg) !important;
+}
+
+/* 필터 섹션 */
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.filter-title {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000000;
+}
+
+/* 필터 박스 스타일 */
+.filter-box {
+  padding: 0.5rem 0;
+}
+
+/* 가격 필터 박스는 유지 */
+.price-filter-box {
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: rgba(25, 118, 210, 0.03);
+  transition: all 0.2s ease;
+}
+
+.price-filter-box:hover {
+  border-color: rgba(25, 118, 210, 0.3);
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+}
+
+/* 태그 필터 박스는 유지 */
+.tag-filter-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  background: #ffffff;
+  min-height: 140px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Material-UI 컴포넌트 스타일 */
+.MuiTextField-root,
+.MuiFormControl-root {
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.MuiTextField-root .MuiOutlinedInput-root,
+.MuiFormControl-root .MuiOutlinedInput-root {
+  border-radius: 12px;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  height: 56px;
+  background: #ffffff;
+}
+
+/* 다크 모드 */
+@media (prefers-color-scheme: dark) {
+  .rental-container {
+    background: #121212;
+  }
+
+  .filter-paper {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .filter-title {
+    color: #ffffff;
+  }
+
+  .filter-box {
+    background: rgba(144, 202, 249, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .filter-box:hover {
+    border-color: rgba(144, 202, 249, 0.3);
+  }
+
+  .tag-filter-box {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .tag-filter-box .MuiChip-root {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .divider {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-root,
+  .MuiFormControl-root .MuiOutlinedInput-root {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-notchedOutline,
+  .MuiFormControl-root .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .filter-button {
+    background: #1e1e1e !important;
+    border-color: rgba(144, 202, 249, 0.2) !important;
+    color: #90caf9 !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .filter-button:hover {
+    background: rgba(144, 202, 249, 0.08) !important;
+    color: #90caf9 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(144, 202, 249, 0.3) !important;
+  }
+
+  .price-filter-box {
+    background: rgba(144, 202, 249, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .price-filter-box:hover {
+    border-color: rgba(144, 202, 249, 0.3);
+  }
+
+  .tag-filter-box {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .rental-container {
+    padding: 1rem;
+  }
+
+  .search-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-paper {
+    padding: 1.5rem;
+    margin: 0 1rem 24px 1rem;
+  }
+
+  .filter-title {
+    font-size: 1.1rem;
+  }
+
+  .filter-box {
+    padding: 1rem;
+  }
+
+  .tag-filter-box {
+    padding: 1rem;
+  }
+
+  .tag-filter-box .MuiChip-root {
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-root,
+  .MuiFormControl-root .MuiOutlinedInput-root {
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .filter-button {
+    width: 100% !important;
+    height: 48px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

@@ -1,8 +1,11 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { UserContext, UserProvider } from './UserContext';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserProvider } from './UserContext';
+import Header from './components/Header';
+import AuthForm from './components/auth/AuthForm';
+import './styles/Common.css';
 import CarRent from './pages/CarRent';
-import Login from './components/Login';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import './App.css';
@@ -19,36 +22,50 @@ const theme = createTheme({
   },
 });
 
-function AppContent() {
-  const { user, loading } = useContext(UserContext);
+function PrivateRoute({ children }) {
+  const { currentUser } = useAuth();
+  return currentUser ? children : <Navigate to="/login" />;
+}
 
-  if (loading) {
-    return <div>로딩 중...</div>;
-  }
+function AppContent() {
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+  };
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <div className="App">
-        <Routes>
-          <Route
-            path="/"
-            element={user ? <CarRent /> : <Login />}
-          />
-          <Route path="/place-recommendation" element={<PlaceRecommendationPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <div className={isDarkMode ? 'dark' : 'light'}>
+          <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          <Routes>
+            <Route path="/login" element={<AuthForm />} />
+            <Route path="/" element={<PrivateRoute><CarRent /></PrivateRoute>} />
+            <Route path="/place-recommendation" element={<PrivateRoute><PlaceRecommendationPage /></PrivateRoute>} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <AuthProvider>
       <UserProvider>
         <AppContent />
       </UserProvider>
-    </ThemeProvider>
+    </AuthProvider>
   );
 }
 

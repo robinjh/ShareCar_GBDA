@@ -1,11 +1,11 @@
 import React from 'react';
-import CarList from '../components/CarList';
+import CarRental from '../components/CarRental';
 import { Container } from '@mui/material';
 
 function CarRent() {
   return (
     <Container>
-      <CarList />
+      <CarRental />
     </Container>
   );
 }

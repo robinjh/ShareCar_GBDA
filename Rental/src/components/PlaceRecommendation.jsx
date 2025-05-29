@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { searchPlacesByKeyword } from "../api/kakaoSearch";
-import useKakaoLoader from "./useKakaoLoader";
+import useKakaoLoader from "../utils/useKakaoLoader";
 import tagToKeywordMap from "../utils/tagKeywordMap";
+import SearchIcon from '@mui/icons-material/Search';
 import "../styles/Common.css";
 import "../styles/PlaceRecommendation.css";
 
@@ -9,82 +11,219 @@ function safePlaceName(name, maxLen = 16) {
   return name.length > maxLen ? name.slice(0, maxLen - 2) + "…" : name;
 }
 
-function PlaceRecommendation({ isDarkMode, address, tags }) {
-  console.log("PlaceRecommendation 컴포넌트 렌더링:", { tags, address, isDarkMode });
-  
+// 태그 정규화 함수
+function normalizeTag(tag) {
+  return tag.replace(/#/g, '').replace(/\s/g, '').toLowerCase();
+}
+
+// 정규화된 매핑 객체 생성
+const normalizedTagToKeywordMap = {};
+Object.keys(tagToKeywordMap).forEach(key => {
+  normalizedTagToKeywordMap[normalizeTag(key)] = tagToKeywordMap[key];
+});
+
+function PlaceRecommendation({ isDarkMode, tags: propTags, address: propAddress }) {
+  const location = useLocation();
   const [keyword, setKeyword] = useState("");
   const [places, setPlaces] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [address, setAddress] = useState("");
   const mapRef = useRef(null);
   const markersRef = useRef([]);
+  const isMounted = useRef(true);
 
-  // 카카오맵 로드 상태 확인
+  // URL 파라미터 또는 props에서 태그와 주소 가져오기
   useEffect(() => {
-    console.log("카카오맵 로드 상태 확인:", {
-      isKakaoLoaded,
-      hasKakao: !!window.kakao,
-      hasMaps: !!window.kakao?.maps,
-      hasServices: !!window.kakao?.maps?.services
-    });
-  }, [isKakaoLoaded]);
+    if (propTags && propAddress) {
+      // props로 전달된 경우
+      setTags(propTags);
+      setAddress(propAddress);
+    } else {
+      // URL 파라미터로 전달된 경우
+      const searchParams = new URLSearchParams(location.search);
+      try {
+        const tagsParam = searchParams.get('tags');
+        const addressParam = searchParams.get('address');
+        
+        if (tagsParam) {
+          const decodedTags = JSON.parse(decodeURIComponent(tagsParam));
+          setTags(decodedTags);
+        }
+        
+        if (addressParam) {
+          setAddress(decodeURIComponent(addressParam));
+        }
+      } catch (error) {
+        console.error('URL 파라미터 파싱 실패:', error);
+      }
+    }
+  }, [location.search, propTags, propAddress]);
 
+  // 컴포넌트 마운트/언마운트 관리
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  // 카카오맵 로드
   useKakaoLoader(() => {
-    console.log("카카오맵 로드 완료");
+    if (!isMounted.current) return;
     setIsKakaoLoaded(true);
   });
 
-  // 지도 최초 생성 및 중심 address로 맞추기
+  // 지도 초기화 함수
+  const initializeMap = useCallback(() => {
+    if (!isMounted.current || !isKakaoLoaded) return;
+
+    const container = document.getElementById("map");
+    if (!container) return;
+
+    try {
+      if (!mapRef.current) {
+        const options = {
+          center: new window.kakao.maps.LatLng(37.5665, 126.978),
+          level: 4,
+        };
+        mapRef.current = new window.kakao.maps.Map(container, options);
+      }
+
+      if (address) {
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, function (result, status) {
+          if (!isMounted.current) return;
+          
+          if (status === window.kakao.maps.services.Status.OK) {
+            const center = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+            mapRef.current && mapRef.current.setCenter(center);
+            mapRef.current && mapRef.current.setLevel(4);
+          } else {
+            console.error('주소 검색 실패:', status);
+          }
+        });
+      }
+    } catch (error) {
+      console.error("지도 초기화 중 오류 발생:", error);
+    }
+  }, [isKakaoLoaded, address]);
+
+  // 지도 초기화
   useEffect(() => {
-    console.log("지도 생성 useEffect 실행:", { isKakaoLoaded, address });
-    
-    const initializeMap = () => {
-      if (!isKakaoLoaded) {
-        console.log("카카오맵이 로드되지 않아 지도를 생성할 수 없습니다.");
-        return;
-      }
-
-      const container = document.getElementById("map");
-      if (!container) {
-        console.log("지도 컨테이너를 찾을 수 없습니다.");
-        return;
-      }
-
-      try {
-        if (!mapRef.current) {
-          console.log("새로운 지도 생성");
-          const options = {
-            center: new window.kakao.maps.LatLng(37.5665, 126.978),
-            level: 5,
-          };
-          mapRef.current = new window.kakao.maps.Map(container, options);
-          console.log("지도 생성 완료");
-        }
-
-        // address가 있을 때 지도의 중심을 address로
-        if (address) {
-          console.log("주소로 지도 중심 이동:", address);
-          const geocoder = new window.kakao.maps.services.Geocoder();
-          geocoder.addressSearch(address, function (result, status) {
-            if (status === window.kakao.maps.services.Status.OK) {
-              const center = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-              mapRef.current && mapRef.current.setCenter(center);
-              console.log("지도 중심 이동 완료:", center);
-            } else {
-              console.log("주소 검색 실패:", status);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("지도 초기화 중 오류 발생:", error);
-      }
-    };
-
-    // 카카오맵이 로드되면 지도 초기화
     if (isKakaoLoaded) {
       initializeMap();
     }
-  }, [isKakaoLoaded, address]);
+  }, [isKakaoLoaded, initializeMap]);
+
+  // 검색 실행 함수
+  const executeSearch = useCallback(() => {
+    if (!isMounted.current || !isKakaoLoaded || !tags || !Array.isArray(tags) || tags.length === 0) return;
+    if (!window.kakao?.maps?.services || !mapRef.current) return;
+
+    // 주소로 좌표 가져오기
+    const getCoordinates = () => {
+      return new Promise((resolve, reject) => {
+        if (!address) {
+          resolve(null);
+          return;
+        }
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.addressSearch(address, (result, status) => {
+          if (status === window.kakao.maps.services.Status.OK) {
+            resolve({
+              lat: result[0].y,
+              lng: result[0].x
+            });
+          } else {
+            resolve(null);
+          }
+        });
+      });
+    };
+
+    // 태그에서 키워드 추출
+    const keywords = tags.map(tag => {
+      const cleanTag = normalizeTag(tag);
+      return normalizedTagToKeywordMap[cleanTag] || [];
+    }).flat();
+
+    // 중복 제거
+    const uniqueKeywords = [...new Set(keywords)];
+    if (uniqueKeywords.length === 0) return;
+
+    // 주소 좌표 가져오기
+    getCoordinates().then(coords => {
+      // 각 키워드로 검색 실행
+      const searchPromises = uniqueKeywords.map(keyword => {
+        return new Promise((resolve) => {
+          const places = new window.kakao.maps.services.Places();
+          const options = {
+            keyword: keyword,
+            location: coords ? new window.kakao.maps.LatLng(coords.lat, coords.lng) : undefined,
+            radius: 5000 // 5km 반경 내 검색
+          };
+          
+          places.keywordSearch(keyword, (results, status) => {
+            if (!isMounted.current) return;
+            
+            if (status === window.kakao.maps.services.Status.OK) {
+              // 거리 정보가 있는 결과만 필터링
+              const filteredResults = results.filter(place => place.distance !== undefined);
+              resolve(filteredResults);
+            } else {
+              resolve([]);
+            }
+          }, options);
+        });
+      });
+
+      // 모든 검색 결과 병합
+      Promise.all(searchPromises).then(resultsArray => {
+        if (!isMounted.current) return;
+        
+        const allResults = resultsArray.flat();
+        // 중복 제거
+        const uniqueResults = allResults.filter((place, index, self) =>
+          index === self.findIndex(p => p.id === place.id)
+        );
+
+        // 거리순으로 정렬
+        uniqueResults.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+
+        setPlaces(uniqueResults);
+        
+        if (uniqueResults.length > 0) {
+          const bounds = new window.kakao.maps.LatLngBounds();
+          uniqueResults.forEach(place => {
+            const position = new window.kakao.maps.LatLng(place.y, place.x);
+            bounds.extend(position);
+          });
+          mapRef.current.setBounds(bounds);
+          
+          if (uniqueResults.length === 1) {
+            mapRef.current.setLevel(5);
+          } else {
+            const currentLevel = mapRef.current.getLevel();
+            if (currentLevel > 4) {
+              mapRef.current.setLevel(4);
+            }
+          }
+          displayMarkers(uniqueResults);
+        }
+      }).catch(error => {
+        console.error('검색 중 오류 발생:', error);
+      });
+    });
+  }, [isKakaoLoaded, tags, address]);
+
+  // 태그 변경 시 검색 실행
+  useEffect(() => {
+    if (isKakaoLoaded && tags && Array.isArray(tags) && tags.length > 0) {
+      executeSearch();
+    }
+  }, [tags, isKakaoLoaded, executeSearch]);
 
   // 컴포넌트 마운트 시 지도 컨테이너 크기 조정
   useEffect(() => {
@@ -94,10 +233,7 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
       }
     };
 
-    // 초기 렌더링 후 지도 크기 조정
     setTimeout(resizeMap, 100);
-
-    // 창 크기 변경 시 지도 크기 조정
     window.addEventListener('resize', resizeMap);
     return () => window.removeEventListener('resize', resizeMap);
   }, []);
@@ -180,154 +316,68 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
     if (e.key === "Enter") handleInputSearch();
   };
 
-  // 태그 기반 추천(최초 mount)
-  useEffect(() => {
-    console.log("태그 기반 검색 useEffect 실행:", { 
-      isKakaoLoaded, 
-      tags, 
-      tagsLength: tags?.length,
-      hasMap: !!mapRef.current,
-      kakaoMaps: !!window.kakao?.maps,
-      kakaoServices: !!window.kakao?.maps?.services
-    });
-
-    if (!isKakaoLoaded || !tags || tags.length === 0) {
-      console.log("검색 조건 미충족:", { isKakaoLoaded, tags });
-      return;
-    }
-
-    if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services) {
-      console.log("카카오맵 서비스 로드 실패");
-      return;
-    }
-
-    if (!mapRef.current) {
-      console.log("지도가 초기화되지 않았습니다.");
-      return;
-    }
-
-    // tags에서 키워드 모두 추출
-    let allKeywords = [];
-    tags.forEach((tag) => {
-      // '#' 문자 제거
-      const key = tag.replace('#', '');
-      const keywords = tagToKeywordMap[key] || [];
-      console.log("태그 변환:", { originalTag: tag, cleanedTag: key, keywords });
-      allKeywords = [...allKeywords, ...keywords];
-    });
-
-    // 중복 키워드 제거
-    allKeywords = [...new Set(allKeywords)];
-    console.log("최종 검색 키워드:", allKeywords);
-
-    if (allKeywords.length === 0) {
-      console.log("검색할 키워드가 없습니다.");
-      return;
-    }
-
-    // 모든 키워드로 병렬 검색
-    const ps = new window.kakao.maps.services.Places();
-    setPlaces([]);
-    setSelectedIdx(null);
-
-    const center = mapRef.current.getCenter();
-    console.log("검색 중심점:", center);
-
-    let combined = [];
-    let callCount = 0;
-    allKeywords.forEach((word) => {
-      console.log("키워드 검색 시작:", word);
-      ps.keywordSearch(
-        word,
-        (data, status) => {
-          callCount += 1;
-          console.log("검색 결과:", { word, status, count: data?.length });
-          if (
-            status === window.kakao.maps.services.Status.OK &&
-            Array.isArray(data)
-          ) {
-            combined = [...combined, ...data];
-          }
-          // 모든 키워드 검색 끝나면 중복(place_id 기준) 제거 후 표시
-          if (callCount === allKeywords.length) {
-            const uniquePlaces = [];
-            const seen = new Set();
-            for (const p of combined) {
-              if (!seen.has(p.id)) {
-                uniquePlaces.push(p);
-                seen.add(p.id);
-              }
-            }
-            console.log("최종 검색 결과:", uniquePlaces.length);
-            setPlaces(uniquePlaces);
-            displayMarkers(uniquePlaces);
-          }
-        },
-        {
-          location: center,
-          radius: 20000,
-          sort: window.kakao.maps.services.SortBy.DISTANCE,
-        }
-      );
-    });
-  }, [isKakaoLoaded, tags]);
-
   return (
-    <div className={`recommend-container${isDarkMode ? " dark" : " light"}`}>
-      <div className="recommend-list">
-        <h2>장소 추천</h2>
-        <div className="recommend-search-group">
-          <input
-            type="text"
-            className="recommend-input"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={handleInputKeyDown}
-            placeholder="예: 커플 데이트, 조용한 카페 등"
-          />
-          <button className="recommend-btn" onClick={handleInputSearch}>
-            검색
-          </button>
+    <div className={`recommend-container ${isDarkMode ? "dark" : "light"}`}>
+      <div className="recommend-map-container">
+        <div id="map" className="recommend-map"></div>
+      </div>
+      <div className="recommend-list-container">
+        <div className="recommend-list-header">
+          <h2>추천 장소</h2>
+          <div className="recommend-search">
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={handleInputKeyDown}
+              placeholder="장소 검색"
+              className={`recommend-search-input ${isDarkMode ? "dark" : "light"}`}
+            />
+            <button 
+              onClick={handleInputSearch} 
+              className="recommend-search-button"
+              aria-label="장소 검색"
+            >
+              <SearchIcon />
+            </button>
+          </div>
         </div>
         <div className="recommend-list-scroll">
-          <ul>
+          <div className={`search-results ${isDarkMode ? "dark" : "light"}`}>
             {places.length === 0 ? (
-              <li className={`recommend-empty${isDarkMode ? " dark" : ""}`}>
+              <div className="recommend-empty">
                 검색 결과가 없습니다.
-              </li>
+              </div>
             ) : (
               places.map((place, idx) => (
-                <li
+                <div
                   key={place.id}
-                  className={selectedIdx === idx ? "selected" : ""}
+                  className={`place-item ${isDarkMode ? "dark" : "light"} ${selectedIdx === idx ? "selected" : ""}`}
                   onClick={() => handleListClick(idx)}
                 >
-                  <div className="recommend-item-text">
-                    <div>{place.place_name}</div>
-                    <div className="recommend-address">
-                      {place.road_address_name || place.address_name}
-                    </div>
+                  <div className="place-content">
+                    <h3>{place.place_name}</h3>
+                    <p>{place.road_address_name || place.address_name}</p>
+                    <p>전화번호: {place.phone || '정보 없음'}</p>
+                    <p>거리: {place.distance ? `${Math.round(place.distance)}m` : '정보 없음'}</p>
                   </div>
                   <a
                     href={place.place_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="recommend-link"
+                    className="place-link"
                     onClick={(e) => e.stopPropagation()}
                   >
                     카카오맵에서 보기
                   </a>
-                </li>
+                </div>
               ))
             )}
-          </ul>
+          </div>
         </div>
-      </div>
-      <div className="recommend-map-area">
-        <div id="map" className="recommend-map" />
       </div>
     </div>
   );
 }
 
-export default PlaceRecommendation; 
+export default PlaceRecommendation;

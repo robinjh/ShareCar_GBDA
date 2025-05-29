@@ -13,7 +13,7 @@ import {
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from '../UserContext';
-import './CarCard.css';
+import '../styles/CarCard.css';
 
 function CarCard({ car, onStatusUpdate }) {
   const { user } = useContext(UserContext);
