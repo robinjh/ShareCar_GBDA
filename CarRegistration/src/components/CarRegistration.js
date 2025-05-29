@@ -21,9 +21,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { collection, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from '../UserContext';
-import './CarRegistration.css';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import '../styles/CarRegistration.css';
 
 const carTypes = ['소형', '중형', '대형', 'SUV', '승합차'];
 const carBrands = ['현대', '기아', '르노', '쌍용', '쉐보레', 'BMW', '벤츠', '아우디', '폭스바겐', '기타'];
@@ -136,15 +134,6 @@ function CarRegistration() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error('로그아웃 에러:', err);
-      setError('로그아웃에 실패했습니다.');
-    }
-  };
-
   return (
     <Container maxWidth="md" className="registration-container">
       <Paper elevation={3} className="registration-paper">
@@ -156,17 +145,6 @@ function CarRegistration() {
           <Alert severity="warning" sx={{ mb: 2 }}>
             차량을 등록하려면 로그인이 필요합니다. 현재 로그인되어 있지 않습니다.
           </Alert>
-        )}
-
-        {user && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <Alert severity="success">
-              로그인됨: {user.email} (UID: {user.uid})
-            </Alert>
-            <Button variant="outlined" color="secondary" onClick={handleLogout}>
-              로그아웃
-            </Button>
-          </div>
         )}
 
         {error && <Alert severity="error" className="alert">{error}</Alert>}
