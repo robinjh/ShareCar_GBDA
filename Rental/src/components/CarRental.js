@@ -23,7 +23,7 @@ import {
   Slider
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { collection, getDocs, addDoc, query, where, doc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from '../UserContext';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -34,6 +34,7 @@ import { auth } from '../firebase';
 import '../styles/CarRental.css';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import PlaceRecommendation from "./PlaceRecommendation.jsx";
+import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 
 // 유틸리티 함수
 function removeFunctions(obj) {
@@ -125,8 +126,8 @@ function CarRental() {
     startTime: new Date(),
     endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
     guestName: '',
-    tags: [],
-    address: ''
+    address: '',
+    tags: []
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
@@ -336,8 +337,8 @@ function CarRental() {
       startTime: new Date(),
       endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
       guestName: '',
-      tags: car.tags || [],
-      address: ''
+      address: '',
+      tags: []
     });
     setOpenDialog(true);
   };
@@ -423,12 +424,7 @@ function CarRental() {
     }
 
     if (!rentalData.guestName) {
-      setError('이름을 입력해주세요.');
-      return;
-    }
-
-    if (!rentalData.tags || rentalData.tags.length === 0) {
-      setError('최소 하나 이상의 태그를 선택해주세요.');
+      setError('대여자 이름을 입력해주세요.');
       return;
     }
 
@@ -437,29 +433,78 @@ function CarRental() {
       return;
     }
 
+    if (!rentalData.tags || rentalData.tags.length === 0) {
+      setError('최소 하나 이상의 태그를 선택해주세요.');
+      return;
+    }
+
     try {
+      // 대여일수 계산 (날짜 단위)
+      const startDate = new Date(rentalData.startTime);
+      const endDate = new Date(rentalData.endTime);
+      const startDay = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const endDay = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      const days = Math.round((endDay - startDay) / (1000 * 60 * 60 * 24)) + 1;
+      const rentalFee = Number(selectedCar.rentalFee);
+      const totalFee = days * rentalFee;
+
+      // 1. 대여 시간 겹침 체크
+      const overlapQuery = query(
+        requestsRef,
+        where('carNumber', '==', selectedCar.carNumber),
+        where('status', 'in', ['pending', 'approved'])
+      );
+      const overlapSnapshot = await getDocs(overlapQuery);
+      let overlap = false;
+      overlapSnapshot.forEach(doc => {
+        const data = doc.data();
+        const existStart = new Date(data.startTime);
+        const existEnd = new Date(data.endTime);
+        // 겹치는지 체크
+        if (existEnd > startDate && existStart < endDate) {
+          overlap = true;
+        }
+      });
+      if (overlap) {
+        setError('이미 해당 시간에 대여된 차량입니다. 다른 시간을 선택해 주세요.');
+        return;
+      }
+
+      // 대여요청한 시간 (KST)
+      const requestDate = new Date();
+      const toKSTISOString = (date) => {
+        const tzOffset = 9 * 60; // 9시간
+        const kst = new Date(date.getTime() + tzOffset * 60 * 1000);
+        return kst.toISOString().replace('Z', '+09:00');
+      };
+      const requestTimeKST = toKSTISOString(requestDate);
+      const docId = `${user.uid}.${selectedCar.carNumber}.${requestTimeKST}`;
+
       const rentalRequest = {
-        carId: selectedCar.id,
-        carName: selectedCar.carName,
         carNumber: selectedCar.carNumber,
+        carBrand: selectedCar.carBrand,
+        carName: selectedCar.carName,
+        carType: selectedCar.carType,
         guestName: rentalData.guestName,
-        startTime: rentalData.startTime,
-        endTime: rentalData.endTime,
+        guestId: user.uid,
+        startTime: toKSTISOString(rentalData.startTime),
+        endTime: toKSTISOString(rentalData.endTime),
         tags: rentalData.tags,
         address: rentalData.address,
         status: 'pending',
-        createdAt: new Date(),
-        userId: user.uid
+        rentalFee: rentalFee,
+        totalFee: totalFee
       };
 
-      const docRef = await addDoc(requestsRef, removeFunctions(rentalRequest));
-      console.log('대여 요청 성공:', docRef.id);
+      await setDoc(doc(requestsRef, docId), removeFunctions(rentalRequest));
+      console.log('대여 요청 성공:', docId);
 
-      if (rentalData.tags?.length > 0) {
+      if (selectedCar.tags?.length > 0) {
         setRecommendationData({
-          tags: rentalData.tags,
+          tags: selectedCar.tags,
           address: rentalData.address
         });
+        console.log('[장소 추천 전달값] tags:', rentalData.tags, 'address:', rentalData.address);
         setOpenRecommendationDialog(true);
       }
 
@@ -703,24 +748,55 @@ function CarRental() {
           </DialogTitle>
           <DialogContent>
             <Box sx={{ mt: 2 }}>
+              <Box className="filter-section">
+                <Typography variant="subtitle1" gutterBottom>대여자 이름</Typography>
+                <Box className="filter-box">
+                  <TextField
+                    fullWidth
+                    name="guestName"
+                    value={rentalData.guestName}
+                    onChange={handleInputChange}
+                    required
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'white',
+                        '& fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'primary.main',
+                        },
+                      },
+                    }}
+                  />
+                </Box>
+              </Box>
+
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <Box className="filter-section">
-                  <Typography variant="subtitle1" gutterBottom>대여 시작 시간</Typography>
+                  <Typography variant="subtitle1" gutterBottom>대여 시작 날짜/시간</Typography>
                   <Box className="filter-box date-filter-box">
                     <DateTimePicker
                       value={rentalData.startTime}
                       onChange={handleDateChange('startTime')}
-                      renderInput={(params) => <TextField {...params} fullWidth />}
+                      slotProps={{
+                        textField: { fullWidth: true, variant: 'outlined' }
+                      }}
                     />
                   </Box>
                 </Box>
                 <Box className="filter-section">
-                  <Typography variant="subtitle1" gutterBottom>대여 종료 시간</Typography>
+                  <Typography variant="subtitle1" gutterBottom>대여 종료 날짜/시간</Typography>
                   <Box className="filter-box date-filter-box">
                     <DateTimePicker
                       value={rentalData.endTime}
                       onChange={handleDateChange('endTime')}
-                      renderInput={(params) => <TextField {...params} fullWidth />}
+                      slotProps={{
+                        textField: { fullWidth: true, variant: 'outlined' }
+                      }}
                     />
                   </Box>
                 </Box>
@@ -735,25 +811,41 @@ function CarRental() {
                     value={rentalData.address}
                     onChange={(e) => setRentalData(prev => ({ ...prev, address: e.target.value }))}
                     placeholder="대여할 주소를 입력하세요"
+                    required
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'white',
+                        '& fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(0, 0, 0, 0.23)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'primary.main',
+                        },
+                      },
+                    }}
                   />
                 </Box>
               </Box>
 
               <Box className="filter-section">
-                <Typography variant="subtitle1" gutterBottom>선택한 태그</Typography>
+                <Typography variant="subtitle1" gutterBottom>태그 선택</Typography>
                 <Box className="filter-box tag-filter-box">
-                  {rentalData.tags.map((tag) => (
+                  {selectedCar?.tags?.map((tag) => (
                     <Chip
                       key={tag}
                       label={tag}
-                      onDelete={() => setRentalData(prev => ({
-                        ...prev,
-                        tags: prev.tags.filter(t => t !== tag)
-                      }))}
+                      onClick={() => handleTagClick(tag)}
+                      color={rentalData.tags.includes(tag) ? "primary" : "default"}
                       className="tag-chip"
                     />
                   ))}
                 </Box>
+                <Typography variant="caption" color="textSecondary" sx={{ mt: 1, display: 'block' }}>
+                  차량에 등록된 태그 중에서 선택해주세요.
+                </Typography>
               </Box>
             </Box>
           </DialogContent>
