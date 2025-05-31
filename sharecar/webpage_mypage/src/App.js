@@ -51,30 +51,7 @@ function AppContent({ toggleMode }) {
     );
   }
 
-  // 인증 완료된 경우에만 서비스 UI 노출
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-        minHeight: "calc(100vh - 65px)",
-      }}
-    >
-      <div
-        style={{
-          flex: "0 0 370px",
-          borderRight: "1px solid var(--color-border)",
-          minHeight: "100%",
-        }}
-      >
-        <MyPage toggleMode={toggleMode} user={user} />
-      </div>
-      <div style={{ flex: 1 }}>
-        <PlaceRecommendation user={user} />
-      </div>
-    </div>
-  );
+  return <MainPage />;
 }
 
 function App() {
