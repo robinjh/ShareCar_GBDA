@@ -6,6 +6,10 @@ package-lock.json
 .env
 .env.local
 
+# Firebase 설정
+/src/firebase.js
+firebase.js
+
 # IDE 설정
 .vscode/
 .idea/
