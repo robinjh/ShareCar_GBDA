@@ -1,17 +1,16 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+See https://help.github.com/articles/ignoring-files/ for more about ignoring files.,
+dependencies,
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+testing,
 /coverage
 
-# production
+production,
 /build
 
-# misc
+misc,
 .DS_Store
 .env.local
 .env.development.local
@@ -22,7 +21,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 기본 템플릿 제거용
+기본 템플릿 제거용,
 src/logo.svg
 src/App.test.js
 src/reportWebVitals.js
@@ -34,3 +33,6 @@ public/robots.txt
 
 #키 유출 방지용
 .env
+
+#테스트 데이터 파일
+src/seedTestData.js
