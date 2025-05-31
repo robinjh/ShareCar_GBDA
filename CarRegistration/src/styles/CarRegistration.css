@@ -35,52 +35,66 @@
   margin-top: 2rem;
 }
 
+/* Material-UI 컴포넌트 스타일 */
 .MuiTextField-root,
 .MuiFormControl-root {
   margin-bottom: 1.5rem;
   width: 100%;
+  position: relative;
+}
+
+/* 라벨을 입력창 위로 분리 */
+.MuiTextField-root .MuiInputLabel-root,
+.MuiFormControl-root .MuiInputLabel-root {
+  position: absolute;
+  top: -0.75rem;
+  left: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.6);
+  background: #ffffff;
+  padding: 0 4px;
+  transform: none !important;
+  margin: 0;
+}
+
+.MuiTextField-root .MuiInputLabel-root.Mui-focused,
+.MuiFormControl-root .MuiInputLabel-root.Mui-focused {
+  color: #1976d2;
 }
 
 .MuiTextField-root .MuiOutlinedInput-root,
 .MuiFormControl-root .MuiOutlinedInput-root {
   border-radius: 12px;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   height: 56px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.MuiTextField-root .MuiInputLabel-root,
-.MuiFormControl-root .MuiInputLabel-root {
-  font-size: 0.95rem;
-  transform: translate(14px, 18px) scale(1);
+/* 입력 필드의 실제 입력 부분 외곽선 제거 */
+.MuiTextField-root .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline,
+.MuiFormControl-root .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline,
+.MuiTextField-root .MuiOutlinedInput-root input,
+.MuiFormControl-root .MuiOutlinedInput-root input {
+  border: none !important;
+  outline: none !important;
 }
 
-.MuiTextField-root .MuiInputLabel-root.Mui-focused,
-.MuiFormControl-root .MuiInputLabel-root.Mui-focused {
-  transform: translate(14px, -9px) scale(0.75);
-  color: #1976d2;
+.MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.MuiFormControl-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.MuiTextField-root .MuiOutlinedInput-root:hover input,
+.MuiFormControl-root .MuiOutlinedInput-root:hover input {
+  border: none !important;
+  outline: none !important;
 }
 
-.MuiTextField-root .MuiOutlinedInput-notchedOutline,
-.MuiFormControl-root .MuiOutlinedInput-notchedOutline {
-  border-width: 1.5px;
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-/* Select 메뉴 스타일 */
-.MuiPaper-root.MuiMenu-paper {
-  border-radius: 12px;
-  margin-top: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.MuiMenuItem-root {
-  font-size: 0.95rem;
-  padding: 12px 16px;
-}
-
-.MuiMenuItem-root:hover {
-  background-color: rgba(25, 118, 210, 0.04);
+.MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.MuiFormControl-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.MuiTextField-root .MuiOutlinedInput-root.Mui-focused input,
+.MuiFormControl-root .MuiOutlinedInput-root.Mui-focused input {
+  border: none !important;
+  outline: none !important;
 }
 
 /* 그리드 레이아웃 */
@@ -166,14 +180,21 @@
     color: #ffffff;
   }
 
-  .MuiTextField-root .MuiOutlinedInput-root,
-  .MuiFormControl-root .MuiOutlinedInput-root {
+  .MuiTextField-root,
+  .MuiFormControl-root {
+    border-color: rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.05);
   }
 
-  .MuiTextField-root .MuiOutlinedInput-notchedOutline,
-  .MuiFormControl-root .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(255, 255, 255, 0.12);
+  .MuiTextField-root:hover,
+  .MuiFormControl-root:hover {
+    border-color: rgba(144, 202, 249, 0.5);
+  }
+
+  .MuiTextField-root:focus-within,
+  .MuiFormControl-root:focus-within {
+    border-color: #90caf9;
+    box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.2);
   }
 
   .tag-section {
@@ -195,6 +216,23 @@
 
   .MuiMenuItem-root:hover {
     background-color: rgba(144, 202, 249, 0.08);
+  }
+
+  .MuiTextField-root .MuiInputLabel-root,
+  .MuiFormControl-root .MuiInputLabel-root {
+    background: #121212;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .MuiTextField-root .MuiInputLabel-root.Mui-focused,
+  .MuiFormControl-root .MuiInputLabel-root.Mui-focused {
+    color: #90caf9;
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-root,
+  .MuiFormControl-root .MuiOutlinedInput-root {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
   }
 }
 

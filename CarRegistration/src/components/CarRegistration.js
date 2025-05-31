@@ -153,9 +153,9 @@ function CarRegistration() {
         <form onSubmit={handleSubmit} className="form-container">
           <Grid container spacing={3}>
             <Grid item xs={12}>
+              <Typography variant="subtitle1" gutterBottom>등록자 이름</Typography>
               <TextField
                 fullWidth
-                label="등록자 이름"
                 name="hostName"
                 value={formData.hostName}
                 onChange={handleChange}
@@ -166,76 +166,47 @@ function CarRegistration() {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography variant="subtitle1" gutterBottom>차량번호</Typography>
               <TextField
                 fullWidth
-                label="차량번호"
                 name="carNumber"
                 value={formData.carNumber}
                 onChange={handleChange}
                 required
                 sx={{ mb: 3 }}
+                placeholder="차량번호를 입력해주세요"
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
+              <Typography variant="subtitle1" gutterBottom>차량 종류</Typography>
               <FormControl fullWidth required sx={{ mb: 3 }}>
-                <InputLabel>차량 분류</InputLabel>
                 <Select
                   name="carType"
                   value={formData.carType}
                   onChange={handleChange}
-                  label="차량 분류"
-                  sx={{
-                    '& .MuiSelect-select': {
-                      textAlign: 'left'
-                    }
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        '& .MuiMenuItem-root': {
-                          justifyContent: 'flex-start'
-                        }
-                      }
-                    }
-                  }}
+                  displayEmpty
                 >
+                  <MenuItem value=""><em>전체</em></MenuItem>
                   {carTypes.map((type) => (
-                    <MenuItem key={type} value={type} sx={{ justifyContent: 'flex-start' }}>
-                      {type}
-                    </MenuItem>
+                    <MenuItem key={type} value={type}>{type}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} md={6}>
+              <Typography variant="subtitle1" gutterBottom>제조사</Typography>
               <FormControl fullWidth required sx={{ mb: 3 }}>
-                <InputLabel>제조사</InputLabel>
                 <Select
                   name="carBrand"
                   value={formData.carBrand}
                   onChange={handleChange}
-                  label="제조사"
-                  sx={{
-                    '& .MuiSelect-select': {
-                      textAlign: 'left'
-                    }
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      sx: {
-                        '& .MuiMenuItem-root': {
-                          justifyContent: 'flex-start'
-                        }
-                      }
-                    }
-                  }}
+                  displayEmpty
                 >
+                  <MenuItem value=""><em>전체</em></MenuItem>
                   {carBrands.map((brand) => (
-                    <MenuItem key={brand} value={brand} sx={{ justifyContent: 'flex-start' }}>
-                      {brand}
-                    </MenuItem>
+                    <MenuItem key={brand} value={brand}>{brand}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -243,9 +214,9 @@ function CarRegistration() {
 
             {formData.carBrand === '기타' && (
               <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>기타 제조사명</Typography>
                 <TextField
                   fullWidth
-                  label="기타 제조사명"
                   name="otherBrand"
                   value={formData.otherBrand}
                   onChange={handleChange}
@@ -257,30 +228,30 @@ function CarRegistration() {
             )}
 
             <Grid item xs={12}>
+              <Typography variant="subtitle1" gutterBottom>차량 이름</Typography>
               <TextField
                 fullWidth
-                label="차량 이름"
                 name="carName"
                 value={formData.carName}
                 onChange={handleChange}
                 required
                 sx={{ mb: 3 }}
+                placeholder="차량명을 입력하세요"
               />
             </Grid>
 
             <Grid item xs={12}>
+              <Typography variant="subtitle1" gutterBottom>대여료(1일)</Typography>
               <TextField
                 fullWidth
-                label="대여료(1일)"
                 name="rentalFee"
                 type="number"
                 value={formData.rentalFee}
                 onChange={handleChange}
                 required
                 sx={{ mb: 3 }}
-                InputProps={{
-                  endAdornment: <span>원</span>
-                }}
+                placeholder="대여료를 입력하세요"
+                InputProps={{ endAdornment: <span>원</span> }}
               />
             </Grid>
 
