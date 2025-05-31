@@ -14,7 +14,7 @@ import { UserContext } from "../../UserContext";
 import { setDoc, doc } from "firebase/firestore";
 import "../../styles/AuthForm.css";
 
-function AuthForm({ onLoginSuccess }) { // onLoginSuccess 값에 따라 AuthForm 공개 결정
+function AuthForm() { 
   const [name, setName] = useState("");
   const [birth, setBirth] = useState("");
   const [address, setAddress] = useState("");
@@ -85,10 +85,6 @@ function AuthForm({ onLoginSuccess }) { // onLoginSuccess 값에 따라 AuthForm
         await signInWithEmailAndPassword(auth, email, password);
         setInfo("로그인 성공!");
 
-        if (onLoginSuccess && typeof onLoginSuccess == 'function') {
-          onLoginSuccess();
-        }
-        // 로그인 버튼 클릭하고 입력 정보에 오류가 없을 시, 마이 페이지로 
       } 
       catch (err) {
         if (err.code === "auth/invalid-email") setError("올바른 이메일 형식이 아닙니다.");
