@@ -1,0 +1,405 @@
+/* 색상 변수 정의 */
+:root {
+  /* 라이트 모드 */
+  --background-color: #ffffff;
+  --background-color-light: #f5f5f5;
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --border-color: #e0e0e0;
+  --input-background: #ffffff;
+  --color-primary: #1976d2;
+  --color-accent: #1565c0;
+  --color-surface: #f5f5f5;
+  --radius: 8px;
+
+  /* 다크 모드 */
+  --dark-background-color: #1a1a1a;
+  --dark-background-color-light: #2d2d2d;
+  --dark-text-color: #ffffff;
+  --dark-text-secondary: #b0b0b0;
+  --dark-border-color: #404040;
+  --dark-input-background: #2d2d2d;
+  --color-surface-dark: #2d2d2d;
+}
+
+/* 전체 페이지 스타일 */
+.registration-container {
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+.registration-container.dark {
+  background-color: var(--dark-background-color);
+  color: var(--dark-text-color);
+}
+
+.registration-container::before {
+  display: none;
+}
+
+.registration-container.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* 입력 폼 레이아웃 */
+.registration-paper {
+  padding: 2rem;
+  background-color: var(--background-color);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.registration-paper.dark {
+  background-color: var(--dark-background-color);
+  color: var(--dark-text-color);
+}
+
+.registration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.registration-header.dark-mode {
+  color: #ffffff;
+}
+
+.registration-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: #000000 !important;
+  margin: 0 !important;
+}
+
+.registration-title.dark-mode {
+  color: #90caf9;
+}
+
+.rental-link-button {
+  text-transform: none;
+}
+
+.rental-link-button.dark-mode {
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
+/* 입력 필드 스타일 */
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  margin-bottom: 1.5rem;
+}
+
+.form-section-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.form-section.dark .form-section-title {
+  color: var(--dark-text-color);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-field .MuiOutlinedInput-root {
+  height: 48px;
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.form-field.dark .MuiOutlinedInput-root {
+  background-color: var(--dark-input-background);
+  border-color: var(--dark-border-color);
+  color: var(--dark-text-color);
+}
+
+.form-field .MuiInputLabel-root {
+  color: var(--text-secondary);
+}
+
+.form-field.dark .MuiInputLabel-root {
+  color: var(--dark-text-secondary);
+}
+
+/* 태그 스타일 */
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag-chip {
+  border-radius: 16px;
+}
+
+/* 버튼 스타일 */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.form-actions.dark {
+  border-color: var(--dark-border-color);
+}
+
+.submit-button {
+  min-width: 120px;
+}
+
+.submit-button.dark-mode {
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
+.submit-button.dark-mode:hover {
+  background-color: #1565c0;
+}
+
+.submit-button.dark-mode.Mui-disabled {
+  background-color: #404040;
+  color: #666666;
+}
+
+/* 알림 메시지 */
+.alert {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.alert.dark-mode {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+.alert.dark-mode.MuiAlert-standardWarning {
+  background-color: #2d2d00;
+  color: #ffeb3b;
+}
+
+.alert.dark-mode.MuiAlert-standardError {
+  background-color: #2d0000;
+  color: #ff5252;
+}
+
+.alert.dark-mode.MuiAlert-standardSuccess {
+  background-color: #002d00;
+  color: #4caf50;
+}
+
+.tag-section .MuiTypography-subtitle1 {
+  margin-bottom: 16px;
+}
+
+/* 다크 모드 */
+@media (prefers-color-scheme: dark) {
+  .registration-container {
+    background: #121212;
+  }
+
+  .registration-container::before {
+    display: none;
+  }
+
+  .registration-paper {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .registration-title {
+    color: #ffffff;
+  }
+
+  .MuiTextField-root,
+  .MuiFormControl-root {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .MuiTextField-root:hover,
+  .MuiFormControl-root:hover {
+    border-color: rgba(144, 202, 249, 0.5);
+  }
+
+  .MuiTextField-root:focus-within,
+  .MuiFormControl-root:focus-within {
+    border-color: #90caf9;
+    box-shadow: 0 0 0 2px rgba(144, 202, 249, 0.2);
+  }
+
+  .tag-section {
+    background: rgba(144, 202, 249, 0.05);
+  }
+
+  .tag-chip {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .alert {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .MuiPaper-root.MuiMenu-paper {
+    background: #1e1e1e;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .MuiMenuItem-root:hover {
+    background-color: rgba(144, 202, 249, 0.08);
+  }
+
+  .MuiTextField-root .MuiInputLabel-root,
+  .MuiFormControl-root .MuiInputLabel-root {
+    background: #121212;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .MuiTextField-root .MuiInputLabel-root.Mui-focused,
+  .MuiFormControl-root .MuiInputLabel-root.Mui-focused {
+    color: #90caf9;
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-root,
+  .MuiFormControl-root .MuiOutlinedInput-root {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 600px) {
+  .registration-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .registration-paper {
+    padding: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .submit-button {
+    width: 100%;
+  }
+
+  .registration-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .MuiTextField-root .MuiOutlinedInput-root,
+  .MuiFormControl-root .MuiOutlinedInput-root {
+    height: 48px;
+    font-size: 0.95rem;
+  }
+
+  .submit-button {
+    height: 44px;
+    font-size: 0.95rem;
+    padding: 0 2rem;
+  }
+
+  .tag-section {
+    padding: 1rem;
+  }
+
+  .tag-chip {
+    margin: 0.25rem;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.registration-paper {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Select 컴포넌트 다크 모드 스타일 */
+form.dark-mode .MuiSelect-icon {
+  color: #ffffff;
+}
+
+form.dark-mode .MuiPaper-root {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
+
+form.dark-mode .MuiMenuItem-root {
+  color: #ffffff;
+}
+
+form.dark-mode .MuiMenuItem-root:hover {
+  background-color: #404040;
+}
+
+form.dark-mode .MuiMenuItem-root.Mui-selected {
+  background-color: #1976d2;
+}
+
+form.dark-mode .MuiMenuItem-root.Mui-selected:hover {
+  background-color: #1565c0;
+}
+
+form.dark-mode .MuiTextField-root,
+form.dark-mode .MuiFormControl-root {
+  background-color: #2d2d2d;
+}
+
+form.dark-mode .MuiInputBase-input,
+form.dark-mode .MuiSelect-select {
+  color: #ffffff;
+}
+
+form.dark-mode .MuiInputLabel-root {
+  color: #b0b0b0;
+} 
