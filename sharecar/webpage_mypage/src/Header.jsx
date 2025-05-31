@@ -14,7 +14,7 @@ function Header({ isDarkMode, toggleMode }) {
         {user && (
           <>
             <span className="header-user">
-              {user.displayName || user.email}
+              {user.displayName || user.email}님 횐영합니다
             </span>
             <button className="header-logout-btn" onClick={() => signOut(auth)}>
               로그아웃

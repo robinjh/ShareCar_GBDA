@@ -12,16 +12,17 @@ import { db } from "../../firebase";
 import { useContext } from "react";
 import { UserContext } from "../../UserContext";
 
+export const maskCardNumber = (num) => {
+  if (!num) return "";
+  return num.replace(/^(\d{4})\d{8}(\d{4})$/, "$1-****-****-$2");
+};
+
 function PaymentManager() {
   const [cards, setCards] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [modalType, setModalType] = useState(null); // 'card' 또는 'account'
   const [form, setForm] = useState({});
   const { user } = useContext(UserContext);
-  const maskCardNumber = (num) => {
-  if (!num) return "";
-  return num.replace(/^(\d{4})\d{8}(\d{4})$/, "$1-****-****-$2");
-};
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -52,8 +53,6 @@ function PaymentManager() {
     const cleanedValue =
       name === "number" || name === "cvc"
         ? value.replace(/[^\d]/g, "") // 숫자만 남김
-        : name === "bankNumber"
-        ? value.replace(/[^\d]/g, "")
         : name === "expiry"
         ? value.replace(/[^\d\/]/g, "") // 숫자 + 슬래시만 허용
         : value;
@@ -92,7 +91,6 @@ function PaymentManager() {
   };
 
   const handleDelete = async (pmObj) => {
-    if (!user) return;
     const userRef = doc(db, "users", user.uid);
     await updateDoc(userRef, {
       paymentMethods: arrayRemove(pmObj),

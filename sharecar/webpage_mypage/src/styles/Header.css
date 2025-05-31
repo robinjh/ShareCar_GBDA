@@ -10,6 +10,7 @@
     font-weight: 600;
     font-size: 1.05rem;
     transition: background var(--transition), border-color var(--transition), color var(--transition);
+    box-sizing: border-box;
 }
 .dark .header {
     background: var(--color-surface-dark);
