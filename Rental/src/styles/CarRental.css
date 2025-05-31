@@ -73,9 +73,9 @@
   }
   
   /* 필터 박스 스타일 */
-  .filter-box {
+  /* .filter-box {
     padding: 0.5rem 0;
-  }
+  } */
   
   /* 가격 필터 박스는 유지 */
   .price-filter-box {
@@ -106,20 +106,20 @@
   }
   
   /* Material-UI 컴포넌트 스타일 */
-  .MuiTextField-root,
+  /* .MuiTextField-root,
   .MuiFormControl-root {
     margin-bottom: 0.5rem;
     width: 100%;
-  }
+  } */
   
-  .MuiTextField-root .MuiOutlinedInput-root,
+  /* .MuiTextField-root .MuiOutlinedInput-root,
   .MuiFormControl-root .MuiOutlinedInput-root {
     border-radius: 12px;
     font-size: 1rem;
     padding: 0.5rem 1rem;
     height: 56px;
     background: #ffffff;
-  }
+  } */
   
   /* DateTimePicker 스타일 */
   .MuiDateTimePicker-root {
@@ -183,15 +183,15 @@
       border-color: rgba(255, 255, 255, 0.12);
     }
   
-    .MuiTextField-root .MuiOutlinedInput-root,
+    /* .MuiTextField-root .MuiOutlinedInput-root,
     .MuiFormControl-root .MuiOutlinedInput-root {
       background: rgba(255, 255, 255, 0.05);
-    }
+    } */
   
-    .MuiTextField-root .MuiOutlinedInput-notchedOutline,
+    /* .MuiTextField-root .MuiOutlinedInput-notchedOutline,
     .MuiFormControl-root .MuiOutlinedInput-notchedOutline {
       border-color: rgba(255, 255, 255, 0.12);
-    }
+    } */
   
     .filter-button {
       background: #1e1e1e !important;
@@ -271,11 +271,11 @@
       font-size: 0.85rem;
     }
   
-    .MuiTextField-root .MuiOutlinedInput-root,
+    /* .MuiTextField-root .MuiOutlinedInput-root,
     .MuiFormControl-root .MuiOutlinedInput-root {
       height: 48px;
       font-size: 0.95rem;
-    }
+    } */
   
     .filter-button {
       width: 100% !important;
@@ -296,10 +296,19 @@
     }
   }
   
-  .date-filter-box {
+  /* .date-filter-box {
     padding: 0 !important;
     background: none !important;
     border: none !important;
     box-shadow: none !important;
     position: static !important;
+  } */
+  
+  /* .MuiOutlinedInput-notchedOutline {
+    border: none !important;
+  } */
+  
+  .MuiInputBase-input {
+    border: none !important;
+    box-shadow: none !important;
   } 
