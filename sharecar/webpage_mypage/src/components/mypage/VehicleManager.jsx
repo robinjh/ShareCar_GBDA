@@ -62,12 +62,6 @@ function VehicleManager() {
         </ul>
       )}
       <div className="vehicle-manager-bottom">
-        <button
-          className="btn"
-          onClick={() => (window.location.href = "/register-car")}
-        >
-          차량 등록
-        </button>
       </div>
     </div>
   );

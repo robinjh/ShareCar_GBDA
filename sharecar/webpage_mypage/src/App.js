@@ -7,9 +7,11 @@ import PlaceRecommendation from "./components/recomendation/PlaceRecommendation"
 import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
+import Modal from "./components/mypage/Modal";
 
 function AppContent({ toggleMode }) {
   const { user } = useContext(UserContext);
+  const [showMyPage, setShowMyPage] = useState(false);
 
   if (!user) {
     return <AuthForm />;
@@ -55,23 +57,38 @@ function AppContent({ toggleMode }) {
     <div
       style={{
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         alignItems: "flex-start",
         minHeight: "calc(100vh - 65px)",
       }}
     >
-      <div
+      {/* 마이페이지 열기 버튼 */}
+      <button
+        onClick={() => setShowMyPage(true)}
         style={{
-          flex: "0 0 370px",
-          borderRight: "1px solid var(--color-border)",
-          minHeight: "100%",
+          margin: "1rem",
+          padding: "0.5rem 1rem",
+          border: "1px solid var(--color-border)",
+          borderRadius: "6px",
         }}
       >
-        <MyPage toggleMode={toggleMode} user={user} />
-      </div>
-      <div style={{ flex: 1 }}>
+        마이페이지 열기
+      </button>
+
+      {/* 추천 장소 메인 화면 */}
+      <div style={{ flex: 1, width: "100%" }}>
         <PlaceRecommendation user={user} />
       </div>
+
+      {/* 모달로 마이페이지 표시 */}
+      {showMyPage && (
+        <Modal
+          isOpen={true}
+          onClose={() => setShowMyPage(false)}
+        >
+          <MyPage toggleMode={toggleMode} user={user} />
+        </Modal>
+      )}
     </div>
   );
 }

@@ -59,14 +59,13 @@ describe("VehicleManager", () => {
     jest.clearAllMocks();
   });
 
-  it("user가 null이면 '로딩 중...'과 '차량 등록' 버튼이 렌더링된다", () => {
+  it("user가 null이면 '로딩 중...'이 렌더링된다", () => {
     const { container } = render(
       <UserContext.Provider value={{ user: null }}>
         <VehicleManager />
       </UserContext.Provider>
     );
     expect(screen.getByText("로딩 중...")).toBeInTheDocument();
-    expect(screen.getByText("차량 등록")).toBeInTheDocument();
   });
   it("'로딩 중...' 메시지가 먼저 나온다", async () => {
     const { getDocs } = require("firebase/firestore");
@@ -118,23 +117,6 @@ describe("VehicleManager", () => {
     expect(
       await screen.findByText("등록한 차량이 없습니다.")
     ).toBeInTheDocument();
-  });
-
-  it("차량 등록 버튼 클릭시 라우팅이 발생한다", async () => {
-    Object.defineProperty(window, "location", {
-      writable: true,
-      value: { href: "" },
-    });
-    const { getDocs } = require("firebase/firestore");
-    getDocs.mockResolvedValueOnce({ docs: [] });
-    render(
-      <UserContext.Provider value={{ user: mockUser }}>
-        <VehicleManager />
-      </UserContext.Provider>
-    );
-    const regBtn = await screen.findByText("차량 등록");
-    fireEvent.click(regBtn);
-    expect(window.location.href).toBe("/register-car");
   });
 
   it("차량 삭제 버튼 클릭시 confirm 후 정상 삭제", async () => {

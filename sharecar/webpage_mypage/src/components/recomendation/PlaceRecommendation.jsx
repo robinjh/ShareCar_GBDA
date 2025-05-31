@@ -14,32 +14,38 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
   const [places, setPlaces] = useState([]);
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [isKakaoLoaded, setIsKakaoLoaded] = useState(false);
+  const [isMapCentered, setIsMapCentered] = useState(false);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
   useKakaoLoader(() => setIsKakaoLoaded(true));
 
-  // 지도 최초 생성 및 중심 address로 맞추기
+  // 지도 생성
   useEffect(() => {
-    if (!isKakaoLoaded) return;
+    if (!isKakaoLoaded || mapRef.current) return;
+
     const container = document.getElementById("map");
-    if (container && !mapRef.current) {
-      const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.978),
-        level: 5,
-      };
-      mapRef.current = new window.kakao.maps.Map(container, options);
-    }
-    // address가 있을 때 지도의 중심을 address로
-    if (isKakaoLoaded && address) {
-      const geocoder = new window.kakao.maps.services.Geocoder();
-      geocoder.addressSearch(address, function (result, status) {
-        if (status === window.kakao.maps.services.Status.OK) {
-          const center = new window.kakao.maps.LatLng(result[0].y, result[0].x);
-          mapRef.current && mapRef.current.setCenter(center);
-        }
-      });
-    }
+    if (!container) return;
+
+    const options = {
+      center: new window.kakao.maps.LatLng(37.5665, 126.978),
+      level: 5,
+    };
+    mapRef.current = new window.kakao.maps.Map(container, options);
+  }, [isKakaoLoaded]);
+
+  // address → 지도 중심 이동
+  useEffect(() => {
+    if (!isKakaoLoaded || !mapRef.current || !address) return;
+
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    geocoder.addressSearch(address, function (result, status) {
+      if (status === window.kakao.maps.services.Status.OK) {
+        const center = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+        mapRef.current.setCenter(center);
+        setIsMapCentered(true); // 중심 잡힌 후에 true
+      }
+    });
   }, [isKakaoLoaded, address]);
 
   const clearMarkers = () => {
@@ -48,7 +54,6 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
     markersRef.current = [];
   };
 
-  // 마커 + InfoWindow
   const displayMarkers = (placesArr) => {
     clearMarkers();
     if (!mapRef.current || !placesArr || placesArr.length === 0) return;
@@ -101,7 +106,6 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
     }
   };
 
-  // 직접 검색
   const handleInputSearch = async () => {
     try {
       if (!keyword.trim()) return;
@@ -115,33 +119,29 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
     }
   };
 
-  // 엔터 검색 지원
   const handleInputKeyDown = (e) => {
     if (e.key === "Enter") handleInputSearch();
   };
 
-  // 태그 기반 추천(최초 mount)
+  // 태그 기반 추천 (지도 중심 세팅 완료 후에만 실행)
   useEffect(() => {
-    if (!isKakaoLoaded || !tags || tags.length === 0) return;
+    if (!isKakaoLoaded || !tags || tags.length === 0 || !isMapCentered) return;
     if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services)
       return;
 
-    // tags에서 키워드 모두 추출
     let allKeywords = [];
     tags.forEach((tag) => {
-      const key = tag;
-      const keywords = tagToKeywordMap[key] || [];
+      const keywords = tagToKeywordMap[tag] || [];
       allKeywords = [...allKeywords, ...keywords];
     });
-    // 중복 키워드 제거
     allKeywords = [...new Set(allKeywords)];
 
-    // 모든 키워드로 병렬 검색
     const ps = new window.kakao.maps.services.Places();
     setPlaces([]);
     setSelectedIdx(null);
 
-    const center = mapRef.current.getCenter();
+    const center = mapRef.current?.getCenter();
+    if (!center) return;
 
     let combined = [];
     let callCount = 0;
@@ -156,7 +156,6 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
           ) {
             combined = [...combined, ...data];
           }
-          // 모든 키워드 검색 끝나면 중복(place_id 기준) 제거 후 표시
           if (callCount === allKeywords.length) {
             const uniquePlaces = [];
             const seen = new Set();
@@ -171,14 +170,13 @@ function PlaceRecommendation({ isDarkMode, address, tags }) {
           }
         },
         {
-          location: center, // **지도 중심 좌표**
-          radius: 20000, // **반경 3km 내 장소만 검색**
-          sort: window.kakao.maps.services.SortBy.DISTANCE, // 거리순 정렬(선택)
+          location: center,
+          radius: 20000,
+          sort: window.kakao.maps.services.SortBy.DISTANCE,
         }
       );
     });
-    // eslint-disable-next-line
-  }, [isKakaoLoaded, tags]);
+  }, [isKakaoLoaded, tags, isMapCentered]);
 
   return (
     <div className={`recommend-container${isDarkMode ? " dark" : " light"}`}>
