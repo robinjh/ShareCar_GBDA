@@ -1,0 +1,234 @@
+.recommend-container {
+  background: var(--color-surface);
+  display: flex;
+  height: 100vh;
+  min-height: 600px;
+  position: relative;
+}
+
+.recommend-container.light {
+  background-color: var(--color-surface);
+}
+
+.recommend-container.dark {
+  background-color: var(--color-surface-dark);
+}
+
+.recommend-map-container {
+  flex: 1;
+  min-width: 0;
+  height: 100vh;
+  position: relative;
+}
+
+.recommend-map {
+  width: 100%;
+  height: 100%;
+  min-height: 600px;
+}
+
+.recommend-list-container {
+  width: 370px;
+  min-width: 260px;
+  max-width: 410px;
+  padding: 24px 16px 24px 26px;
+  background: var(--color-surface);
+  border-right: 1.5px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.dark .recommend-list-container {
+  background: var(--color-surface-dark);
+  border-right-color: var(--color-border-dark);
+}
+
+.recommend-list-header {
+  margin-bottom: 16px;
+}
+
+.recommend-list-header h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.33em;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.dark .recommend-list-header h2 {
+  color: var(--color-text-dark);
+}
+
+.recommend-search {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.recommend-search-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-input);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text);
+  height: 40px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  border-radius: 8px;
+  padding: 0 12px;
+}
+
+.dark .recommend-search-input {
+  background: var(--color-input-dark);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+.recommend-search-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.recommend-search-button:hover {
+  color: #1976d2;
+}
+
+.recommend-search-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.recommend-list-scroll {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  min-height: 0;
+  margin-top: 10px;
+  border-radius: 8px;
+  background: var(--color-surface);
+  box-shadow: 0 0 0.5px #dbeafe;
+  max-height: calc(100vh - 140px);
+}
+
+.dark .recommend-list-scroll {
+  background: var(--color-surface-dark);
+}
+
+.search-results {
+  padding: 0;
+  margin: 0;
+}
+
+.place-item {
+  background: inherit;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  color: var(--color-text);
+}
+
+.dark .place-item {
+  border-bottom-color: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+.place-item.selected {
+  background: var(--color-primary);
+  border-left: 4px solid var(--color-list-border);
+  box-shadow: 0 2px 10px 0 rgba(110,160,250,0.07);
+}
+
+.place-content {
+  margin-bottom: 12px;
+}
+
+.place-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.place-content p {
+  margin: 4px 0;
+  font-size: 0.9em;
+  color: var(--color-desc);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .place-content p {
+  color: var(--color-desc-dark);
+}
+
+.place-link {
+  display: inline-block;
+  background: var(--color-kakao);
+  color: var(--color-text);
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9em;
+  box-shadow: 0 1px 4px rgba(50,70,130,0.03);
+  transition: background 0.18s;
+  text-decoration: none;
+  text-align: center;
+}
+
+.place-link:hover {
+  background: var(--color-kakaocheck);
+}
+
+.recommend-empty {
+  color: var(--color-desc);
+  text-align: center;
+  margin-top: 32px;
+  padding: 16px;
+}
+
+.dark .recommend-empty {
+  color: var(--color-desc-dark);
+}
+
+@media (max-width: 768px) {
+  .recommend-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .recommend-map-container {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .recommend-list-container {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    border-right: none;
+    border-top: 1.5px solid var(--color-border);
+  }
+
+  .dark .recommend-list-container {
+    border-top-color: var(--color-border-dark);
+  }
+
+  .recommend-list-scroll {
+    max-height: none;
+  }
+} 
