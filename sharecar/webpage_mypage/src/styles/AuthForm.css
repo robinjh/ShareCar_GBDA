@@ -2,16 +2,12 @@
   max-width: 390px;
   margin: 56px auto 0 auto;
   padding: 34px 28px 28px 28px;
-  border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-surface);
-  box-shadow: 0 6px 30px 0 rgba(30,40,80,0.13);
 }
 
 .dark .auth-box {
   background: var(--color-surface-dark);
-  border: 1.5px solid var(--color-border-dark);
-  box-shadow: 0 8px 38px 0 rgba(12,12,32,0.22);
 }
 
 .auth-box h3 {
