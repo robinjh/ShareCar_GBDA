@@ -77,7 +77,7 @@ function AppContent({ toggleMode }) {
 
       {/* 추천 장소 메인 화면 */}
       <div style={{ flex: 1, width: "100%" }}>
-        <PlaceRecommendation user={user} />
+        <PlaceRecommendation isDarkMode="dark" address={"경기 안양시"} tags={["#출퇴근용"]}/>
       </div>
 
       {/* 모달로 마이페이지 표시 */}
