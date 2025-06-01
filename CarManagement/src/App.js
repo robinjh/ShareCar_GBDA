@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import Header from './Header';
 import Rental from './components/rental/Rental';
 import Registration from './components/registration/Registration';
@@ -40,57 +38,62 @@ function LoginRedirect() {
 
 // 메인 앱 컴포넌트를 UserProvider로 감싸는 컴포넌트
 function AppContent() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const { user } = React.useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-  const theme = createTheme({
-    palette: {
-      mode: isDarkMode ? 'dark' : 'light',
-    },
-  });
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleDarkModeChange = (e) => {
+      setIsDarkMode(e.matches);
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+    };
+    
+    // 초기 테마 설정
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+    
+    mediaQuery.addEventListener('change', handleDarkModeChange);
+    return () => mediaQuery.removeEventListener('change', handleDarkModeChange);
+  }, []);
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.body.classList.toggle('dark', !isDarkMode);
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    document.documentElement.setAttribute('data-theme', newDarkMode ? 'dark' : 'light');
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <div className="app">
-        <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/rental" replace />} />
-            <Route 
-              path="/rental" 
-              element={
-                <ProtectedRoute>
-                  <Rental isDarkMode={isDarkMode} />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/registration" 
-              element={
-                <ProtectedRoute>
-                  <Registration />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/recommendation" 
-              element={
-                <ProtectedRoute>
-                  <PlaceRecommendation />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/login" element={<LoginRedirect />} />
-          </Routes>
-        </main>
-      </div>
-    </ThemeProvider>
+    <div className="app">
+      <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/rental" replace />} />
+          <Route 
+            path="/rental" 
+            element={
+              <ProtectedRoute>
+                <Rental isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/registration" 
+            element={
+              <ProtectedRoute>
+                <Registration isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/recommendation" 
+            element={
+              <ProtectedRoute>
+                <PlaceRecommendation isDarkMode={isDarkMode} />
+              </ProtectedRoute>
+            } 
+          />
+          <Route path="/login" element={<LoginRedirect />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
 

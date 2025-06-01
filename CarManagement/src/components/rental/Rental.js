@@ -1,50 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { 
-  Container, 
-  Grid, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Button, 
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Alert,
-  Box,
-  Chip,
-  Stack,
-  CircularProgress,
-  Paper,
-  InputAdornment,
-  Pagination,
-  MenuItem,
-  Slider,
-  FormControl,
-  Select,
-  ListItemIcon,
-  ListItemText
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import { collection, getDocs, addDoc, query, where, doc, setDoc, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../UserContext';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import '../../styles/Rental.css';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import { useNavigate, Link } from 'react-router-dom';
 import PlaceRecommendation from "../recommendation/PlaceRecommendation";
-import { DatePicker, TimePicker } from '@mui/x-date-pickers';
-import { useNavigate } from 'react-router-dom';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { Link } from 'react-router-dom';
 
 // 유틸리티 함수
 function removeFunctions(obj) {
@@ -88,85 +50,63 @@ const koreanFirstSort = (a, b) => {
   return strA.localeCompare(strB, 'ko');
 };
 
-function CarCard({ car, onRent, onCancel, onReturn, onExtend, onReview, onReport, onDelete, onEdit, onTagClick, isDarkMode }) {
+// 차량 카드 컴포넌트
+function CarCard({ car, onRent, onTagClick, isDarkMode }) {
   return (
-    <Card className={`car-card ${isDarkMode ? 'dark' : 'light'}`}>
-      <CardContent className={isDarkMode ? 'dark' : 'light'}>
-        <Box className="car-info">
-          <Box className="car-header">
-            <Box className="car-title-section">
-              <Typography variant="h5" component="h2" className="car-name">
-                {car.carName}
-              </Typography>
-              <Typography variant="subtitle1" color="primary" className="car-fee">
-                {car.rentalFee}원/일
-              </Typography>
-            </Box>
-            <Box className="car-details">
-              <Box className="car-detail-item">
-                <Typography variant="body2" color="textSecondary" className="detail-label">
-                  차량번호
-                </Typography>
-                <Typography variant="body1" className="detail-value">
-                  {car.carNumber}
-                </Typography>
-              </Box>
-              <Box className="car-detail-item">
-                <Typography variant="body2" color="textSecondary" className="detail-label">
-                  제조사
-                </Typography>
-                <Typography variant="body1" className="detail-value">
-                  {car.carBrand}
-                </Typography>
-              </Box>
-              <Box className="car-detail-item">
-                <Typography variant="body2" color="textSecondary" className="detail-label">
-                  분류
-                </Typography>
-                <Typography variant="body1" className="detail-value">
-                  {car.carType}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Box className="car-tags">
-            <Stack 
-              direction="row" 
-              spacing={1} 
-              flexWrap="wrap" 
-              useFlexGap 
-              className="tag-stack"
-            >
+    <div className={`car-card ${isDarkMode ? 'dark' : 'light'}`}>
+      <div className="car-content">
+        <div className="car-info">
+          <div className="car-header">
+            <div className="car-title-section">
+              <div className="car-title-left">
+                <h2 className="car-name">{car.carName}</h2>
+                <p className="car-fee">{car.rentalFee}원/일</p>
+              </div>
+              <div className="car-actions">
+                <button
+                  className={`rent-button ${isDarkMode ? 'dark' : ''}`}
+                  onClick={() => onRent(car)}
+                  disabled={!onRent}
+                >
+                  대여하기
+                </button>
+              </div>
+            </div>
+            <div className="car-details">
+              <div className="car-detail-item">
+                <span className="detail-label">차량정보: </span>
+                <span className="detail-value">{car.carNumber}</span>
+              </div>
+              <div className="car-detail-item">
+                <span className="detail-label">제조사: </span>
+                <span className="detail-value">{car.carBrand}</span>
+              </div>
+              <div className="car-detail-item">
+                <span className="detail-label">분류: </span>
+                <span className="detail-value">{car.carType}</span>
+              </div>
+            </div>
+          </div>
+          <div className="car-tags">
+            <div className="tag-stack">
               {car.tags && car.tags.map((tag, index) => (
-                <Chip 
-                  key={index} 
-                  label={tag} 
-                  size="small" 
-                  className="tag-chip" 
+                <button
+                  key={index}
+                  className={`tag-chip ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => onTagClick(tag)}
-                  variant="outlined"
-                />
+                >
+                  {tag}
+                </button>
               ))}
-            </Stack>
-          </Box>
-        </Box>
-        <Box className="car-actions">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => onRent(car)}
-            className="rent-button"
-            disabled={!onRent}
-            size="large"
-          >
-            대여하기
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
+// 필터 다이얼로그 컴포넌트
 function FilterDialog({ 
   open, 
   onClose, 
@@ -184,13 +124,6 @@ function FilterDialog({
 }) {
   const carTypes = ['소형', '중형', '대형', 'SUV', '승합차'];
   const carBrands = ['현대', '기아', '쌍용', '제네시스', 'BMW', '벤츠', '아우디', '폭스바겐', '기타'];
-
-  // 도심 드라이브 태그를 완전히 제거하고 정렬
-  const filteredTags = React.useMemo(() => {
-    return allTags
-      .filter(tag => tag !== '도심 드라이브' && tag.trim() !== '')
-      .sort((a, b) => a.localeCompare(b, 'ko'));
-  }, [allTags]);
 
   const handleCategoryClick = (category) => {
     setTempFilters(prev => ({
@@ -247,225 +180,149 @@ function FilterDialog({
   }, [open]);
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose}
-      className={`filter-dialog ${isDarkMode ? 'dark' : ''}`}
-      maxWidth="md"
-      fullWidth
-    >
-      <DialogTitle>필터</DialogTitle>
-      <DialogContent>
-        <Box className="filter-section">
-          <Typography className="filter-section-title">차량 분류</Typography>
-          <Box className="tag-group">
-            {carTypes.map((type) => {
-              const isSelected = tempFilters.carTypes.includes(type);
-              return (
-                <Chip
+    <div className={`filter-dialog ${open ? 'open' : ''} ${isDarkMode ? 'dark' : ''}`}>
+      <div className="filter-dialog-content">
+        <h2 className="filter-dialog-title">필터</h2>
+        <div className="filter-dialog-body">
+          <div className="filter-section">
+            <h3 className="filter-section-title">차량 분류</h3>
+            <div className="tag-group">
+              {carTypes.map((type) => (
+                <button
                   key={type}
-                  label={type}
-                  size="small"
+                  className={`tag-chip ${tempFilters.carTypes.includes(type) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => handleCategoryClick(type)}
-                  className="tag-chip"
-                  variant={isSelected ? "filled" : "outlined"}
-                  color={isSelected ? "primary" : "default"}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: isSelected ? 'primary.dark' : 'action.hover',
-                    }
-                  }}
-                />
-              );
-            })}
-          </Box>
-        </Box>
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        <Box className="filter-section">
-          <Typography className="filter-section-title">제조사</Typography>
-          <Box className="tag-group">
-            {carBrands.map((brand) => {
-              const isSelected = tempFilters.carBrands.includes(brand);
-              return (
-                <Chip
+          <div className="filter-section">
+            <h3 className="filter-section-title">제조사</h3>
+            <div className="tag-group">
+              {carBrands.map((brand) => (
+                <button
                   key={brand}
-                  label={brand}
-                  size="small"
+                  className={`tag-chip ${tempFilters.carBrands.includes(brand) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => handleBrandClick(brand)}
-                  className="tag-chip"
-                  variant={isSelected ? "filled" : "outlined"}
-                  color={isSelected ? "primary" : "default"}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: isSelected ? 'primary.dark' : 'action.hover',
-                    }
-                  }}
-                />
-              );
-            })}
-          </Box>
-        </Box>
+                >
+                  {brand}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        <Box className="filter-section">
-          <Typography className="filter-section-title">대여료</Typography>
-          <Box sx={{ 
-            px: 2, 
-            mb: 2,
-            width: '90%',
-            mx: 'auto'
-          }}>
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '90%', mx: 'auto' }}>
-              <TextField
-                className="rental-fee-input"
-                label="최소 금액"
-                type="number"
-                value={tempRentalFeeRange[0]}
-                onChange={(e) => {
-                  const value = Math.max(0, Math.min(1000000, Number(e.target.value)));
-                  setTempRentalFeeRange([value, tempRentalFeeRange[1]]);
-                }}
-                InputProps={{
-                  endAdornment: <InputAdornment position="end" sx={{ mr: 1, mt: 2 }}>원</InputAdornment>,
-                  inputProps: { 
-                    style: { textAlign: 'right', paddingRight: '8px' }
-                  }
-                }}
-                sx={{
-                  '& .MuiInputBase-root': {
-                    height: '48px'
-                  },
-                  '& .MuiOutlinedInput-root:hover': {
-                    backgroundColor: 'transparent'
-                  },
-                  '& .MuiOutlinedInput-root.Mui-focused': {
-                    boxShadow: 'none',
-                    backgroundColor: 'transparent'
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'inherit'
-                  }
-                }}
-              />
-              <Typography>-</Typography>
-              <TextField
-                className="rental-fee-input"
-                label="최대 금액"
-                type="number"
-                value={tempRentalFeeRange[1]}
-                onChange={(e) => {
-                  const value = Math.max(0, Math.min(1000000, Number(e.target.value)));
-                  setTempRentalFeeRange([tempRentalFeeRange[0], value]);
-                }}
-                InputProps={{
-                  endAdornment: <InputAdornment position="end" sx={{ mr: 1, mt: 2 }}>원</InputAdornment>,
-                  inputProps: { 
-                    style: { textAlign: 'right', paddingRight: '8px' }
-                  }
-                }}
-                sx={{
-                  '& .MuiInputBase-root': {
-                    height: '48px'
-                  },
-                  '& .MuiOutlinedInput-root:hover': {
-                    backgroundColor: 'transparent'
-                  },
-                  '& .MuiOutlinedInput-root.Mui-focused': {
-                    boxShadow: 'none',
-                    backgroundColor: 'transparent'
-                  },
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: 'inherit'
-                  }
-                }}
-              />
-            </Box>
-            <Slider
-              value={tempRentalFeeRange}
-              onChange={(_, newValue) => setTempRentalFeeRange(newValue)}
-              valueLabelDisplay="auto"
-              min={0}
-              max={1000000}
-              step={10000}
-              defaultValue={[0, 1000000]}
-              valueLabelFormat={(value) => `${value.toLocaleString()}원`}
-              marks={[
-                { value: 0, label: '0원' },
-                { value: 1000000, label: '100만원' }
-              ]}
-              sx={{
-                '& .MuiSlider-thumb': {
-                  width: 20,
-                  height: 20,
-                },
-                '& .MuiSlider-track': {
-                  height: 4,
-                },
-                '& .MuiSlider-rail': {
-                  height: 4,
-                },
-                '& .MuiSlider-mark': {
-                  height: 8,
-                  width: 2,
-                  '&.MuiSlider-markActive': {
-                    opacity: 1,
-                    backgroundColor: 'currentColor',
-                  },
-                },
-                '& .MuiSlider-markLabel': {
-                  fontSize: '0.75rem',
-                },
-              }}
-            />
-          </Box>
-        </Box>
+          <div className="filter-section">
+            <h3 className="filter-section-title">대여료</h3>
+            <div className="rental-fee-range">
+              <div className="rental-fee-inputs">
+                <div className="rental-fee-input-group">
+                  <label>최소 금액</label>
+                  <input
+                    type="number"
+                    value={tempRentalFeeRange[0]}
+                    onChange={(e) => {
+                      const value = Math.max(0, Math.min(tempRentalFeeRange[1], Number(e.target.value)));
+                      setTempRentalFeeRange([value, tempRentalFeeRange[1]]);
+                    }}
+                  />
+                  <span className="unit">원</span>
+                </div>
+                <span className="separator">-</span>
+                <div className="rental-fee-input-group">
+                  <label>최대 금액</label>
+                  <input
+                    type="number"
+                    value={tempRentalFeeRange[1]}
+                    onChange={(e) => {
+                      const value = Math.max(tempRentalFeeRange[0], Math.min(1000000, Number(e.target.value)));
+                      setTempRentalFeeRange([tempRentalFeeRange[0], value]);
+                    }}
+                  />
+                  <span className="unit">원</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-        <Box className="filter-section">
-          <Typography className="filter-section-title">태그</Typography>
-          <Box className="tag-group">
-            {filteredTags.map((tag) => {
-              const isSelected = tempFilters.selectedTags.includes(tag);
-              return (
-                <Chip
-                  key={tag}
-                  label={tag}
-                  size="small"
-                  onClick={() => handleTagClick(tag)}
-                  className="tag-chip"
-                  variant={isSelected ? "filled" : "outlined"}
-                  color={isSelected ? "primary" : "default"}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: isSelected ? 'primary.dark' : 'action.hover',
-                    }
-                  }}
-                />
-              );
-            })}
-          </Box>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>취소</Button>
-        <Button 
-          onClick={() => {
-            setFilters({
-              ...tempFilters,
-              selectedTags: [...tempFilters.selectedTags]
-            });
-            setRentalFeeRange([...tempRentalFeeRange]);
-            onApply();
-          }} 
-          variant="contained"
-        >
-          적용
-        </Button>
-      </DialogActions>
-    </Dialog>
+          <div className="filter-section">
+            <h3 className="filter-section-title">태그</h3>
+            <div className="tag-group">
+              {allTags
+                .filter(tag => !tag.includes('도심 드라이브'))  // '도심 드라이브'가 포함된 모든 태그 제외
+                .map((tag) => (
+                  <button
+                    key={tag}
+                    className={`tag-chip ${tempFilters.selectedTags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                    onClick={() => handleTagClick(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+            </div>
+          </div>
+        </div>
+        <div className="filter-dialog-actions">
+          <button className="cancel-button" onClick={onClose}>취소</button>
+          <button 
+            className="apply-button"
+            onClick={() => {
+              setFilters({
+                ...tempFilters,
+                selectedTags: [...tempFilters.selectedTags]
+              });
+              setRentalFeeRange([...tempRentalFeeRange]);
+              onApply();
+            }}
+          >
+            적용
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
 function Rental({ isDarkMode }) {
   const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [sortOrder, setSortOrder] = useState('nameAsc');
+
+  // 유틸리티 함수들을 먼저 선언
+  const getCurrentKoreanTime = () => {
+    try {
+      const now = new Date();
+      const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      if (isNaN(koreanTime.getTime())) {
+        return new Date(); // 기본값으로 현재 시간 반환
+      }
+      return koreanTime;
+    } catch (error) {
+      console.error('한국 시간 변환 오류:', error);
+      return new Date(); // 오류 시 기본값으로 현재 시간 반환
+    }
+  };
+
+  const formatDateTimeForInput = (date) => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+      return '';
+    }
+    
+    try {
+      const koreanDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      if (isNaN(koreanDate.getTime())) {
+        return '';
+      }
+      return koreanDate.toISOString().slice(0, 16);
+    } catch (error) {
+      console.error('날짜 변환 오류:', error);
+      return '';
+    }
+  };
+
+  // 그 다음에 상태 초기화
   const [cars, setCars] = useState([]);
   const [filteredCars, setFilteredCars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -474,8 +331,8 @@ function Rental({ isDarkMode }) {
   const [selectedCar, setSelectedCar] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [rentalData, setRentalData] = useState({
-    startTime: new Date(),
-    endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
+    startTime: getCurrentKoreanTime(),
+    endTime: new Date(getCurrentKoreanTime().setDate(getCurrentKoreanTime().getDate() + 1)),
     guestName: '',
     address: '',
     tags: []
@@ -484,7 +341,9 @@ function Rental({ isDarkMode }) {
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
   const [recommendationData, setRecommendationData] = useState({
     tags: [],
-    address: ''
+    address: '',
+    startTime: null,
+    endTime: null
   });
   const [openRecommendationDialog, setOpenRecommendationDialog] = useState(false);
   const [page, setPage] = useState(1);
@@ -506,15 +365,21 @@ function Rental({ isDarkMode }) {
   const [rentalFeeRange, setRentalFeeRange] = useState([0, 1000000]);
   const [tempRentalFeeRange, setTempRentalFeeRange] = useState([0, 1000000]);
   const requestsRef = collection(db, 'requests');
-  const navigate = useNavigate();
-  const [sortOrder, setSortOrder] = useState('nameAsc');
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [tempStartDate, setTempStartDate] = useState(new Date());
+  const [tempEndDate, setTempEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
+
+  // 정렬된 차량 목록을 관리하는 상태 추가
+  const [sortedCars, setSortedCars] = useState([]);
 
   // 모든 차량의 태그를 수집하고 '도심 드라이브' 제외 (정렬 추가)
   const allTags = React.useMemo(() => {
-    return [...new Set(cars.flatMap(car => 
+    const tags = cars.flatMap(car => 
       (car.tags || [])
-        .filter(tag => tag !== '도심 드라이브' && tag.trim() !== '')
-    ))].sort((a, b) => a.localeCompare(b, 'ko'));
+        .filter(tag => tag !== '도심 드라이브' && tag !== '#도심 드라이브' && tag.trim() !== '')
+    );
+    return [...new Set(tags)].sort((a, b) => a.localeCompare(b, 'ko'));
   }, [cars]);
 
   useEffect(() => {
@@ -549,10 +414,44 @@ function Rental({ isDarkMode }) {
     try {
       setLoading(true);
       const querySnapshot = await getDocs(collection(db, 'registrations'));
-      const carsList = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      
+      // 필수 필드가 있는 데이터만 필터링
+      const carsList = querySnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(car => {
+          // 필수 필드 체크
+          const requiredFields = {
+            carNumber: '차량번호',
+            carName: '차량명',
+            carBrand: '제조사',
+            carType: '차종',
+            rentalFee: '대여료',
+            hostID: '호스트 ID',
+            hostName: '호스트 이름'
+          };
+
+          // 모든 필수 필드가 존재하고 비어있지 않은지 확인
+          const isValid = Object.entries(requiredFields).every(([field, label]) => {
+            const value = car[field];
+            if (!value || value.toString().trim() === '') {
+              console.warn(`유효하지 않은 차량 데이터: ${label} 누락 (차량번호: ${car.carNumber || '알 수 없음'})`);
+              return false;
+            }
+            return true;
+          });
+
+          // 대여료가 숫자인지 확인
+          if (isValid && isNaN(Number(car.rentalFee))) {
+            console.warn(`유효하지 않은 차량 데이터: 대여료가 숫자가 아님 (차량번호: ${car.carNumber})`);
+            return false;
+          }
+
+          return isValid;
+        });
+
       setCars(carsList);
       setFilteredCars(carsList);
     } catch (err) {
@@ -652,19 +551,19 @@ function Rental({ isDarkMode }) {
   const getCurrentPageCars = () => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return filteredCars.slice(startIndex, endIndex);
+    return sortedCars.slice(startIndex, endIndex);
   };
 
   const getPageInfo = () => {
-    const totalPages = Math.ceil(filteredCars.length / itemsPerPage);
+    const totalPages = Math.ceil(sortedCars.length / itemsPerPage);
     return `${page} / ${totalPages} 페이지`;
   };
 
   const handleRentClick = (car) => {
     setSelectedCar(car);
     setRentalData({
-      startTime: new Date(),
-      endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
+      startTime: getCurrentKoreanTime(),
+      endTime: new Date(getCurrentKoreanTime().setDate(getCurrentKoreanTime().getDate() + 1)),
       guestName: '',
       address: '',
       tags: []
@@ -794,15 +693,18 @@ function Rental({ isDarkMode }) {
       // setDoc을 사용하여 지정된 ID로 문서 생성
       await setDoc(doc(requestsRef, docId), rentalRequest);
       
+      // 대여 다이얼로그 닫기
       handleCloseDialog();
-      setSuccess('대여 요청이 성공적으로 등록되었습니다.');
       
-      // 장소 추천을 위한 데이터 설정 및 다이얼로그 열기
-      console.log('대여 주소:', rentalData.address);
+      // 장소 추천 데이터 설정 및 표시 (대여 시 입력한 데이터 사용)
       setRecommendationData({
-        tags: rentalData.tags,
-        address: rentalData.address
+        tags: rentalData.tags || [],  // 선택한 태그
+        address: rentalData.address || '',  // 입력한 주소
+        startTime: rentalData.startTime,  // 대여 시작 시간
+        endTime: rentalData.endTime  // 대여 종료 시간
       });
+      
+      // 장소 추천 다이얼로그 표시
       setOpenRecommendationDialog(true);
     } catch (err) {
       console.error('대여 요청 실패:', err);
@@ -812,173 +714,178 @@ function Rental({ isDarkMode }) {
 
   // 정렬 옵션 핸들러 수정
   const handleSortChange = (event) => {
-    setSortOrder(event.target.value);
-    let sortedCars = [...cars];
+    const newSortOrder = event.target.value;
+    setSortOrder(newSortOrder);
     
-    switch (event.target.value) {
+    let sorted = [...filteredCars];  // filteredCars를 기준으로 정렬
+    
+    switch (newSortOrder) {
       case 'numberAsc':
-        sortedCars.sort((a, b) => (a.carNumber || '').localeCompare(b.carNumber || ''));
+        sorted.sort((a, b) => (a.carNumber || '').localeCompare(b.carNumber || ''));
         break;
       case 'numberDesc':
-        sortedCars.sort((a, b) => (b.carNumber || '').localeCompare(a.carNumber || ''));
+        sorted.sort((a, b) => (b.carNumber || '').localeCompare(a.carNumber || ''));
         break;
       case 'nameAsc':
-        sortedCars.sort((a, b) => koreanFirstSort(a.carName, b.carName));
+        sorted.sort((a, b) => koreanFirstSort(a.carName, b.carName));
         break;
       case 'nameDesc':
-        sortedCars.sort((a, b) => koreanFirstSort(b.carName, a.carName));
+        sorted.sort((a, b) => koreanFirstSort(b.carName, a.carName));
         break;
       case 'priceAsc':
-        sortedCars.sort((a, b) => (parseInt(a.rentalFee) || 0) - (parseInt(b.rentalFee) || 0));
+        sorted.sort((a, b) => (parseInt(a.rentalFee) || 0) - (parseInt(b.rentalFee) || 0));
         break;
       case 'priceDesc':
-        sortedCars.sort((a, b) => (parseInt(b.rentalFee) || 0) - (parseInt(a.rentalFee) || 0));
+        sorted.sort((a, b) => (parseInt(b.rentalFee) || 0) - (parseInt(a.rentalFee) || 0));
         break;
       default:
-        // 기본 정렬 (차량 이름 오름차순)
-        sortedCars.sort((a, b) => koreanFirstSort(a.carName, b.carName));
+        sorted.sort((a, b) => koreanFirstSort(a.carName, b.carName));
     }
-    setCars(sortedCars);
+    
+    setSortedCars(sorted);
   };
+
+  // filteredCars가 변경될 때마다 정렬 적용
+  useEffect(() => {
+    handleSortChange({ target: { value: sortOrder } });
+  }, [filteredCars]);
 
   // 컴포넌트 마운트 시 초기 정렬 적용
   useEffect(() => {
     if (cars.length > 0) {
-      const sortedCars = [...cars].sort((a, b) => koreanFirstSort(a.carName, b.carName));
-      setCars(sortedCars);
+      const initialSorted = [...cars].sort((a, b) => koreanFirstSort(a.carName, b.carName));
+      setSortedCars(initialSorted);
+      setFilteredCars(initialSorted);
     }
-  }, []); // 컴포넌트 마운트 시 한 번만 실행
+  }, [cars]);
+
+  const formatDateTime = (date) => {
+    const koreanDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    return koreanDate.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Seoul'
+    }).replace(/\. /g, '-').replace('.', '');
+  };
+
+  const calculateTotalFee = () => {
+    if (!selectedCar || !rentalData.startTime || !rentalData.endTime) return 0;
+    
+    const startDate = new Date(rentalData.startTime);
+    const endDate = new Date(rentalData.endTime);
+    
+    // 날짜만 추출 (시간 제외)
+    const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+    const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+    
+    // 날짜 차이 계산 (종료일 - 시작일 + 1)
+    const rentalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+    const rentalFee = parseInt(selectedCar.rentalFee);
+    
+    return rentalFee * rentalDays;
+  };
 
   return (
-    <Container className={`rental-container ${isDarkMode ? 'dark' : ''}`}>
-      <Paper className={`rental-paper ${isDarkMode ? 'dark' : ''}`}>
-        <Box className={`rental-header ${isDarkMode ? 'dark' : ''}`}>
-          <Typography variant="h4" className={`rental-title ${isDarkMode ? 'dark' : ''}`}>
-            차량 대여
-          </Typography>
-          <Button
-            component={Link}
-            to="/registration"
-            variant="contained"
-            color="primary"
-            className={`registration-link-button ${isDarkMode ? 'dark' : ''}`}
-          >
-            차량 등록
-          </Button>
-        </Box>
-
-        {/* 검색 및 필터 영역 */}
+    <div className={`rental-container ${isDarkMode ? 'dark' : ''}`}>
+      <Link
+        to="/registration"
+        className={`registration-link-button ${isDarkMode ? 'dark' : ''}`}
+      >
+        차량 등록
+      </Link>
+      <div className={`rental-paper ${isDarkMode ? 'dark' : ''}`}>
+        <div className="rental-header">
+          <h1 className="rental-title">차량 대여</h1>
+        </div>
         <div className="search-filter-container">
           <div className="search-group">
-            <TextField
-              className={`search-field ${isDarkMode ? 'dark' : ''}`}
-              placeholder="차량 검색"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onKeyPress={handleKeyPress}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSearch}
-              className="search-button"
-            >
-              검색
-            </Button>
+            <div className="search-field-wrapper">
+              <input
+                type="text"
+                className="search-field"
+                placeholder="차량명, 차량번호, 제조사, 차종, 태그 검색"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyPress={handleKeyPress}
+              />
+              <button className={`search-button ${isDarkMode ? 'dark' : ''}`} onClick={handleSearch}>
+                검색
+              </button>
+            </div>
           </div>
         </div>
-
-        {/* 정렬 및 필터 영역 */}
         <div className="sort-filter-row">
-          <FormControl className="sort-select" sx={{ minWidth: 'auto', width: 'auto' }}>
-            <Select
-              value={sortOrder}
-              onChange={handleSortChange}
-              displayEmpty
-              className={isDarkMode ? 'dark' : ''}
-              sx={{ 
-                '& .MuiSelect-select': {
-                  paddingRight: '32px !important'
-                }
-              }}
-            >
-              <MenuItem value="numberAsc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>차량 번호</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>오름차순</Typography>
-                  <ArrowUpwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value="numberDesc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>차량 번호</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>내림차순</Typography>
-                  <ArrowDownwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value="nameAsc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>차량 이름</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>오름차순</Typography>
-                  <ArrowUpwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value="nameDesc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>차량 이름</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>내림차순</Typography>
-                  <ArrowDownwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value="priceAsc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>1일 가격</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>오름차순</Typography>
-                  <ArrowUpwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-              <MenuItem value="priceDesc" sx={{ whiteSpace: 'nowrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography>1일 가격</Typography>
-                  <Typography sx={{ ml: 0.5 }}>(</Typography>
-                  <Typography sx={{ ml: 0.5 }}>내림차순</Typography>
-                  <ArrowDownwardIcon fontSize="small" sx={{ mx: 0.5 }} />
-                  <Typography>)</Typography>
-                </Box>
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <Button
-            variant="outlined"
+          <select
+            className={`sort-select ${isDarkMode ? 'dark' : ''}`}
+            value={sortOrder}
+            onChange={handleSortChange}
+          >
+            <option value="nameAsc">차량명 (오름차순)</option>
+            <option value="nameDesc">차량명 (내림차순)</option>
+            <option value="numberAsc">차량번호 (오름차순)</option>
+            <option value="numberDesc">차량번호 (내림차순)</option>
+            <option value="priceAsc">대여료 (낮은순)</option>
+            <option value="priceDesc">대여료 (높은순)</option>
+          </select>
+          <button
+            className={`filter-button ${isDarkMode ? 'dark' : ''}`}
             onClick={handleOpenFilterDialog}
-            className="filter-button"
           >
             필터
-          </Button>
+          </button>
         </div>
-
-        {/* 필터 다이얼로그 */}
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner" />
+          </div>
+        ) : error ? (
+          <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{error}</div>
+        ) : (
+          <>
+            <div className="car-grid">
+              {getCurrentPageCars().map((car) => (
+                <CarCard
+                  key={car.id}
+                  car={car}
+                  onRent={handleRentClick}
+                  onTagClick={handleTagFilterClick}
+                  isDarkMode={isDarkMode}
+                />
+              ))}
+            </div>
+            {filteredCars.length > 0 && (
+              <div className="pagination-wrapper">
+                <div className="pagination">
+                  <button
+                    className="page-button"
+                    onClick={() => handlePageChange(null, Math.max(1, page - 1))}
+                    disabled={page === 1}
+                  >
+                    이전
+                  </button>
+                  <button
+                    className="page-button"
+                    onClick={() => handlePageChange(null, Math.min(Math.ceil(filteredCars.length / itemsPerPage), page + 1))}
+                    disabled={page === Math.ceil(filteredCars.length / itemsPerPage)}
+                  >
+                    다음
+                  </button>
+                </div>
+                <div className="pagination-info">{getPageInfo()}</div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+      {filterDialogOpen && (
         <FilterDialog
           open={filterDialogOpen}
-          onClose={() => setFilterDialogOpen(false)}
-          onApply={() => setFilterDialogOpen(false)}
+          onClose={handleCloseFilterDialog}
+          onApply={handleApplyFilters}
           filters={filters}
           setFilters={setFilters}
           tempFilters={tempFilters}
@@ -990,441 +897,139 @@ function Rental({ isDarkMode }) {
           allTags={allTags}
           isDarkMode={isDarkMode}
         />
-
-        {/* 차량 목록 */}
-        {loading ? (
-          <Box className={`loading-container ${isDarkMode ? 'dark' : 'light'}`}>
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Alert severity="error" className={`alert ${isDarkMode ? 'dark' : 'light'}`}>{error}</Alert>
-        ) : (
-          <Box className={`car-list-container ${isDarkMode ? 'dark' : 'light'}`}>
-            <Grid container spacing={3}>
-              {getCurrentPageCars().map((car) => (
-                <Grid item xs={12} key={car.id}>
-                  <CarCard
-                    car={{
-                      ...car,
-                      tags: (car.tags || []).filter(tag => tag !== '도심 드라이브')  // 차량 카드에서도 도심 드라이브 태그 제거
-                    }}
-                    onRent={handleRentClick}
-                    onTagClick={handleTagClick}
-                    isDarkMode={isDarkMode}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            {filteredCars.length === 0 && (
-              <Alert severity="info" className={`alert ${isDarkMode ? 'dark' : 'light'}`}>
-                검색 결과가 없습니다.
-              </Alert>
-            )}
-            {filteredCars.length > 0 && (
-              <Box className={`pagination-container ${isDarkMode ? 'dark' : 'light'}`}>
-                <Box className="pagination-wrapper">
-                  <Pagination
-                    count={Math.ceil(filteredCars.length / itemsPerPage)}
-                    page={page}
-                    onChange={handlePageChange}
-                    color="primary"
-                    size="large"
-                    showFirstButton
-                    showLastButton
-                    siblingCount={1}
-                    boundaryCount={1}
-                  />
-                  <Typography className="pagination-info">
-                    {getPageInfo()}
-                  </Typography>
-                </Box>
-              </Box>
-            )}
-          </Box>
-        )}
-
-        {/* 대여 다이얼로그 */}
-        <Dialog
-          open={openDialog}
-          onClose={handleCloseDialog}
-          className={`rental-dialog ${isDarkMode ? 'dark' : ''}`}
-          maxWidth="md"
-          fullWidth
-          PaperProps={{
-            sx: {
-              backgroundColor: isDarkMode ? 'var(--dark-background-color)' : 'var(--background-color)',
-              color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-            }
-          }}
-        >
-          <DialogTitle className="filter-section-title" sx={{ 
-            color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)',
-            borderBottom: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`
-          }}>
-            차량 대여
-          </DialogTitle>
-          <DialogContent>
-            {error && <Alert severity="error" className="alert">{error}</Alert>}
-            <Box className="filter-section" sx={{ 
-              borderBottom: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`
-            }}>
-              <Typography className="filter-section-title" sx={{ 
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-              }}>
-                차량 정보
-              </Typography>
-              <Box sx={{ 
-                backgroundColor: isDarkMode ? 'var(--dark-background-color-light)' : 'var(--background-color-light)',
-                padding: '1rem',
-                borderRadius: '8px',
-                mb: 2
-              }}>
-                <Typography variant="h6" gutterBottom sx={{ 
-                  color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                }}>
-                  {selectedCar?.carName}
-                </Typography>
-                <Typography sx={{ 
-                  color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                  mb: 1
-                }}>
-                  차량번호: {selectedCar?.carNumber}
-                </Typography>
-                <Typography sx={{ 
-                  color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                  mb: 1
-                }}>
-                  대여료: {selectedCar?.rentalFee}원/일
-                </Typography>
+      )}
+      {openDialog && selectedCar && (
+        <div className="rental-dialog-overlay">
+          <div className={`rental-dialog ${isDarkMode ? 'dark' : ''}`}>
+            <div className="rental-dialog-header">
+              <h2>차량 대여</h2>
+              <button className="close-button" onClick={handleCloseDialog}>×</button>
+            </div>
+            <div className="rental-dialog-content">
+              <div className="car-info-box">
+                <h4>차량 정보</h4>
+                <p data-label="차량명: " data-value={selectedCar.carName}></p>
+                <p data-label="차량번호: " data-value={selectedCar.carNumber}></p>
+                <p data-label="제조사: " data-value={selectedCar.carBrand}></p>
+                <p data-label="차종: " data-value={selectedCar.carType}></p>
+                <p data-label="대여료: " data-value={`${selectedCar.rentalFee}원/일`}></p>
                 {rentalData.startTime && rentalData.endTime && (
-                  <Typography 
-                    sx={{ 
-                      mt: 1, 
-                      fontWeight: 600,
-                      fontSize: '1.1rem',
-                      color: isDarkMode ? 'var(--color-accent)' : 'var(--color-primary)'
-                    }}
-                  >
-                    총 대여료: {(() => {
-                      const startDate = new Date(rentalData.startTime);
-                      const endDate = new Date(rentalData.endTime);
-                      const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-                      const totalFee = parseInt(selectedCar?.rentalFee) * rentalDays;
-                      return `${totalFee.toLocaleString()}원`;
-                    })()}
-                  </Typography>
+                  <p data-label="총 대여료: " data-value={`${calculateTotalFee().toLocaleString()}원`}></p>
                 )}
-              </Box>
-            </Box>
-
-            <Box className="filter-section" sx={{ 
-              borderBottom: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`
-            }}>
-              <Typography className="filter-section-title" sx={{ 
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-              }}>
-                대여자 정보
-              </Typography>
-              <TextField
-                fullWidth
-                label="대여자 이름"
-                name="guestName"
-                value={rentalData.guestName}
-                onChange={handleInputChange}
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    height: '48px !important',
-                    backgroundColor: isDarkMode ? 'var(--dark-input-background)' : 'var(--input-background)',
-                    border: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`,
-                    borderRadius: 'var(--radius)',
-                    '&:hover': {
-                      backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                    },
-                    '&.Mui-focused': {
-                      backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                      borderColor: 'var(--color-primary)',
-                    }
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    display: 'none !important'
-                  },
-                  '& .MuiInputBase-input': {
-                    height: '48px !important',
-                    padding: '0 14px !important',
-                    color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                    '&.Mui-focused': {
-                      color: 'var(--color-primary)'
-                    }
-                  }
-                }}
-              />
-            </Box>
-
-            <Box className="filter-section" sx={{ 
-              borderBottom: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`
-            }}>
-              <Typography className="filter-section-title" sx={{ 
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-              }}>
-                대여 기간
-              </Typography>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Box sx={{ 
-                  display: 'flex', 
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  gap: 2,
-                  mb: 2
-                }}>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography gutterBottom sx={{ 
-                      mb: 1,
-                      color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                    }}>
-                      대여 시작 시간
-                    </Typography>
-                    <DateTimePicker
-                      value={rentalData.startTime}
-                      onChange={handleDateChange('startTime')}
-                      renderInput={(params) => (
-                        <TextField 
-                          {...params} 
-                          fullWidth
-                          sx={{
-                            '& .MuiOutlinedInput-root': {
-                              height: '48px !important',
-                              backgroundColor: isDarkMode ? 'var(--dark-input-background)' : 'var(--input-background)',
-                              border: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`,
-                              borderRadius: 'var(--radius)',
-                              '&:hover': {
-                                backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                              },
-                              '&.Mui-focused': {
-                                backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                                borderColor: 'var(--color-primary)',
-                              }
-                            },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              display: 'none !important'
-                            },
-                            '& .MuiInputBase-input': {
-                              height: '48px !important',
-                              padding: '0 14px !important',
-                              color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                            },
-                            '& .MuiInputAdornment-root': {
-                              marginRight: '8px',
-                              color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)'
-                            },
-                            '& .MuiInputLabel-root': {
-                              color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                              '&.Mui-focused': {
-                                color: 'var(--color-primary)'
-                              }
-                            }
-                          }}
-                        />
-                      )}
-                    />
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography gutterBottom sx={{ 
-                      mb: 1,
-                      color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                    }}>
-                      대여 종료 시간
-                    </Typography>
-                    <DateTimePicker
-                      value={rentalData.endTime}
-                      onChange={handleDateChange('endTime')}
-                      minDateTime={rentalData.startTime}
-                      renderInput={(params) => (
-                        <TextField 
-                          {...params} 
-                          fullWidth
-                          sx={{
-                            '& .MuiOutlinedInput-root': {
-                              height: '48px !important',
-                              backgroundColor: isDarkMode ? 'var(--dark-input-background)' : 'var(--input-background)',
-                              border: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`,
-                              borderRadius: 'var(--radius)',
-                              '&:hover': {
-                                backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                              },
-                              '&.Mui-focused': {
-                                backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                                borderColor: 'var(--color-primary)',
-                              }
-                            },
-                            '& .MuiOutlinedInput-notchedOutline': {
-                              display: 'none !important'
-                            },
-                            '& .MuiInputBase-input': {
-                              height: '48px !important',
-                              padding: '0 14px !important',
-                              color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                            },
-                            '& .MuiInputAdornment-root': {
-                              marginRight: '8px',
-                              color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)'
-                            },
-                            '& .MuiInputLabel-root': {
-                              color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                              '&.Mui-focused': {
-                                color: 'var(--color-primary)'
-                              }
-                            }
-                          }}
-                        />
-                      )}
-                    />
-                  </Box>
-                </Box>
-              </LocalizationProvider>
-            </Box>
-
-            <Box className="filter-section" sx={{ 
-              borderBottom: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`
-            }}>
-              <Typography className="filter-section-title" sx={{ 
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-              }}>
-                주소
-              </Typography>
-              <TextField
-                fullWidth
-                label="주소"
-                name="address"
-                value={rentalData.address}
-                onChange={handleInputChange}
-                required
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    height: '48px !important',
-                    backgroundColor: isDarkMode ? 'var(--dark-input-background)' : 'var(--input-background)',
-                    border: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`,
-                    borderRadius: 'var(--radius)',
-                    '&:hover': {
-                      backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                    },
-                    '&.Mui-focused': {
-                      backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                      borderColor: 'var(--color-primary)',
-                    }
-                  },
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    display: 'none !important'
-                  },
-                  '& .MuiInputBase-input': {
-                    height: '48px !important',
-                    padding: '0 14px !important',
-                    color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-                  },
-                  '& .MuiInputLabel-root': {
-                    color: isDarkMode ? 'var(--dark-text-secondary)' : 'var(--text-secondary)',
-                    '&.Mui-focused': {
-                      color: 'var(--color-primary)'
-                    }
-                  }
-                }}
-              />
-            </Box>
-
-            <Box className="filter-section">
-              <Typography className="filter-section-title" sx={{ 
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)'
-              }}>
-                태그
-              </Typography>
-              <Box className="tag-group" sx={{ gap: '0.75rem' }}>
-                {selectedCar?.tags?.filter(tag => tag !== '도심 드라이브').map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    onClick={() => handleTagClick(tag)}
-                    color={rentalData.tags.includes(tag) ? "primary" : "default"}
-                    size="small"
-                    className="tag-chip"
-                    variant={rentalData.tags.includes(tag) ? "filled" : "outlined"}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: rentalData.tags.includes(tag) ? 'primary.dark' : 'action.hover',
-                      },
-                      margin: '0.25rem',
-                      backgroundColor: isDarkMode ? 'var(--dark-background-color-light)' : 'var(--background-color-light)',
-                      color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)',
-                      borderColor: isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)',
-                      '&.MuiChip-colorPrimary': {
-                        backgroundColor: 'var(--color-primary)',
-                        color: 'white'
-                      }
+              </div>
+              <div className="input-group">
+                <label>대여자 이름</label>
+                <input
+                  type="text"
+                  name="guestName"
+                  value={rentalData.guestName}
+                  onChange={handleInputChange}
+                  placeholder="대여자 이름을 입력하세요"
+                />
+              </div>
+              <div className="input-group">
+                <label>목적지</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={rentalData.address}
+                  onChange={handleInputChange}
+                  placeholder="목적지를 입력하세요"
+                />
+              </div>
+              <div className="date-time-inputs">
+                <div className="input-group">
+                  <label>대여 시작 시간</label>
+                  <input
+                    type="datetime-local"
+                    name="startTime"
+                    value={formatDateTimeForInput(rentalData.startTime)}
+                    onChange={(e) => {
+                      const date = new Date(e.target.value + 'Z');
+                      setRentalData(prev => ({
+                        ...prev,
+                        startTime: date
+                      }));
                     }}
+                    min={formatDateTimeForInput(getCurrentKoreanTime())}
                   />
-                ))}
-              </Box>
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ 
-            padding: '1rem 1.5rem',
-            borderTop: `1px solid ${isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'}`,
-            backgroundColor: isDarkMode ? 'var(--dark-background-color)' : 'var(--background-color)'
-          }}>
-            <Button 
-              onClick={handleCloseDialog}
-              sx={{ 
-                minWidth: '100px',
-                padding: '0.5rem 1.5rem',
-                borderRadius: 'var(--radius)',
-                fontWeight: 500,
-                color: isDarkMode ? 'var(--dark-text-color)' : 'var(--text-color)',
-                borderColor: isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)',
-                '&:hover': {
-                  backgroundColor: isDarkMode ? 'var(--color-surface-dark)' : 'var(--color-surface)',
-                  borderColor: isDarkMode ? 'var(--dark-border-color)' : 'var(--border-color)'
-                }
-              }}
-            >
-              취소
-            </Button>
-            <Button 
-              onClick={handleRentalSubmit} 
-              variant="contained" 
-              color="primary"
-              sx={{ 
-                minWidth: '100px',
-                padding: '0.5rem 1.5rem',
-                borderRadius: 'var(--radius)',
-                fontWeight: 500,
-                backgroundColor: 'var(--color-primary)',
-                '&:hover': {
-                  backgroundColor: 'var(--color-accent)'
-                }
-              }}
-            >
-              대여 신청
-            </Button>
-          </DialogActions>
-        </Dialog>
+                </div>
+                <div className="input-group">
+                  <label>대여 종료 시간</label>
+                  <input
+                    type="datetime-local"
+                    name="endTime"
+                    value={formatDateTimeForInput(rentalData.endTime)}
+                    onChange={(e) => {
+                      const date = new Date(e.target.value + 'Z');
+                      setRentalData(prev => ({
+                        ...prev,
+                        endTime: date
+                      }));
+                    }}
+                    min={formatDateTimeForInput(rentalData.startTime)}
+                  />
+                </div>
+              </div>
+              <div className="input-group">
+                <label>태그</label>
+                <div className="tag-group">
+                  {(selectedCar.tags || [])
+                    .filter(tag => tag !== '도심 드라이브' && tag.trim() !== '')
+                    .map((tag) => (
+                      <button
+                        key={tag}
+                        className={`tag-chip ${rentalData.tags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                        onClick={() => handleTagClick(tag)}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            </div>
+            <div className="rental-dialog-actions">
+              <button className="cancel-button" onClick={handleCloseDialog}>취소</button>
+              <button className="apply-button" onClick={handleRentalSubmit}>대여하기</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {success && (
+        <div className={`alert info ${isDarkMode ? 'dark' : ''}`}>
+          {success}
+        </div>
+      )}
+      {error && (
+        <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>
+          {error}
+        </div>
+      )}
 
-        {/* 장소 추천 다이얼로그 */}
-        <Dialog
-          open={openRecommendationDialog}
-          onClose={() => setOpenRecommendationDialog(false)}
-          maxWidth="md"
-          fullWidth
-        >
-          <PlaceRecommendation
-            isDarkMode={isDarkMode}
-            address={recommendationData.address}
-            tags={recommendationData.tags}
-            onClose={() => setOpenRecommendationDialog(false)}
-          />
-        </Dialog>
-      </Paper>
-    </Container>
+      {/* 장소 추천 다이얼로그 */}
+      {openRecommendationDialog && (
+        <div className="recommendation-dialog-overlay">
+          <div className={`recommendation-dialog ${isDarkMode ? 'dark' : ''}`}>
+            <div className="recommendation-dialog-header">
+              <h2>장소 추천</h2>
+              <button className="close-button" onClick={() => setOpenRecommendationDialog(false)}>×</button>
+            </div>
+            <div className="recommendation-dialog-content">
+              <div className="recommendation-info">
+                <p>선택한 태그: {recommendationData.tags.join(', ') || '없음'}</p>
+                <p>목적지: {recommendationData.address || '입력되지 않음'}</p>
+                <p>대여 기간: {formatDateTime(recommendationData.startTime)} ~ {formatDateTime(recommendationData.endTime)}</p>
+              </div>
+              <PlaceRecommendation
+                isDarkMode={isDarkMode}
+                address={recommendationData.address}
+                tags={recommendationData.tags}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

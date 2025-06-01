@@ -1,24 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { 
-  Container, 
-  Paper, 
-  Typography, 
-  TextField, 
-  Button, 
-  Grid,
-  Box,
-  Alert,
-  Chip,
-  Stack,
-  FormControl,
-  Select,
-  MenuItem
-} from '@mui/material';
 import { collection, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../UserContext';
 import '../../styles/Registration.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const carTypes = ['소형', '중형', '대형', 'SUV', '승합차'];
 const carBrands = ['현대', '기아', '르노', '쌍용', '쉐보레', 'BMW', '벤츠', '아우디', '폭스바겐', '기타'];
@@ -55,7 +40,6 @@ function Registration() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  // 다크모드 변경 감지
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleDarkModeChange = (e) => setIsDarkMode(e.matches);
@@ -64,7 +48,6 @@ function Registration() {
     return () => mediaQuery.removeEventListener('change', handleDarkModeChange);
   }, []);
 
-  // 폼 입력값 변경 처리
   const handleChange = (e) => {
     const { name, value } = e.target;
     
@@ -105,7 +88,6 @@ function Registration() {
     setSuccess('');
 
     try {
-      // 입력값 검증
       if (!formData.carNumber || !formData.carType || !formData.carName || 
           !formData.carBrand || !formData.rentalFee) {
         throw new Error('모든 필수 항목을 입력해주세요.');
@@ -119,7 +101,6 @@ function Registration() {
         throw new Error('로그인이 필요합니다.');
       }
 
-      // 데이터 구조 정의
       const carData = {
         carBrand: formData.carBrand === '기타' ? `기타(${formData.otherBrand})` : formData.carBrand,
         carName: formData.carName,
@@ -131,7 +112,6 @@ function Registration() {
         tags: formData.tags
       };
 
-      // Firestore에 데이터 저장
       await setDoc(doc(db, 'registrations', formData.carNumber), carData);
 
       setSuccess('차량이 성공적으로 등록되었습니다!');
@@ -152,172 +132,165 @@ function Registration() {
   };
 
   return (
-    <Container maxWidth="md" className={`registration-container ${isDarkMode ? 'dark-mode' : ''}`}>
-      <Paper elevation={3} className={`registration-paper ${isDarkMode ? 'dark-mode' : ''}`}>
-        <Box className={`registration-header ${isDarkMode ? 'dark-mode' : ''}`}>
-          <Typography variant="h4" component="h1" className={`registration-title ${isDarkMode ? 'dark-mode' : ''}`}>
+    <div className={`registration-container ${isDarkMode ? 'dark' : ''}`}>
+      <Link
+        to="/rental"
+        className={`rental-link-button ${isDarkMode ? 'dark' : ''}`}
+      >
+        차량 대여
+      </Link>
+      <div className={`registration-paper ${isDarkMode ? 'dark' : ''}`}>
+        <div className={`registration-header ${isDarkMode ? 'dark' : ''}`}>
+          <h1 className={`registration-title ${isDarkMode ? 'dark' : ''}`}>
             차량 등록
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate('/rental')}
-            className={`rental-link-button ${isDarkMode ? 'dark-mode' : ''}`}
-          >
-            차량 대여
-          </Button>
-        </Box>
+          </h1>
+        </div>
 
         {!user && (
-          <Alert severity="warning" className={`alert ${isDarkMode ? 'dark-mode' : ''}`}>
+          <div className={`alert warning ${isDarkMode ? 'dark' : ''}`}>
             차량을 등록하려면 로그인이 필요합니다. 현재 로그인되어 있지 않습니다.
-          </Alert>
+          </div>
         )}
 
-        {error && <Alert severity="error" className={`alert ${isDarkMode ? 'dark-mode' : ''}`}>{error}</Alert>}
-        {success && <Alert severity="success" className={`alert ${isDarkMode ? 'dark-mode' : ''}`}>{success}</Alert>}
+        {error && <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{error}</div>}
+        {success && <div className={`alert success ${isDarkMode ? 'dark' : ''}`}>{success}</div>}
 
-        <form onSubmit={handleSubmit} className={isDarkMode ? 'dark-mode' : ''} noValidate>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>등록자 이름</Typography>
-              <TextField
-                fullWidth
+        <form onSubmit={handleSubmit} className="registration-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label>등록자 이름</label>
+              <input
+                type="text"
                 name="hostName"
                 value={formData.hostName}
                 onChange={handleChange}
                 required
                 placeholder="차량 등록자의 이름을 입력해주세요"
+                className={isDarkMode ? 'dark' : ''}
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>차량번호</Typography>
-              <TextField
-                fullWidth
+            <div className="form-group">
+              <label>차량번호</label>
+              <input
+                type="text"
                 name="carNumber"
                 value={formData.carNumber}
                 onChange={handleChange}
                 required
                 placeholder="차량번호를 입력해주세요"
+                className={isDarkMode ? 'dark' : ''}
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>차량 종류</Typography>
-              <FormControl fullWidth required>
-                <Select
-                  name="carType"
-                  value={formData.carType}
-                  onChange={handleChange}
-                  displayEmpty
-                >
-                  <MenuItem value="">전체</MenuItem>
-                  {carTypes.map((type) => (
-                    <MenuItem key={type} value={type}>{type}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            <div className="form-group">
+              <label>차량 종류</label>
+              <select
+                name="carType"
+                value={formData.carType}
+                onChange={handleChange}
+                required
+                className={isDarkMode ? 'dark' : ''}
+              >
+                <option value="">전체</option>
+                {carTypes.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>제조사</Typography>
-              <FormControl fullWidth required>
-                <Select
-                  name="carBrand"
-                  value={formData.carBrand}
-                  onChange={handleChange}
-                  displayEmpty
-                >
-                  <MenuItem value="">전체</MenuItem>
-                  {carBrands.map((brand) => (
-                    <MenuItem key={brand} value={brand}>{brand}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
+            <div className="form-group">
+              <label>제조사</label>
+              <select
+                name="carBrand"
+                value={formData.carBrand}
+                onChange={handleChange}
+                required
+                className={isDarkMode ? 'dark' : ''}
+              >
+                <option value="">전체</option>
+                {carBrands.map((brand) => (
+                  <option key={brand} value={brand}>{brand}</option>
+                ))}
+              </select>
+            </div>
 
             {formData.carBrand === '기타' && (
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>기타 제조사명</Typography>
-                <TextField
-                  fullWidth
+              <div className="form-group">
+                <label>기타 제조사명</label>
+                <input
+                  type="text"
                   name="otherBrand"
                   value={formData.otherBrand}
                   onChange={handleChange}
                   required
                   placeholder="예: 제네시스, 포르쉐 등"
-                  helperText="기타 제조사를 선택한 경우 제조사명을 입력해주세요"
+                  className={isDarkMode ? 'dark' : ''}
                 />
-              </Grid>
+                <span className="helper-text">기타 제조사를 선택한 경우 제조사명을 입력해주세요</span>
+              </div>
             )}
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>차량 이름</Typography>
-              <TextField
-                fullWidth
+            <div className="form-group">
+              <label>차량 이름</label>
+              <input
+                type="text"
                 name="carName"
                 value={formData.carName}
                 onChange={handleChange}
                 required
                 placeholder="차량명을 입력하세요"
+                className={isDarkMode ? 'dark' : ''}
               />
-            </Grid>
+            </div>
 
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>대여료(1일)</Typography>
-              <TextField
-                fullWidth
-                name="rentalFee"
-                value={formData.rentalFee}
-                onChange={handleChange}
-                required
-                placeholder="대여료를 입력하세요"
-                InputProps={{ 
-                  endAdornment: <span>원</span>,
-                  inputProps: { 
-                    inputMode: 'numeric',
-                    pattern: '[0-9]*'
-                  }
-                }}
-              />
-            </Grid>
+            <div className="form-group">
+              <label>대여료(1일)</label>
+              <div className="input-with-suffix">
+                <input
+                  type="text"
+                  name="rentalFee"
+                  value={formData.rentalFee}
+                  onChange={handleChange}
+                  required
+                  placeholder="대여료를 입력하세요"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  className={isDarkMode ? 'dark' : ''}
+                />
+                <span className={`suffix ${isDarkMode ? 'dark' : ''}`}>원</span>
+              </div>
+            </div>
 
-            <Grid item xs={12} className={`tag-section ${isDarkMode ? 'dark-mode' : ''}`}>
-              <Typography variant="subtitle1" gutterBottom className={isDarkMode ? 'dark-mode' : ''}>
-                태그 선택
-              </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap className={`tag-stack ${isDarkMode ? 'dark-mode' : ''}`}>
+            <div className={`form-group tag-section ${isDarkMode ? 'dark' : ''}`}>
+              <label>태그 선택</label>
+              <div className={`tag-stack ${isDarkMode ? 'dark' : ''}`}>
                 {tags.map((tag) => (
-                  <Chip
+                  <button
                     key={tag}
-                    label={tag}
+                    type="button"
+                    className={`tag-chip ${formData.tags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
                     onClick={() => handleTagClick(tag)}
-                    color={formData.tags.includes(tag) ? "primary" : "default"}
-                    className={`tag-chip ${isDarkMode ? 'dark-mode' : ''}`}
-                  />
+                  >
+                    {tag}
+                  </button>
                 ))}
-              </Stack>
-            </Grid>
+              </div>
+            </div>
 
-            <Grid item xs={12}>
-              <Box className={`submit-button-container ${isDarkMode ? 'dark-mode' : ''}`}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  className={`submit-button ${isDarkMode ? 'dark-mode' : ''}`}
-                  disabled={!user}
-                >
-                  차량 등록
-                </Button>
-              </Box>
-            </Grid>
-          </Grid>
+            <div className="form-group submit-group">
+              <button
+                type="submit"
+                className={`submit-button ${isDarkMode ? 'dark' : ''}`}
+                disabled={!user}
+              >
+                차량 등록
+              </button>
+            </div>
+          </div>
         </form>
-      </Paper>
-    </Container>
+      </div>
+    </div>
   );
 }
 
