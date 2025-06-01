@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Rental from './components/rental/Rental';
@@ -38,31 +38,26 @@ function LoginRedirect() {
 
 // 메인 앱 컴포넌트를 UserProvider로 감싸는 컴포넌트
 function AppContent() {
-  const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // localStorage에서 다크모드 상태를 가져옴
+    const savedMode = localStorage.getItem('darkMode');
+    // 저장된 값이 있으면 그 값을 사용하고, 없으면 false(라이트모드)를 기본값으로 사용
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
 
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleDarkModeChange = (e) => {
-      setIsDarkMode(e.matches);
-      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-    };
-    
-    // 초기 테마 설정
+  // 다크모드 상태가 변경될 때마다 localStorage에 저장하고 document의 data-theme 속성 업데이트
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    
-    mediaQuery.addEventListener('change', handleDarkModeChange);
-    return () => mediaQuery.removeEventListener('change', handleDarkModeChange);
-  }, []);
+  }, [isDarkMode]);
 
   const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    document.documentElement.setAttribute('data-theme', newDarkMode ? 'dark' : 'light');
+    setIsDarkMode(prevMode => !prevMode);
   };
 
   return (
-    <div className="app">
-      <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
+    <div className="app" data-theme={isDarkMode ? 'dark' : 'light'}>
+      <Header isDarkMode={isDarkMode} toggleMode={toggleDarkMode} />
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Navigate to="/rental" replace />} />

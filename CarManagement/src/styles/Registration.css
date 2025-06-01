@@ -1,37 +1,89 @@
-/* 색상 변수 정의 */
+/* 공통 색상 변수 사용 */
 :root {
-  --radius: 8px;
-  --spacing: 16px;
-  --border-color: #e0e0e0;
-  --border-color-dark: #424242;
-  --background-color: #ffffff;
-  --background-color-dark: #121212;
-  --text-color: #333333;
-  --text-color-dark: #ffffff;
-  --primary-color: #1976d2;
-  --primary-color-dark: #90caf9;
-  --error-color: #d32f2f;
-  --warning-color: #ed6c02;
-  --success-color: #2e7d32;
-  --hover-color: #f5f5f5;
-  --hover-color-dark: #1e1e1e;
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-dark: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --registration-background: var(--color-bg);
+  --registration-background-dark: var(--color-bg-dark);
+  --registration-surface: var(--color-surface);
+  --registration-surface-dark: var(--color-surface-dark);
+  --registration-text: var(--color-text);
+  --registration-text-dark: var(--color-text-dark);
+  --registration-primary: var(--color-primary);
+  --registration-primary-hover: var(--color-accent);
+  --registration-border: var(--color-border);
+  --registration-border-dark: var(--color-border-dark);
+  --registration-input-bg: var(--color-input);
+  --registration-input-bg-dark: var(--color-input-dark);
+  --registration-desc: var(--color-desc);
+  --registration-desc-dark: var(--color-desc-dark);
+  --registration-radius: var(--radius);
+  --registration-transition: var(--transition);
+  --registration-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 기본 그림자 효과 */
+  --registration-card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);  /* 카드 호버 시 그림자 */
+  --registration-error: #d32f2f;           /* 에러 메시지 색상 */
+  --registration-warning: #ed6c02;         /* 경고 메시지 색상 */
+  --registration-success: #2e7d32;         /* 성공 메시지 색상 */
+  --registration-overlay: rgba(0, 0, 0, 0.5);  /* 오버레이 배경색 */
+  --registration-input-border: #e0e0e0;    /* 입력 필드 테두리 색상 */
+  --registration-input-focus: rgba(25, 118, 210, 0.1);  /* 입력 필드 포커스 효과 */
+  --registration-tag-bg: rgba(25, 118, 210, 0.1);  /* 태그 배경색 */
+  --registration-tag-text: #1976d2;        /* 태그 텍스트 색상 */
+  --registration-alert-error-bg: #fdecea;  /* 에러 알림 배경색 */
+  --registration-alert-error-border: #fbe9e7;  /* 에러 알림 테두리 색상 */
+  --registration-alert-warning-bg: #fff3e0;  /* 경고 알림 배경색 */
+  --registration-alert-warning-border: #ffe0b2;  /* 경고 알림 테두리 색상 */
+  --registration-alert-success-bg: #e8f5e9;  /* 성공 알림 배경색 */
+  --registration-alert-success-border: #c8e6c9;  /* 성공 알림 테두리 색상 */
+  --registration-scrollbar-track: #f1f1f1;  /* 스크롤바 트랙 색상 */
+  --registration-scrollbar-thumb: #888;     /* 스크롤바 썸네일 색상 */
+  --registration-scrollbar-thumb-hover: #666;  /* 스크롤바 썸네일 호버 색상 */
+  
+  /* 레이아웃 변수 */
+  --registration-spacing: 16px;
+}
+
+/* 다크 모드 색상 */
+[data-theme="dark"] {
+  --registration-background: var(--color-bg-dark);
+  --registration-surface: var(--color-surface-dark);
+  --registration-text: var(--color-text-dark);
+  --registration-primary: var(--color-primary);
+  --registration-primary-hover: var(--color-accent);
+  --registration-border: var(--color-border-dark);
+  --registration-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);  /* 기본 그림자 효과 (다크모드) */
+  --registration-card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);  /* 카드 호버 시 그림자 (다크모드) */
+  --registration-input-bg: var(--color-input-dark);
+  --registration-desc: var(--color-desc-dark);
+  --registration-error: #ef5350;           /* 에러 메시지 색상 (다크모드) */
+  --registration-warning: #ffb74d;         /* 경고 메시지 색상 (다크모드) */
+  --registration-success: #66bb6a;         /* 성공 메시지 색상 (다크모드) */
+  --registration-overlay: rgba(0, 0, 0, 0.7);  /* 오버레이 배경색 (다크모드) */
+  --registration-input-border: #bbbbbb;    /* 입력 필드 테두리 색상 (다크모드) */
+  --registration-input-focus: rgba(144, 202, 249, 0.2);  /* 입력 필드 포커스 효과 (다크모드) */
+  --registration-tag-bg: #1a237e;          /* 태그 배경색 (다크모드) */
+  --registration-tag-text: #ffffff;        /* 태그 텍스트 색상 (다크모드) */
+  --registration-alert-error-bg: #b71c1c;  /* 에러 알림 배경색 (다크모드) */
+  --registration-alert-error-border: #d32f2f;  /* 에러 알림 테두리 색상 (다크모드) */
+  --registration-alert-warning-bg: #e65100;  /* 경고 알림 배경색 (다크모드) */
+  --registration-alert-warning-border: #f57c00;  /* 경고 알림 테두리 색상 (다크모드) */
+  --registration-alert-success-bg: #1b5e20;  /* 성공 알림 배경색 (다크모드) */
+  --registration-alert-success-border: #388e3c;  /* 성공 알림 테두리 색상 (다크모드) */
+  --registration-scrollbar-track: #2d2d2d;  /* 스크롤바 트랙 색상 (다크모드) */
+  --registration-scrollbar-thumb: #555;     /* 스크롤바 썸네일 색상 (다크모드) */
+  --registration-scrollbar-thumb-hover: #777;  /* 스크롤바 썸네일 호버 색상 (다크모드) */
 }
 
 /* 전체 페이지 스타일 */
 .registration-container {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 20px;
   min-height: 100vh;
-  background-color: var(--background-color);
+  background-color: var(--registration-background);
   transition: background-color 0.3s ease;
 }
 
 .registration-container.dark {
-  background-color: var(--background-color-dark);
-  color: var(--text-color-dark);
+  background-color: var(--registration-background);
+  color: var(--registration-text);
 }
 
 .registration-container::before {
@@ -45,308 +97,307 @@
 
 /* 입력 폼 레이아웃 */
 .registration-paper {
-  background-color: var(--background-color);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  padding: 2rem;
-  border: 1px solid var(--border-color);
+  background-color: var(--registration-background);
+  border-radius: var(--registration-radius);
+  box-shadow: var(--registration-shadow);
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid var(--registration-border);
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 870px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .registration-paper.dark {
-  background-color: var(--background-color-dark);
-  color: var(--text-color-dark);
+  background-color: var(--registration-background-dark);
+  box-shadow: var(--registration-shadow);
 }
 
 .registration-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--registration-border);
+  padding-bottom: 16px;
+  transition: border-color 0.3s ease;
   text-align: center;
-}
-
-.registration-header.dark-mode {
-  color: #ffffff;
-}
-
-.registration-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: var(--text-color);
   width: 100%;
 }
 
-.registration-title.dark-mode {
-  color: #90caf9;
+.registration-header.dark {
+  border-bottom-color: var(--registration-border);
+}
+
+.registration-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--registration-text);
+  margin: 0;
+  transition: color 0.3s ease;
+  text-align: center;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.registration-title.dark {
+  color: var(--registration-text);
+}
+
+.rental-link-container {
+  max-width: 870px;
+  margin: 0 auto 20px auto;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 0;
 }
 
 .rental-link-button {
   display: inline-block;
-  padding: 12px 24px;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 10px 20px;
+  background-color: var(--registration-primary);
+  color: #ffffff;
   text-decoration: none;
-  border-radius: var(--radius);
-  border: none;
-  cursor: pointer;
+  border-radius: var(--registration-radius);
+  transition: all 0.3s ease;
+  font-size: 16px;
   font-weight: 500;
-  transition: all 0.2s;
-  margin-bottom: 1rem;
-  align-self: flex-end;
+  margin-left: auto;
 }
 
 .rental-link-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
+  background-color: var(--registration-primary-hover);
 }
 
 .rental-link-button.dark {
-  background-color: var(--primary-color-dark);
-  color: var(--background-color-dark);
+  background-color: var(--registration-primary);
 }
 
 .rental-link-button.dark:hover {
-  background-color: #64b5f6;
+  background-color: var(--registration-primary-hover);
 }
 
 /* 입력 필드 스타일 */
 .registration-form {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  max-width: 600px;
+  width: 100%;
+  max-width: 500px;
   margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-bottom: 16px;
 }
 
 .form-group label {
-  font-size: 0.875rem;
+  display: block;
+  margin-bottom: 8px;
   font-weight: 500;
-  color: var(--text-color);
+  color: var(--registration-text);
+  transition: color 0.3s ease;
+}
+
+.form-group.dark label {
+  color: var(--registration-text);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  height: 48px;
-  padding: 0 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: all 0.2s;
-  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid var(--registration-input-border);
+  border-radius: var(--registration-radius);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background-color: var(--registration-input-bg);
+  color: var(--registration-text);
+}
+
+.form-group input.dark,
+.form-group select.dark {
+  background-color: var(--registration-input-bg);
+  border-color: var(--registration-input-border);
+  color: var(--registration-text);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+  border-color: var(--registration-primary);
+  box-shadow: var(--registration-input-focus);
+}
+
+.form-group input.dark:focus,
+.form-group select.dark:focus {
+  border-color: var(--registration-primary);
+  box-shadow: var(--registration-input-focus);
 }
 
 .helper-text {
-  font-size: 0.75rem;
-  color: #666;
+  display: block;
   margin-top: 4px;
+  font-size: 12px;
+  color: var(--registration-text-secondary);
+  transition: color 0.3s ease;
+}
+
+.helper-text.dark {
+  color: var(--registration-text-secondary);
 }
 
 .input-with-suffix {
   position: relative;
-  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .input-with-suffix input {
-  width: 100%;
-  padding-right: 45px;
-  text-align: left;
+  padding-right: 40px;
 }
 
 .suffix {
   position: absolute;
-  right: 12px;
-  top: 37%;
-  transform: translateY(-50%);
-  color: var(--text-color);
-  font-size: 1rem;
-  font-weight: 500;
-  pointer-events: none;
-  opacity: 0.7;
+  right: 10px;
+  color: var(--registration-text-secondary);
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
 .suffix.dark {
-  color: var(--text-color-dark);
+  color: var(--registration-text-secondary);
 }
 
 .tag-section {
-  grid-column: 1 / -1;
-  margin-top: 1rem;
+  margin-top: 16px;
 }
 
 .tag-stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .tag-chip {
   padding: 6px 12px;
-  background-color: #f5f5f5;
-  border: 1px solid var(--border-color);
+  background-color: var(--registration-tag-bg);
+  color: var(--registration-tag-text);
+  border: none;
   border-radius: 16px;
-  font-size: 0.875rem;
-  color: var(--text-color);
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 }
 
-.tag-chip:hover {
-  background-color: #e0e0e0;
+.tag-chip.dark {
+  background-color: var(--registration-tag-bg);
+  color: var(--registration-tag-text);
 }
 
 .tag-chip.selected {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background-color: var(--registration-primary);
+  color: var(--registration-text);
 }
 
-.submit-group {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
+.tag-chip.selected.dark {
+  background-color: var(--registration-primary);
+}
+
+.tag-chip:hover {
+  background-color: var(--registration-primary-hover);
+}
+
+.tag-chip.dark:hover {
+  background-color: var(--registration-primary-hover);
 }
 
 .submit-button {
-  min-width: 200px;
-  height: 48px;
-  padding: 0 24px;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--registration-primary);
+  color: #ffffff;
   border: none;
-  border-radius: 4px;
-  font-size: 1rem;
+  border-radius: var(--registration-radius);
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover:not(:disabled) {
-  background-color: var(--primary-hover);
-}
-
-.submit-button:disabled {
-  background-color: #e0e0e0;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.submit-button.dark-mode {
-  background-color: #1976d2;
-  color: #ffffff;
-}
-
-.submit-button.dark-mode:hover {
-  background-color: #1565c0;
-}
-
-.submit-button.dark-mode.Mui-disabled {
-  background-color: #404040;
-  color: #666666;
+  transition: all 0.3s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
 }
 
 .submit-button.dark {
-  background-color: var(--primary-color-dark);
-  color: var(--background-color-dark);
+  background-color: var(--registration-primary);
 }
 
-.submit-button.dark:hover:not(:disabled) {
-  background-color: #64b5f6;
+.submit-button:hover {
+  background-color: var(--registration-primary-hover);
+}
+
+.submit-button:disabled {
+  background-color: var(--registration-border);
+  cursor: not-allowed;
 }
 
 .submit-button.dark:disabled {
-  background-color: #424242;
-  color: #757575;
+  background-color: var(--registration-border);
 }
 
-/* 알림 메시지 */
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
-  border-radius: 4px;
+  border-radius: var(--registration-radius);
   font-size: 0.875rem;
   border: 1px solid transparent;
-}
-
-.alert.dark-mode {
-  background-color: #1e1e1e;
-  color: #ffffff;
-}
-
-.alert.dark-mode.MuiAlert-standardWarning {
-  background-color: #2d2d00;
-  color: #ffeb3b;
-}
-
-.alert.dark-mode.MuiAlert-standardError {
-  background-color: #2d0000;
-  color: #ff5252;
-}
-
-.alert.dark-mode.MuiAlert-standardSuccess {
-  background-color: #002d00;
-  color: #4caf50;
-}
-
-.alert.warning {
-  background-color: #fff3e0;
-  color: var(--warning-color);
-  border-color: #ffe0b2;
+  transition: all 0.3s ease;
 }
 
 .alert.error {
-  background-color: #fdecea;
-  color: var(--error-color);
-  border-color: #fbe9e7;
-}
-
-.alert.success {
-  background-color: #e8f5e9;
-  color: var(--success-color);
-  border-color: #c8e6c9;
-}
-
-.alert.warning.dark {
-  background-color: #2c1810;
-  color: #ffb74d;
-  border-color: #3e2723;
+  background-color: var(--registration-alert-error-bg);
+  color: var(--registration-error);
+  border-color: var(--registration-alert-error-border);
 }
 
 .alert.error.dark {
-  background-color: #2c1810;
-  color: #ef5350;
-  border-color: #3e2723;
+  background-color: var(--registration-alert-error-bg);
+  color: var(--registration-text);
+  border-color: var(--registration-alert-error-border);
+}
+
+.alert.warning {
+  background-color: var(--registration-alert-warning-bg);
+  color: var(--registration-warning);
+  border-color: var(--registration-alert-warning-border);
+}
+
+.alert.warning.dark {
+  background-color: var(--registration-alert-warning-bg);
+  color: var(--registration-text);
+  border-color: var(--registration-alert-warning-border);
+}
+
+.alert.success {
+  background-color: var(--registration-alert-success-bg);
+  color: var(--registration-success);
+  border-color: var(--registration-alert-success-border);
 }
 
 .alert.success.dark {
-  background-color: #1b2c1b;
-  color: #66bb6a;
-  border-color: #1b5e20;
+  background-color: var(--registration-alert-success-bg);
+  color: var(--registration-text);
+  border-color: var(--registration-alert-success-border);
 }
 
 .tag-section .MuiTypography-subtitle1 {
@@ -364,7 +415,7 @@
   }
 
   .registration-paper {
-    background: #1e1e1e;
+    background: var(--registration-background-dark) !important;
     border-color: rgba(255, 255, 255, 0.12);
   }
 
@@ -431,30 +482,26 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .registration-container {
-    padding: 1rem;
+    padding: 10px;
   }
 
   .registration-paper {
-    padding: 1.5rem;
+    padding: 16px;
+    max-width: 100%;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    padding: 0 0.5rem;
+    max-width: 100%;
   }
 
-  .registration-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+  .tag-stack {
+    justify-content: center;
   }
 
-  .registration-title {
-    font-size: 1.5rem;
-  }
-
-  .submit-button {
-    width: 100%;
+  .rental-link-container {
+    padding: 0 16px;
   }
 }
 
@@ -462,7 +509,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -471,7 +518,7 @@
 }
 
 .registration-paper {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 /* Select 컴포넌트 다크 모드 스타일 */
@@ -493,11 +540,11 @@ form.dark-mode .MuiMenuItem-root:hover {
 }
 
 form.dark-mode .MuiMenuItem-root.Mui-selected {
-  background-color: #1976d2;
+  background-color: var(--registration-primary);
 }
 
 form.dark-mode .MuiMenuItem-root.Mui-selected:hover {
-  background-color: #1565c0;
+  background-color: var(--registration-primary-hover);
 }
 
 form.dark-mode .MuiTextField-root,
@@ -511,49 +558,99 @@ form.dark-mode .MuiSelect-select {
 }
 
 form.dark-mode .MuiInputLabel-root {
-  color: #b0b0b0;
+  color: var(--registration-text-secondary);
 }
 
 .registration-header.dark {
-  border-bottom-color: var(--border-color-dark);
+  border-bottom-color: var(--registration-border);
 }
 
 .registration-title.dark {
-  color: var(--text-color-dark);
+  color: var(--registration-text);
 }
 
 .form-group label.dark {
-  color: var(--text-color-dark);
+  color: var(--registration-text);
 }
 
 .form-group input.dark,
 .form-group select.dark {
-  background-color: #1e1e1e;
-  border-color: var(--border-color-dark);
-  color: var(--text-color-dark);
+  background-color: var(--registration-input-bg);
+  border-color: var(--registration-input-border);
+  color: var(--registration-text);
 }
 
 .form-group input.dark:focus,
 .form-group select.dark:focus {
-  border-color: var(--primary-color-dark);
+  border-color: var(--registration-primary);
 }
 
 .helper-text.dark {
-  color: #9e9e9e;
+  color: var(--registration-text-secondary);
 }
 
 .tag-chip.dark {
-  background-color: #2c2c2c;
-  border-color: var(--border-color-dark);
-  color: var(--text-color-dark);
+  background-color: var(--registration-tag-bg);
+  border-color: var(--registration-border);
+  color: var(--registration-tag-text);
 }
 
 .tag-chip.dark:hover {
-  background-color: #424242;
+  background-color: var(--registration-primary-hover);
 }
 
 .tag-chip.dark.selected {
-  background-color: var(--primary-color-dark);
-  color: var(--background-color-dark);
-  border-color: var(--primary-color-dark);
+  background-color: var(--registration-primary);
+  color: var(--registration-text);
+  border-color: var(--registration-border);
+}
+
+/* 포커스 스타일 */
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+input.dark:focus-visible,
+select.dark:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 스크롤바 스타일 */
+.registration-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.registration-container::-webkit-scrollbar-track {
+  background: var(--registration-scrollbar-track);
+}
+
+.registration-container.dark::-webkit-scrollbar-track {
+  background: var(--registration-scrollbar-track);
+}
+
+.registration-container::-webkit-scrollbar-thumb {
+  background: var(--registration-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.registration-container.dark::-webkit-scrollbar-thumb {
+  background: var(--registration-scrollbar-thumb);
+}
+
+.registration-container::-webkit-scrollbar-thumb:hover {
+  background: var(--registration-scrollbar-thumb-hover);
+}
+
+.registration-container.dark::-webkit-scrollbar-thumb:hover {
+  background: var(--registration-scrollbar-thumb-hover);
+}
+
+[data-theme="dark"] .registration-paper,
+[data-theme="dark"] .registration-header,
+.registration-paper.dark,
+.registration-header.dark {
+  background-color: var(--registration-background-dark) !important;
 } 

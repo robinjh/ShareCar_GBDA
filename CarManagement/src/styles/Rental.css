@@ -1,43 +1,195 @@
-/* 기본 변수 */
+/* 공통 색상 변수 사용 */
 :root {
-  --radius: 8px;
-  --spacing: 16px;
-  --border-color: #e0e0e0;
-  --background-color: #ffffff;
-  --background-color-light: #f5f5f5;
-  --text-color: #333333;
-  --text-secondary: #666666;
-  --color-primary: #1976d2;
-  --color-accent: #1565c0;
-  --color-surface: #f5f5f5;
-  --input-background: #ffffff;
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --primary-color: #1976d2;
-  --primary-hover: #1565c0;
-  --error-color: #d32f2f;
-  --warning-color: #ed6c02;
-  --success-color: #2e7d32;
-  --card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --rental-background: var(--color-bg);
+  --rental-background-dark: var(--color-bg-dark);
+  --rental-surface: var(--color-surface);
+  --rental-surface-dark: var(--color-surface-dark);
+  --rental-text: var(--color-text);
+  --rental-text-dark: var(--color-text-dark);
+  --rental-primary: var(--color-primary);
+  --rental-primary-hover: var(--color-accent);
+  --rental-border: var(--color-border);
+  --rental-border-dark: var(--color-border-dark);
+  --rental-input-bg: var(--color-input);
+  --rental-input-bg-dark: var(--color-input-dark);
+  --rental-desc: var(--color-desc);
+  --rental-desc-dark: var(--color-desc-dark);
+  --rental-radius: var(--radius);
+  --rental-transition: var(--transition);
+  --color-bg: #fff;
+  --color-bg-dark: #23234a;
 }
 
-/* 다크 모드 변수 */
+body,
+.rental-container {
+  background-color: var(--color-bg);
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] .rental-container {
+  background-color: var(--color-bg-dark) !important;
+}
+
 [data-theme="dark"] {
-  --border-color: #424242;
-  --background-color: #121212;
-  --background-color-light: #1e1e1e;
-  --text-color: #ffffff;
-  --text-secondary: #b0b0b0;
-  --color-primary: #90caf9;
-  --color-accent: #64b5f6;
-  --color-surface: #1e1e1e;
-  --input-background: #1e1e1e;
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  --primary-color: #90caf9;
-  --primary-hover: #64b5f6;
-  --error-color: #ef5350;
-  --warning-color: #ffb74d;
-  --success-color: #66bb6a;
+  --rental-background: var(--color-bg-dark);
+  --rental-surface: var(--color-surface-dark);
+  --rental-text: var(--color-text-dark);
+  --rental-primary: var(--color-primary);
+  --rental-primary-hover: var(--color-accent);
+  --rental-border: var(--color-border-dark);
+  --rental-input-bg: var(--color-input-dark);
+  --rental-desc: var(--color-desc-dark);
+}
+
+/* 색상 변수 정의 */
+:root {
+  /* 라이트 모드 색상 */
+  --rental-background-light: #f5f5f5;  /* 차량 카드 배경색, 필터 다이얼로그 배경색 */
+  --rental-text-secondary: #666666;  /* 보조 텍스트 색상 (라벨, 설명 등) */
+  --rental-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 기본 그림자 효과 */
+  --rental-card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);  /* 카드 호버 시 그림자 */
+  --rental-error: #d32f2f;           /* 에러 메시지 색상 */
+  --rental-warning: #ed6c02;         /* 경고 메시지 색상 */
+  --rental-success: #2e7d32;         /* 성공 메시지 색상 */
+  --rental-overlay: rgba(0, 0, 0, 0.5);  /* 오버레이 배경색 */
+  --rental-input-border: #e0e0e0;    /* 입력 필드 테두리 색상 */
+  --rental-input-focus: rgba(25, 118, 210, 0.1);  /* 입력 필드 포커스 효과 */
+  --rental-tag-bg: rgba(25, 118, 210, 0.1);  /* 태그 배경색 */
+  --rental-tag-text: #1976d2;        /* 태그 텍스트 색상 */
+  --rental-alert-error-bg: #fdecea;  /* 에러 알림 배경색 */
+  --rental-alert-error-border: #fbe9e7;  /* 에러 알림 테두리 색상 */
+  --rental-alert-info-bg: #e3f2fd;   /* 정보 알림 배경색 */
+  --rental-alert-info-border: #bbdefb;  /* 정보 알림 테두리 색상 */
+  
+  /* 레이아웃 변수 */
+  --rental-spacing: 16px;
+}
+
+/* 기존의 하드코딩된 색상값을 모두 변수로 변경 */
+.rental-container.dark {
+  background-color: #23234a;
+  color: var(--rental-text);
+}
+
+.rental-header.dark {
+  border-bottom-color: var(--rental-border);
+}
+
+.rental-title.dark {
+  color: var(--rental-text);
+}
+
+.search-field.dark {
+  background-color: var(--rental-input-bg);
+  border-color: var(--rental-input-border);
+  color: var(--rental-text);
+}
+
+.search-button.dark {
+  background-color: var(--rental-primary);
+  border-color: var(--rental-primary);
+  color: #fff;
+}
+
+.search-button.dark:hover {
+  background-color: var(--rental-primary-hover);
+  border-color: var(--rental-primary-hover);
+  color: #fff;
+}
+
+.filter-button.dark {
+  background-color: var(--rental-primary);
+  color: var(--rental-text);
+}
+
+.filter-button.dark:hover {
+  background-color: var(--rental-primary-hover);
+  color: var(--rental-text);
+}
+
+.sort-select.dark {
+  background-color: #404040;
+  border: 1.5px solid var(--rental-border);
+  color: #ffffff;
+}
+
+.sort-select.dark:focus {
+  border-color: #fff;
+}
+
+.car-image.dark {
+  border-bottom-color: var(--rental-border);
+}
+
+.tag.dark {
+  background-color: var(--rental-tag-bg);
+  color: var(--rental-tag-text);
+}
+
+.filter-dialog-content.dark,
+[data-theme="dark"] .filter-dialog-content {
+  background-color: #23234a;
+  color: #fff;
+  border: 1.5px solid #505050;
+  box-shadow: none;
+}
+
+.filter-dialog-header.dark {
+  border-bottom-color: #404040;
+}
+
+.filter-dialog-title.dark {
+  color: #ffffff;
+}
+
+.close-button.dark {
+  color: var(--rental-text-secondary);
+}
+
+.close-button.dark:hover {
+  color: var(--rental-text);
+}
+
+.filter-group select.dark {
+  background-color: var(--rental-input-bg);
+  border-color: var(--rental-input-border);
+  color: var(--rental-text);
+}
+
+.filter-dialog-actions.dark {
+  border-top-color: #404040;
+}
+
+.filter-dialog-actions .cancel-button.dark,
+.filter-dialog-actions .apply-button.dark {
+  background-color: var(--rental-primary);
+  color: var(--rental-text);
+}
+
+.filter-dialog-actions .cancel-button.dark:hover,
+.filter-dialog-actions .apply-button.dark:hover {
+  background-color: var(--rental-primary-hover);
+}
+
+.apply-button.dark {
+  background-color: var(--rental-primary);
+  color: var(--rental-text);
+}
+
+.apply-button.dark:hover {
+  background-color: var(--rental-primary-hover);
+}
+
+.alert.error.dark {
+  background-color: #b71c1c;
+  color: #ffffff;
+  border-color: #d32f2f;
+}
+
+.alert.info.dark {
+  background-color: #1a237e;
+  color: #ffffff;
+  border-color: #283593;
 }
 
 /* 컨테이너 */
@@ -46,16 +198,21 @@
   margin: 0 auto;
   padding: 2rem 1rem;
   min-height: 100vh;
-  background-color: var(--background-color);
+  background-color: var(--rental-background);
   transition: background-color 0.3s ease;
 }
 
+.rental-container.dark {
+  background-color: var(--rental-background);
+  color: var(--rental-text);
+}
+
 .rental-paper {
-  background-color: var(--background-color);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background-color: var(--rental-background);
+  border-radius: var(--rental-radius);
+  box-shadow: var(--rental-shadow);
   padding: 2rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--rental-border);
   transition: all 0.3s ease;
 }
 
@@ -66,45 +223,55 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--rental-border);
   text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.rental-header.dark {
+  border-bottom-color: var(--rental-border);
 }
 
 .rental-title {
   margin: 0 0 1rem 0;
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--rental-text);
   width: 100%;
+  transition: color 0.3s ease;
+}
+
+.rental-title.dark {
+  color: var(--rental-text);
+}
+
+.registration-link-container {
+  width: 100%;
+  text-align: right;
+  margin-bottom: 1.5rem;
 }
 
 .registration-link-button {
   display: inline-block;
-  padding: 12px 24px;
-  background-color: var(--primary-color);
-  color: white;
+  padding: 10px 20px;
+  background-color: var(--rental-primary);
+  color: var(--rental-text-dark);
   text-decoration: none;
-  border-radius: var(--radius);
+  border-radius: var(--rental-radius);
+  font-size: 16px;
+  font-weight: 500;
   border: none;
   cursor: pointer;
-  font-weight: 500;
   transition: all 0.2s;
-  margin-bottom: 1rem;
-  align-self: flex-end;
-}
-
-.registration-link-button:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
 }
 
 .registration-link-button.dark {
-  background-color: var(--primary-color-dark);
-  color: var(--background-color-dark);
+  background-color: var(--rental-primary);
+  color: var(--rental-background-dark);
 }
 
-.registration-link-button.dark:hover {
-  background-color: #64b5f6;
+.registration-link-button:hover {
+  background-color: var(--rental-primary-hover);
 }
 
 /* 검색 영역 */
@@ -125,60 +292,61 @@
 
 .search-field-wrapper {
   display: flex;
-  width: 80%;
-  max-width: 800px;
-  gap: 0;
-  margin: 0 auto;
+  align-items: stretch;
   height: 48px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.search-field,
+.sort-select,
+.filter-group select {
+  border: 1.5px solid var(--rental-border);
+  background-color: var(--rental-input-bg);
+  color: var(--rental-text);
+  transition: border 0.2s;
 }
 
 .search-field {
   flex: 1;
   height: 100%;
-  padding: 0 1rem;
-  border: 1px solid var(--border-color);
+  border-radius: var(--rental-radius) 0 0 var(--rental-radius);
   border-right: none;
-  border-radius: var(--radius) 0 0 var(--radius);
-  font-size: 1rem;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: all 0.2s;
-  box-sizing: border-box;
-  margin: 0;
+  min-width: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.search-field.dark {
+  background-color: #404040;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+.search-field:hover {
+  border-color: #181829;
+}
+
+.search-field.dark:hover {
+  border-color: #fff;
 }
 
 .search-button {
   height: 100%;
-  padding: 0 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: 1px solid var(--primary-color);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  box-sizing: border-box;
+  border-radius: 0 var(--rental-radius) var(--rental-radius) 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: 0 1.5rem;
   margin: 0;
 }
 
 .search-button:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-}
-
-.search-button.dark {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-.search-button.dark:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
+  background-color: var(--rental-primary-hover);
+  color: var(--rental-text-dark);
+  border-color: var(--rental-primary-hover);
 }
 
 .search-input:focus {
@@ -187,17 +355,21 @@
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
 
+.search-input:focus.dark {
+  outline-color: #64b5f6;
+}
+
 .filter-button {
   height: 40px;
-  padding: 0 1.5rem;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+  padding: 0 14px;
+  border: 1.5px solid var(--rental-border);
+  border-radius: var(--rental-radius);
+  background-color: var(--rental-input-bg);
+  color: var(--rental-text);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -205,18 +377,39 @@
   box-sizing: border-box;
   margin: 0;
   line-height: 1;
+  outline: none;
+}
+
+.filter-button:focus {
+  border-color: #181829;
+}
+
+.filter-button.dark {
+  background-color: #404040;
+  border: 1.5px solid var(--rental-border);
+  color: #ffffff;
+}
+
+.filter-button.dark:focus {
+  border-color: #fff;
 }
 
 .filter-button:hover {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background-color: var(--rental-input-bg);
+  color: var(--rental-text);
+  border-color: #181829;
+}
+
+.filter-button.dark:hover {
+  background-color: #404040;
+  color: #fff;
+  border-color: #fff;
 }
 
 /* 정렬 및 필터 영역 */
 .sort-filter-row {
   display: flex;
-  gap: var(--spacing);
+  gap: var(--rental-spacing);
   margin-bottom: 4rem;
   width: 80%;
   max-width: 800px;
@@ -239,14 +432,38 @@
 .sort-select {
   height: 40px;
   padding: 0 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background-color: var(--input-background);
-  color: var(--text-color);
+  border: 1.5px solid var(--rental-border);
+  border-radius: var(--rental-radius);
+  background-color: var(--rental-input-bg);
+  color: var(--rental-text);
   font-size: 0.9rem;
   cursor: pointer;
   box-sizing: border-box;
   margin: 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sort-select:focus {
+  border-color: #181829;
+}
+
+.sort-select:hover {
+  border-color: #181829;
+}
+
+.sort-select.dark {
+  background-color: #404040;
+  border: 1.5px solid var(--rental-border);
+  color: #ffffff;
+}
+
+.sort-select.dark:focus {
+  border-color: #fff;
+}
+
+.sort-select.dark:hover {
+  border-color: #fff;
 }
 
 /* 차량 카드 */
@@ -261,13 +478,20 @@
 }
 
 .car-card {
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  background-color: var(--rental-background-light);
+  border: 1px solid var(--rental-border);
+  border-radius: var(--rental-radius);
+  box-shadow: var(--rental-shadow);
   overflow: hidden;
   cursor: pointer;
   width: 100%;
+  transition: all 0.3s ease;
+}
+
+.car-card.dark {
+  background-color: var(--rental-background) !important;
+  box-shadow: var(--rental-shadow);
+  border: 1.5px solid #505050 !important;
 }
 
 .car-image {
@@ -277,8 +501,17 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.car-image.dark {
+  border-bottom-color: #404040;
+}
+
 .car-content {
   padding: 1rem;
+  background-color: var(--rental-background-light);
+}
+
+.car-content.dark {
+  background-color: var(--rental-background) !important;
 }
 
 .car-title-section {
@@ -302,15 +535,24 @@
   font-weight: 600;
   color: var(--text-color);
   line-height: 1.2;
+  transition: color 0.3s ease;
+}
+
+.car-name.dark {
+  color: var(--text-color);
 }
 
 .car-fee {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--primary-color);
+  color: var(--color-primary);
   white-space: nowrap;
   padding-bottom: -0.1rem;
+}
+
+.car-fee.dark {
+  color: var(--color-primary);
 }
 
 .car-header {
@@ -325,21 +567,40 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
-.car-info-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+.car-info.dark {
   color: var(--text-color);
 }
 
-.car-price {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--primary-color);
-  margin-top: auto;
+.car-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  min-width: 70px;
+  color: var(--text-secondary);
+}
+
+.detail-label.dark {
+  color: var(--text-secondary);
+}
+
+.detail-value {
+  color: var(--text-color);
+}
+
+.detail-value.dark {
+  color: var(--text-color);
 }
 
 .car-tags {
@@ -349,13 +610,19 @@
   margin-top: 1rem;
 }
 
-.car-tag {
+.tag {
   padding: 4px 8px;
   background-color: rgba(25, 118, 210, 0.1);
   color: var(--primary-color);
   border-radius: 16px;
   font-size: 0.75rem;
   font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tag.dark {
+  background-color: #404040;
+  color: #ffffff;
 }
 
 .car-actions {
@@ -369,7 +636,7 @@
   background-color: var(--color-primary);
   color: white;
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--rental-radius);
   cursor: pointer;
   font-weight: 500;
   transition: background-color 0.2s;
@@ -384,14 +651,24 @@
   cursor: not-allowed;
 }
 
-/* 필터 다이얼로그 */
+.rent-button.dark,
+.rent-button.dark:hover {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--rental-radius) !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10) !important;
+  transition: background-color 0.2s !important;
+}
+.rent-button.dark:hover {
+  background-color: var(--color-accent) !important;
+}
+
+/* 필터 다이얼로그 오버레이 및 다이얼로그 표시 관련 CSS 정리 */
 .filter-dialog {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -400,14 +677,27 @@
   visibility: hidden;
   transition: all 0.3s ease;
 }
-
 .filter-dialog.open {
   opacity: 1;
   visibility: visible;
 }
+.filter-dialog-overlay {
+  background-color: rgba(0,0,0,0.33);
+  backdrop-filter: blur(6px); 
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 999;
+}
+.filter-dialog.dark,
+[data-theme="dark"] .filter-dialog,
+.filter-dialog-overlay.dark,
+[data-theme="dark"] .filter-dialog-overlay {
+  background-color: rgba(0,0,0,0.33);
+  backdrop-filter: blur(6px);
+}
 
 .filter-dialog-content {
-  background-color: var(--background-color);
+  background-color: var(--rental-background-light);
   border-radius: 0;
   padding: 1.5rem;
   width: 95%;
@@ -415,7 +705,16 @@
   max-height: 95vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: var(--shadow);
+  box-shadow: var(--rental-shadow);
+  transition: all 0.3s ease;
+}
+
+.filter-dialog-content.dark,
+[data-theme="dark"] .filter-dialog-content {
+  background-color: #23234a;
+  color: #fff;
+  border: 1.5px solid #505050;
+  box-shadow: none;
 }
 
 .filter-dialog-header {
@@ -426,6 +725,11 @@
   position: relative;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.3s ease;
+}
+
+.filter-dialog-header.dark {
+  border-bottom-color: #404040;
 }
 
 .filter-dialog-title {
@@ -437,6 +741,11 @@
   width: 100%;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-color);
+  transition: color 0.3s ease;
+}
+
+.filter-dialog-title.dark {
+  color: #ffffff;
 }
 
 .filter-dialog-body {
@@ -453,6 +762,18 @@
   padding: 0.5rem;
   font-size: 1.5rem;
   line-height: 1;
+}
+
+.close-button.dark {
+  color: #bdbdbd;
+}
+
+.close-button:hover {
+  color: #333333;
+}
+
+.close-button.dark:hover {
+  color: #ffffff;
 }
 
 .filter-form {
@@ -477,9 +798,9 @@
   height: 48px;
   padding: 0 1rem;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+  border-radius: var(--rental-radius);
   font-size: 0.875rem;
-  background-color: var(--background-color);
+  background-color: var(--rental-background);
   color: var(--text-color);
   transition: all 0.2s;
 }
@@ -490,44 +811,96 @@
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
 
+.filter-group select.dark {
+  background-color: #404040;
+  border-color: #505050;
+  color: #ffffff;
+}
+
+.filter-group select:focus.dark {
+  border-color: #64b5f6;
+}
+
 .filter-dialog-actions {
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing);
+  gap: var(--rental-spacing);
   margin-top: 1.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border-color);
 }
 
-.filter-dialog-actions .cancel-button,
+.filter-dialog-actions.dark {
+  border-top-color: #404040;
+}
+
 .filter-dialog-actions .apply-button {
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
+  background-color: var(--rental-primary) !important;
+  color: #fff !important;
+  border: 2px solid var(--rental-primary) !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  border-radius: var(--rental-radius) !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10) !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s !important;
+}
+.filter-dialog-actions .apply-button:hover,
+.filter-dialog-actions .apply-button:focus {
+  background-color: var(--rental-primary-hover) !important;
+  border-color: var(--rental-primary-hover) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18) !important;
+}
+.filter-dialog-actions .cancel-button,
+.filter-dialog-actions .cancel-button {
+  background: none !important;
+  border: none !important;
+  color: #181829 !important;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-width: 80px;
+  font-size: 1rem;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: color 0.2s;
+  padding: 0.75rem 1.5rem;
 }
-
-.apply-button {
-  background-color: var(--primary-color);
-  color: white;
+.filter-dialog-actions .cancel-button.dark,
+[data-theme="dark"] .filter-dialog-actions .cancel-button {
+  color: #fff !important;
+}
+.filter-dialog-actions .cancel-button:hover,
+.filter-dialog-actions .cancel-button:focus,
+.filter-dialog-actions .cancel-button.dark:hover,
+[data-theme="dark"] .filter-dialog-actions .cancel-button:hover {
+  color: #fff !important;
+  text-decoration: underline !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.filter-dialog-actions .reset-button {
+  background: none;
   border: none;
+  color: #181829;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: none;
+  padding: 0.75rem 1.5rem;
+  transition: color 0.2s;
 }
-
-.apply-button:hover {
-  background-color: var(--primary-hover);
+.filter-dialog-actions .reset-button.dark,
+[data-theme="dark"] .filter-dialog-actions .reset-button {
+  color: #fff !important;
 }
-
-.reset-button {
-  background-color: transparent;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+.filter-dialog-actions .reset-button:hover,
+.filter-dialog-actions .reset-button:focus {
+  text-decoration: underline;
+  color: #181829;
 }
-
-.reset-button:hover {
-  background-color: var(--border-color);
+.filter-dialog-actions .reset-button.dark:hover,
+[data-theme="dark"] .filter-dialog-actions .reset-button:hover {
+  color: #fff !important;
+  text-decoration: underline;
 }
 
 /* 대여 다이얼로그 */
@@ -537,6 +910,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+  background: transparent !important;
+  backdrop-filter: blur(6px);
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
@@ -545,16 +920,26 @@
 }
 
 .rental-dialog {
-  background-color: var(--background-color);
+  background-color: #fff;
   border-radius: 0;
   width: 90%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: 99vh;
+  min-height: 600px;
   overflow-y: auto;
+  border: 1.5px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+}
+
+.rental-dialog.dark, [data-theme="dark"] .rental-dialog {
+  background-color: rgba(35,35,74,0.85);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid #505050;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.30);
 }
 
 .rental-dialog-header {
-  padding: var(--spacing);
+  padding: var(--rental-spacing);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: center;
@@ -570,27 +955,33 @@
   text-align: center;
 }
 
-.close-button {
-  position: absolute;
-  right: var(--spacing);
-  background: none;
-  border: none;
-  color: var(--text-color);
-  cursor: pointer;
-  padding: 0.5rem;
-  font-size: 1.5rem;
-  line-height: 1;
+.rental-dialog-content {
+  padding: var(--rental-spacing);
+  min-height: 400px;
+  background-color: #fff;
+  color: #181829;
 }
 
-.rental-dialog-content {
-  padding: var(--spacing);
+.rental-dialog-content.dark, [data-theme="dark"] .rental-dialog-content {
+  background-color: #23234a;
+  color: #fff;
 }
 
 .car-info-box {
-  background-color: var(--background-color-light);
-  padding: var(--spacing);
-  border-radius: var(--radius);
-  margin-bottom: var(--spacing);
+  background-color: #f5f5f5;
+  padding: var(--rental-spacing);
+  border-radius: var(--rental-radius);
+  margin-bottom: var(--rental-spacing);
+  border: 1.5px solid #e0e0e0;
+  color: #181829;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.car-info-box.dark, [data-theme="dark"] .car-info-box {
+  background-color: #23234a;
+  border: 1.5px solid #505050;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
 }
 
 .car-info-box h4 {
@@ -643,7 +1034,7 @@
 }
 
 .input-group {
-  margin-bottom: var(--spacing);
+  margin-bottom: var(--rental-spacing);
 }
 
 .input-group label {
@@ -658,7 +1049,7 @@
   height: 48px;
   padding: 0 14px;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
+  border-radius: var(--rental-radius);
   background-color: var(--input-background);
   color: var(--text-color);
   font-size: 1rem;
@@ -675,14 +1066,39 @@
   width: 100%;
   height: 48px;
   padding: 0 14px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background-color: var(--input-background);
-  color: var(--text-color);
+  border: 1.5px solid var(--rental-border);
+  border-radius: var(--rental-radius);
+  background-color: var(--rental-input-bg);
+  color: var(--rental-text);
   font-size: 1rem;
   transition: all 0.2s;
   -webkit-appearance: none;
   appearance: none;
+}
+
+.input-group input[type="datetime-local"]:hover {
+  border-color: #181829;
+}
+
+.input-group input[type="datetime-local"]:focus {
+  outline: none;
+  border-color: var(--rental-primary);
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.input-group input[type="datetime-local"].dark {
+  background-color: #404040;
+  border: 1.5px solid #505050;
+  color: #ffffff;
+}
+
+.input-group input[type="datetime-local"].dark:hover {
+  border-color: #fff;
+}
+
+.input-group input[type="datetime-local"].dark:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 .input-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
@@ -708,33 +1124,36 @@
 .date-time-inputs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing);
-  margin-bottom: var(--spacing);
+  gap: var(--rental-spacing);
+  margin-bottom: var(--rental-spacing);
 }
 
 .rental-dialog-actions {
-  padding: var(--spacing);
+  padding: var(--rental-spacing);
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
-  gap: var(--spacing);
+  gap: var(--rental-spacing);
   align-items: center;
 }
 
 .rental-dialog-actions .apply-button {
   padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
+  background-color: var(--rental-primary);
+  color: #fff;
+  border: 2px solid var(--rental-primary);
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+  transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s;
 }
 
-.rental-dialog-actions .apply-button:hover {
-  background-color: var(--primary-hover);
+.rental-dialog-actions .apply-button:hover,
+.rental-dialog-actions .apply-button:focus {
+  background-color: var(--rental-primary-hover);
+  border-color: var(--rental-primary-hover);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
 }
 
 .rental-dialog-actions .cancel-button {
@@ -748,7 +1167,7 @@
 
 /* 페이지네이션 */
 .pagination-container {
-  margin-top: var(--spacing);
+  margin-top: var(--rental-spacing);
   display: flex;
   justify-content: center;
 }
@@ -772,8 +1191,8 @@
   height: 40px;
   padding: 0 0.5rem;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background-color: var(--background-color);
+  border-radius: var(--rental-radius);
+  background-color: var(--rental-background);
   color: var(--text-color);
   font-size: 0.875rem;
   cursor: pointer;
@@ -832,9 +1251,10 @@
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
-  border-radius: var(--radius);
+  border-radius: var(--rental-radius);
   font-size: 0.875rem;
   border: 1px solid transparent;
+  transition: all 0.3s ease;
 }
 
 .alert.error {
@@ -843,34 +1263,21 @@
   border-color: #fbe9e7;
 }
 
+.alert.error.dark {
+  background-color: #b71c1c;
+  color: #ffffff;
+  border-color: #d32f2f;
+}
+
 .alert.info {
   background-color: #e3f2fd;
   color: var(--primary-color);
   border-color: #bbdefb;
 }
 
-/* 다크 모드 */
-.dark {
-  --border-color: #424242;
-  --background-color: #121212;
-  --background-color-light: #1e1e1e;
-  --text-color: #ffffff;
-  --text-secondary: #b0b0b0;
-  --color-primary: #90caf9;
-  --color-accent: #64b5f6;
-  --color-surface: #1e1e1e;
-  --input-background: #1e1e1e;
-}
-
-.dark .alert.error {
-  background-color: #2c1810;
-  color: var(--error-color);
-  border-color: #3e2723;
-}
-
-.dark .alert.info {
+.alert.info.dark {
   background-color: #1a237e;
-  color: var(--primary-color);
+  color: #ffffff;
   border-color: #283593;
 }
 
@@ -924,338 +1331,244 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-.car-detail-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
-.detail-label {
-  font-weight: 500;
-  min-width: 70px;
-}
-
-.detail-value {
-  color: var(--text-secondary);
-}
-
 .tag-chip {
   padding: 0.3rem 0.6rem;
-  background-color: var(--background-color-light);
-  color: var(--text-color);
+  background-color: #fff;
+  color: #1976d2;
   border-radius: 16px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid #e0e0e0;
+  transition: all 0.2s ease;
+}
+
+.tag-chip:hover {
+  border-color: #1976d2;
+  background-color: #f0f7ff;
 }
 
 .tag-chip.selected {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background-color: var(--rental-primary);
+  color: #fff;
+  border: 1.5px solid var(--rental-primary);
 }
 
-.tag-chip.dark {
-  background-color: var(--background-color-light);
-  color: var(--text-color);
-  border-color: var(--border-color);
+.tag-chip.dark, [data-theme="dark"] .tag-chip {
+  background-color: #404040 !important;
+  color: #fff !important;
+  border: 1.5px solid #505050 !important;
+}
+
+.tag-chip.dark.selected, [data-theme="dark"] .tag-chip.selected {
+  background-color: var(--rental-primary) !important;
+  color: #fff !important;
+  border: 1.5px solid #fff !important;
+}
+
+.tag-chip.dark:hover, [data-theme="dark"] .tag-chip:hover {
+  border-color: #fff !important;
+  background-color: #404040 !important;
+}
+
+.tag-check {
+  display: none;
+}
+
+.tag-chip.selected {
+  background: var(--rental-primary);
+  color: #fff;
+  border: 1.5px solid var(--rental-primary);
+  box-shadow: none;
+  transform: none;
+  font-weight: 500;
 }
 
 .tag-chip.dark.selected {
-  background-color: var(--primary-color);
-  color: var(--background-color);
-  border-color: var(--primary-color);
+  background: var(--rental-primary);
+  color: #fff;
+  border: 1.5px solid #fff;
+  box-shadow: none;
+  transform: none;
+  font-weight: 500;
 }
 
-.cancel-button {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0.5rem;
+[data-theme="dark"] .car-card,
+[data-theme="dark"] .car-content {
+  background-color: var(--rental-background) !important;
+  border: 1.5px solid #505050 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
 }
 
-.filter-dialog-actions .cancel-button,
-.rental-dialog-actions .cancel-button {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0.5rem;
+.car-info-box.dark {
+  background-color: #23234a !important;
+  border: 1.5px solid #505050 !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10) !important;
 }
 
-.date-picker-container {
-  position: relative;
+.car-info-box.dark h4,
+.car-info-box.dark p,
+.car-info-box.dark p::before,
+.car-info-box.dark p::after {
+  color: #fff !important;
 }
 
-.date-picker-popup {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 0;
-  padding: 1rem;
-  z-index: 1000;
-  box-shadow: var(--shadow);
-  width: 100%;
-  margin-top: 0.5rem;
-}
-
-.date-picker-popup input[type="datetime-local"] {
-  width: 100%;
-  height: 40px;
-  padding: 0 14px;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.date-picker-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.date-picker-actions .cancel-button,
-.date-picker-actions .apply-button {
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-}
-
-.recommendation-dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.recommendation-dialog {
-  background-color: var(--background-color);
-  border-radius: 0;
-  width: 98%;
-  max-width: 1200px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: var(--shadow);
-}
-
-.recommendation-dialog-header {
-  padding: var(--spacing);
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.recommendation-dialog-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-color);
-  text-align: center;
-}
-
-.recommendation-dialog-content {
-  padding: var(--spacing) 3rem;
-}
-
-.recommendation-dialog-actions {
-  padding: var(--spacing);
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing);
-  align-items: center;
-}
-
-.recommendation-section {
-  margin-top: 2rem;
-  animation: fadeIn 0.5s ease-out;
-}
-
-.place-recommendation-section {
-  padding: var(--spacing);
-}
-
-.recommendation-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.recommendation-info {
-  background-color: var(--background-color-light);
-  padding: var(--spacing);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
-}
-
-.recommendation-info p {
-  margin: 0.5rem 0;
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
-.recommendation-info p:first-child {
-  margin-top: 0;
-}
-
-.recommendation-info p:last-child {
-  margin-bottom: 0;
-}
-
+/* 필터 다이얼로그 항목 간 간격 및 대여료 입력 레이아웃 정밀 조정 */
 .filter-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 28px;
 }
-
 .filter-section:last-child {
   margin-bottom: 0;
 }
-
 .filter-section-title {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 1rem;
+  margin-bottom: 14px;
+  margin-top: 0;
 }
-
 .tag-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: 4px 6px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
-
 .rental-fee-range {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.rental-fee-inputs {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
   width: 100%;
+  margin-bottom: 0;
+  margin-top: 0;
 }
-
-.rental-fee-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
-  position: relative;
-}
-
-.rental-fee-input-group label {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.25rem;
-}
-
-.rental-fee-input-group input {
-  width: 100%;
-  height: 40px;
-  padding: 0 0.75rem;
-  padding-right: 2.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: 0.9rem;
-}
-
-.rental-fee-input-group .unit {
-  position: absolute;
-  right: 0.75rem;
-  top: 65%;
-  transform: translateY(-50%);
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  pointer-events: none;
-}
-
-.separator {
-  color: var(--text-secondary);
+.rental-fee-range input[type="number"] {
+  width: 120px;
+  min-width: 80px;
+  max-width: 140px;
+  text-align: right;
+  margin: 0 4px 0 0;
+  background: #fff;
+  color: #181829;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
   font-size: 1rem;
-  margin: 2.5rem 0.5rem 0;
+  height: 40px;
+  box-sizing: border-box;
 }
-
-.rental-fee-slider-container {
-  margin-top: 1rem;
-  padding: 0 0.5rem;
+.rental-fee-range input[type="number"].dark,
+[data-theme="dark"] .rental-fee-range input[type="number"] {
+  background: #232338;
+  color: #fff;
+  border: 1.5px solid #505050;
 }
-
-.rental-fee-slider-track {
+.rental-fee-range input[type="number"]:focus,
+.rental-fee-range input[type="number"]:hover {
+  border-color: #1976d2;
+}
+.rental-fee-range input[type="number"].dark:focus,
+.rental-fee-range input[type="number"].dark:hover,
+[data-theme="dark"] .rental-fee-range input[type="number"]:focus,
+[data-theme="dark"] .rental-fee-range input[type="number"]:hover {
+  border-color: #fff;
+}
+.rental-fee-range .unit {
+  margin-left: 0;
+  margin-right: 18px;
+  font-size: 1rem;
+  color: #181829;
   position: relative;
-  height: 4px;
-  background-color: var(--border-color);
-  border-radius: 2px;
-  margin: 1rem 0;
+  top: 1px;
+}
+.rental-fee-range .unit.dark,
+[data-theme="dark"] .rental-fee-range .unit {
+  color: #fff;
+}
+.rental-fee-range .separator {
+  margin: 0 10px 0 0;
+  font-size: 1.2rem;
+  color: #181829;
+  position: relative;
+  top: -6px;
+}
+.rental-fee-range .separator.dark,
+[data-theme="dark"] .rental-fee-range .separator {
+  color: #fff;
+  top: -6px;
 }
 
-.rental-fee-slider-range {
-  position: absolute;
-  height: 100%;
-  background-color: var(--primary-color);
-  border-radius: 2px;
+/* 대여료 입력박스 화살표 제거 */
+.rental-fee-range input[type='number']::-webkit-outer-spin-button,
+.rental-fee-range input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.rental-fee-range input[type='number'] {
+  -moz-appearance: textfield;
 }
 
-.rental-fee-slider {
-  position: absolute;
+/* 대여료 입력박스 길이 늘리기 */
+.rental-fee-range input[type="number"] {
+  width: 160px;
+  min-width: 120px;
+  max-width: 200px;
+  padding-right: 36px;
+}
+
+/* 대여료 입력박스 내부 오른쪽에 "원" 표시 */
+.rental-fee-input-wrap {
+  position: relative;
+  display: inline-block;
+  width: 210px;
+}
+.rental-fee-input-wrap input[type="text"] {
   width: 100%;
-  height: 4px;
-  background: none;
+  padding-right: 36px;
+  background: #fff;
+  color: #181829;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  height: 40px;
+  box-sizing: border-box;
+  text-align: left;
+  line-height: 40px;
+}
+.rental-fee-input-wrap input[type="text"].dark,
+[data-theme="dark"] .rental-fee-input-wrap input[type="text"] {
+  background: #232338;
+  color: #fff;
+  border: 1.5px solid #505050;
+}
+.rental-fee-input-wrap input[type="text"]:focus,
+.rental-fee-input-wrap input[type="text"]:hover {
+  border-color: #1976d2;
+}
+.rental-fee-input-wrap input[type="text"].dark:focus,
+.rental-fee-input-wrap input[type="text"].dark:hover,
+[data-theme="dark"] .rental-fee-input-wrap input[type="text"]:focus,
+[data-theme="dark"] .rental-fee-input-wrap input[type="text"]:hover {
+  border-color: #fff;
+}
+.rental-fee-input-wrap .unit {
+  position: absolute;
+  right: 12px;
+  top: 43%;
+  transform: translateY(-60%);
   pointer-events: none;
-  -webkit-appearance: none;
-  appearance: none;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.rental-fee-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background-color: var(--primary-color);
-  border: 2px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  pointer-events: auto;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.rental-fee-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background-color: var(--primary-color);
-  border: 2px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  pointer-events: auto;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.rental-fee-slider-labels {
+  font-size: 1rem;
+  color: inherit;
+  line-height: 1;
+  height: 20px;
   display: flex;
-  justify-content: space-between;
-  margin-top: 0.5rem;
-  color: var(--text-secondary);
-  font-size: 0.8rem;
+  align-items: center;
+}
+
+/* 차량 분류, 제조사, 태그 항목끼리 gap 줄이기 */
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 0;
+  margin-bottom: 0;
 } 

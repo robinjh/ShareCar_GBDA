@@ -59,8 +59,8 @@ function CarCard({ car, onRent, onTagClick, isDarkMode }) {
           <div className="car-header">
             <div className="car-title-section">
               <div className="car-title-left">
-                <h2 className="car-name">{car.carName}</h2>
-                <p className="car-fee">{car.rentalFee}원/일</p>
+                <h2 className={`car-name ${isDarkMode ? 'dark' : ''}`}>{car.carName}</h2>
+                <p className={`car-fee ${isDarkMode ? 'dark' : ''}`}>{car.rentalFee}원/일</p>
               </div>
               <div className="car-actions">
                 <button
@@ -72,18 +72,18 @@ function CarCard({ car, onRent, onTagClick, isDarkMode }) {
                 </button>
               </div>
             </div>
-            <div className="car-details">
+            <div className={`car-details ${isDarkMode ? 'dark' : ''}`}>
               <div className="car-detail-item">
-                <span className="detail-label">차량정보: </span>
-                <span className="detail-value">{car.carNumber}</span>
+                <span className={`detail-label ${isDarkMode ? 'dark' : ''}`}>차량정보: </span>
+                <span className={`detail-value ${isDarkMode ? 'dark' : ''}`}>{car.carNumber}</span>
               </div>
               <div className="car-detail-item">
-                <span className="detail-label">제조사: </span>
-                <span className="detail-value">{car.carBrand}</span>
+                <span className={`detail-label ${isDarkMode ? 'dark' : ''}`}>제조사: </span>
+                <span className={`detail-value ${isDarkMode ? 'dark' : ''}`}>{car.carBrand}</span>
               </div>
               <div className="car-detail-item">
-                <span className="detail-label">분류: </span>
-                <span className="detail-value">{car.carType}</span>
+                <span className={`detail-label ${isDarkMode ? 'dark' : ''}`}>분류: </span>
+                <span className={`detail-value ${isDarkMode ? 'dark' : ''}`}>{car.carType}</span>
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@ function CarCard({ car, onRent, onTagClick, isDarkMode }) {
             <div className="tag-stack">
               {car.tags && car.tags.map((tag, index) => (
                 <button
-                  key={index}
+                  key={index} 
                   className={`tag-chip ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => onTagClick(tag)}
                 >
@@ -125,34 +125,36 @@ function FilterDialog({
   const carTypes = ['소형', '중형', '대형', 'SUV', '승합차'];
   const carBrands = ['현대', '기아', '쌍용', '제네시스', 'BMW', '벤츠', '아우디', '폭스바겐', '기타'];
 
+  // 방어 코드 추가
+  const selectedCarTypes = tempFilters.carTypes || [];
+  const selectedCarBrands = tempFilters.carBrands || [];
+  const selectedTags = tempFilters.selectedTags || [];
+
   const handleCategoryClick = (category) => {
-    setTempFilters(prev => ({
-      ...prev,
-      carTypes: prev.carTypes.includes(category)
-        ? prev.carTypes.filter(type => type !== category)
-        : [...prev.carTypes, category]
-    }));
+    setTempFilters({
+      ...tempFilters,
+      carTypes: selectedCarTypes.includes(category)
+        ? selectedCarTypes.filter(type => type !== category)
+        : [...selectedCarTypes, category]
+    });
   };
 
   const handleBrandClick = (brand) => {
-    setTempFilters(prev => ({
-      ...prev,
-      carBrands: prev.carBrands.includes(brand)
-        ? prev.carBrands.filter(b => b !== brand)
-        : [...prev.carBrands, brand]
-    }));
+    setTempFilters({
+      ...tempFilters,
+      carBrands: selectedCarBrands.includes(brand)
+        ? selectedCarBrands.filter(b => b !== brand)
+        : [...selectedCarBrands, brand]
+    });
   };
 
   const handleTagClick = (tag) => {
-    setTempFilters(prev => {
-      const newSelectedTags = prev.selectedTags.includes(tag)
-        ? prev.selectedTags.filter(t => t !== tag)
-        : [...prev.selectedTags, tag];
-      
-      return {
-        ...prev,
+    const newSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag];
+    setTempFilters({
+      ...tempFilters,
         selectedTags: newSelectedTags
-      };
     });
   };
 
@@ -175,109 +177,128 @@ function FilterDialog({
   // 필터 다이얼로그가 열릴 때 초기값 설정
   React.useEffect(() => {
     if (open) {
-      setTempRentalFeeRange([0, 1000000]);
+      setTempRentalFeeRange([...rentalFeeRange]);
+      setTempFilters({ ...filters });
     }
   }, [open]);
 
   return (
     <div className={`filter-dialog ${open ? 'open' : ''} ${isDarkMode ? 'dark' : ''}`}>
-      <div className="filter-dialog-content">
-        <h2 className="filter-dialog-title">필터</h2>
-        <div className="filter-dialog-body">
-          <div className="filter-section">
-            <h3 className="filter-section-title">차량 분류</h3>
+      <div className={`filter-dialog-content ${isDarkMode ? 'dark' : ''}`}>
+        <h2 className={`filter-dialog-title ${isDarkMode ? 'dark' : ''}`}>필터</h2>
+        <div className={`filter-dialog-body ${isDarkMode ? 'dark' : ''}`}>
+          <div className={`filter-section ${isDarkMode ? 'dark' : ''}`}>
+            <h3 className={`filter-section-title ${isDarkMode ? 'dark' : ''}`}>차량 분류</h3>
             <div className="tag-group">
               {carTypes.map((type) => (
                 <button
                   key={type}
-                  className={`tag-chip ${tempFilters.carTypes.includes(type) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                  className={`tag-chip ${selectedCarTypes.includes(type) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => handleCategoryClick(type)}
                 >
+                  {selectedCarTypes.includes(type) && (
+                    <span className="tag-check" aria-label="선택됨" style={{marginRight: '4px'}}>✔️</span>
+                  )}
                   {type}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="filter-section">
-            <h3 className="filter-section-title">제조사</h3>
+          <div className={`filter-section ${isDarkMode ? 'dark' : ''}`}>
+            <h3 className={`filter-section-title ${isDarkMode ? 'dark' : ''}`}>제조사</h3>
             <div className="tag-group">
               {carBrands.map((brand) => (
                 <button
                   key={brand}
-                  className={`tag-chip ${tempFilters.carBrands.includes(brand) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                  className={`tag-chip ${selectedCarBrands.includes(brand) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
                   onClick={() => handleBrandClick(brand)}
                 >
+                  {selectedCarBrands.includes(brand) && (
+                    <span className="tag-check" aria-label="선택됨" style={{marginRight: '4px'}}>✔️</span>
+                  )}
                   {brand}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="filter-section">
-            <h3 className="filter-section-title">대여료</h3>
-            <div className="rental-fee-range">
-              <div className="rental-fee-inputs">
-                <div className="rental-fee-input-group">
-                  <label>최소 금액</label>
-                  <input
-                    type="number"
-                    value={tempRentalFeeRange[0]}
-                    onChange={(e) => {
-                      const value = Math.max(0, Math.min(tempRentalFeeRange[1], Number(e.target.value)));
-                      setTempRentalFeeRange([value, tempRentalFeeRange[1]]);
-                    }}
-                  />
-                  <span className="unit">원</span>
-                </div>
-                <span className="separator">-</span>
-                <div className="rental-fee-input-group">
-                  <label>최대 금액</label>
-                  <input
-                    type="number"
-                    value={tempRentalFeeRange[1]}
-                    onChange={(e) => {
-                      const value = Math.max(tempRentalFeeRange[0], Math.min(1000000, Number(e.target.value)));
-                      setTempRentalFeeRange([tempRentalFeeRange[0], value]);
-                    }}
-                  />
-                  <span className="unit">원</span>
-                </div>
+          <div className={`filter-section ${isDarkMode ? 'dark' : ''}`}>
+            <h3 className={`filter-section-title ${isDarkMode ? 'dark' : ''}`}>대여료</h3>
+            <div className={`rental-fee-range ${isDarkMode ? 'dark' : ''}`} style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <div className="rental-fee-input-wrap">
+                <input
+                  type="text"
+                  className={isDarkMode ? 'dark' : ''}
+                value={tempRentalFeeRange[0]}
+                  min={0}
+                  max={tempRentalFeeRange[1]}
+                  onChange={e => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    setTempRentalFeeRange([value ? parseInt(value) : 0, tempRentalFeeRange[1]]);
+                  }}
+                />
+                <span className={`unit ${isDarkMode ? 'dark' : ''}`}>원</span>
+              </div>
+              <span className={`separator ${isDarkMode ? 'dark' : ''}`}>-</span>
+              <div className="rental-fee-input-wrap">
+                <input
+                  type="text"
+                  className={isDarkMode ? 'dark' : ''}
+                value={tempRentalFeeRange[1]}
+                  min={tempRentalFeeRange[0]}
+              max={1000000}
+                  onChange={e => {
+                    const value = e.target.value.replace(/[^0-9]/g, '');
+                    setTempRentalFeeRange([tempRentalFeeRange[0], value ? parseInt(value) : 0]);
+                  }}
+                />
+                <span className={`unit ${isDarkMode ? 'dark' : ''}`}>원</span>
               </div>
             </div>
           </div>
 
-          <div className="filter-section">
-            <h3 className="filter-section-title">태그</h3>
+          <div className={`filter-section ${isDarkMode ? 'dark' : ''}`}>
+            <h3 className={`filter-section-title ${isDarkMode ? 'dark' : ''}`}>태그</h3>
             <div className="tag-group">
               {allTags
-                .filter(tag => !tag.includes('도심 드라이브'))  // '도심 드라이브'가 포함된 모든 태그 제외
+                .filter(tag => !tag.includes('도심 드라이브'))
                 .map((tag) => (
                   <button
-                    key={tag}
-                    className={`tag-chip ${tempFilters.selectedTags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
-                    onClick={() => handleTagClick(tag)}
+                  key={tag}
+                    className={`tag-chip ${selectedTags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                  onClick={() => handleTagClick(tag)}
                   >
+                    {selectedTags.includes(tag) && (
+                      <span className="tag-check" aria-label="선택됨" style={{marginRight: '4px'}}>✔️</span>
+                    )}
                     {tag}
                   </button>
                 ))}
             </div>
           </div>
         </div>
-        <div className="filter-dialog-actions">
-          <button className="cancel-button" onClick={onClose}>취소</button>
-          <button 
-            className="apply-button"
+        <div className={`filter-dialog-actions ${isDarkMode ? 'dark' : ''}`}>
+          <button className={`reset-button ${isDarkMode ? 'dark' : ''}`}
             onClick={() => {
-              setFilters({
-                ...tempFilters,
-                selectedTags: [...tempFilters.selectedTags]
-              });
-              setRentalFeeRange([...tempRentalFeeRange]);
-              onApply();
-            }}
-          >
-            적용
+              setTempFilters({ carTypes: [], carBrands: [], selectedTags: [] });
+              setTempRentalFeeRange([0, 1000000]);
+            }}>
+            초기화
+          </button>
+          <button className={`cancel-button ${isDarkMode ? 'dark' : ''}`} onClick={onClose}>취소</button>
+          <button 
+            className={`apply-button ${isDarkMode ? 'dark' : ''}`}
+          onClick={() => {
+            setFilters({
+              ...tempFilters,
+                selectedTags: [...selectedTags]
+            });
+            setRentalFeeRange([...tempRentalFeeRange]);
+            onApply();
+          }} 
+        >
+          적용
           </button>
         </div>
       </div>
@@ -285,13 +306,55 @@ function FilterDialog({
   );
 }
 
-function Rental({ isDarkMode }) {
-  const { user } = useContext(UserContext);
-  const navigate = useNavigate();
-  const [sortOrder, setSortOrder] = useState('nameAsc');
+// Rental 컴포넌트를 클래스로 변환
+class Rental extends React.Component {
+  constructor(props) {
+    super(props);
+    this.isDarkMode = props.isDarkMode;
+    this.user = props.user;
+    this.navigate = props.navigate;
+    this.itemsPerPage = 10;
+    this.state = {
+      sortOrder: 'nameAsc',
+      cars: [],
+      filteredCars: [],
+      loading: true,
+      error: '',
+      success: '',
+      selectedCar: null,
+      openDialog: false,
+      rentalData: {
+        startTime: this.getCurrentKoreanTime(),
+        endTime: new Date(this.getCurrentKoreanTime().setDate(this.getCurrentKoreanTime().getDate() + 1)),
+    guestName: '',
+    address: '',
+    tags: []
+      },
+      searchQuery: '',
+      filterDialogOpen: false,
+      page: 1,
+      filters: {
+    carTypes: [],
+    carBrands: [],
+    minRentalFee: '0',
+    maxRentalFee: '1000000',
+    selectedTags: []
+      },
+      tempFilters: {
+    carTypes: [],
+    carBrands: [],
+    minRentalFee: '0',
+    maxRentalFee: '1000000',
+    selectedTags: []
+      },
+      rentalFeeRange: [0, 1000000],
+      tempRentalFeeRange: [0, 1000000],
+      recommendationDialogOpen: false,
+    };
+  }
 
-  // 유틸리티 함수들을 먼저 선언
-  const getCurrentKoreanTime = () => {
+  // 유틸리티 메서드들
+  getCurrentKoreanTime = () => {
     try {
       const now = new Date();
       const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
@@ -305,11 +368,11 @@ function Rental({ isDarkMode }) {
     }
   };
 
-  const formatDateTimeForInput = (date) => {
+  formatDateTimeForInput = (date) => {
     if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
       return '';
     }
-    
+
     try {
       const koreanDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
       if (isNaN(koreanDate.getTime())) {
@@ -322,203 +385,33 @@ function Rental({ isDarkMode }) {
     }
   };
 
-  // 그 다음에 상태 초기화
-  const [cars, setCars] = useState([]);
-  const [filteredCars, setFilteredCars] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [selectedCar, setSelectedCar] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [rentalData, setRentalData] = useState({
-    startTime: getCurrentKoreanTime(),
-    endTime: new Date(getCurrentKoreanTime().setDate(getCurrentKoreanTime().getDate() + 1)),
-    guestName: '',
-    address: '',
-    tags: []
-  });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  const [recommendationData, setRecommendationData] = useState({
-    tags: [],
-    address: '',
-    startTime: null,
-    endTime: null
-  });
-  const [openRecommendationDialog, setOpenRecommendationDialog] = useState(false);
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
-  const [filters, setFilters] = useState({
-    carTypes: [],
-    carBrands: [],
-    minRentalFee: '0',
-    maxRentalFee: '1000000',
-    selectedTags: []
-  });
-  const [tempFilters, setTempFilters] = useState({
-    carTypes: [],
-    carBrands: [],
-    minRentalFee: '0',
-    maxRentalFee: '1000000',
-    selectedTags: []
-  });
-  const [rentalFeeRange, setRentalFeeRange] = useState([0, 1000000]);
-  const [tempRentalFeeRange, setTempRentalFeeRange] = useState([0, 1000000]);
-  const requestsRef = collection(db, 'requests');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [tempStartDate, setTempStartDate] = useState(new Date());
-  const [tempEndDate, setTempEndDate] = useState(new Date(new Date().setDate(new Date().getDate() + 1)));
-
-  // 정렬된 차량 목록을 관리하는 상태 추가
-  const [sortedCars, setSortedCars] = useState([]);
-
-  // 모든 차량의 태그를 수집하고 '도심 드라이브' 제외 (정렬 추가)
-  const allTags = React.useMemo(() => {
-    const tags = cars.flatMap(car => 
-      (car.tags || [])
-        .filter(tag => tag !== '도심 드라이브' && tag !== '#도심 드라이브' && tag.trim() !== '')
-    );
-    return [...new Set(tags)].sort((a, b) => a.localeCompare(b, 'ko'));
-  }, [cars]);
-
-  useEffect(() => {
-    // 초기 필터 상태 설정
-    const initialFilters = {
-      carTypes: [],
-      carBrands: [],
-      minRentalFee: '0',
-      maxRentalFee: '1000000',
-      selectedTags: []
-    };
-    
-    setFilters(initialFilters);
-    setTempFilters(initialFilters);
-    setRentalFeeRange([0, 1000000]);
-    setTempRentalFeeRange([0, 1000000]);
-  }, []);
-
-  useEffect(() => {
-    fetchCars();
-  }, []);
-
-  useEffect(() => {
-    filterCars();
-  }, [filters]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [filters]);
-
-  const fetchCars = async () => {
-    try {
-      setLoading(true);
-      const querySnapshot = await getDocs(collection(db, 'registrations'));
-      
-      // 필수 필드가 있는 데이터만 필터링
-      const carsList = querySnapshot.docs
-        .map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }))
-        .filter(car => {
-          // 필수 필드 체크
-          const requiredFields = {
-            carNumber: '차량번호',
-            carName: '차량명',
-            carBrand: '제조사',
-            carType: '차종',
-            rentalFee: '대여료',
-            hostID: '호스트 ID',
-            hostName: '호스트 이름'
-          };
-
-          // 모든 필수 필드가 존재하고 비어있지 않은지 확인
-          const isValid = Object.entries(requiredFields).every(([field, label]) => {
-            const value = car[field];
-            if (!value || value.toString().trim() === '') {
-              console.warn(`유효하지 않은 차량 데이터: ${label} 누락 (차량번호: ${car.carNumber || '알 수 없음'})`);
-              return false;
-            }
-            return true;
-          });
-
-          // 대여료가 숫자인지 확인
-          if (isValid && isNaN(Number(car.rentalFee))) {
-            console.warn(`유효하지 않은 차량 데이터: 대여료가 숫자가 아님 (차량번호: ${car.carNumber})`);
-            return false;
-          }
-
-          return isValid;
-        });
-
-      setCars(carsList);
-      setFilteredCars(carsList);
-    } catch (err) {
-      console.error('차량 목록 조회 실패:', err);
-      setError('차량 목록을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
+  formatDateTime = (date) => {
+    if (!date) return '';
+    const koreanDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    return koreanDate.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Seoul'
+    }).replace(/\. /g, '-').replace('.', '');
   };
 
-  const filterCars = () => {
-    let filtered = cars;
-
-    // 검색어 필터링 제거 (검색 버튼 클릭 시에만 동작)
-
-    // 차종 필터링 (여러 개 선택 가능)
-    if (filters.carTypes.length > 0) {
-      filtered = filtered.filter(car => filters.carTypes.includes(car.carType));
-    }
-
-    // 제조사 필터링 (여러 개 선택 가능)
-    if (filters.carBrands.length > 0) {
-      filtered = filtered.filter(car => filters.carBrands.includes(car.carBrand));
-    }
-
-    // 대여료 범위 필터링
-    const minFee = parseInt(filters.minRentalFee);
-    const maxFee = parseInt(filters.maxRentalFee);
-    
-    if (!isNaN(minFee)) {
-      filtered = filtered.filter(car => {
-        const carFee = parseInt(car.rentalFee);
-        return !isNaN(carFee) && carFee >= minFee;
-      });
-    }
-    
-    if (!isNaN(maxFee)) {
-      filtered = filtered.filter(car => {
-        const carFee = parseInt(car.rentalFee);
-        return !isNaN(carFee) && carFee <= maxFee;
-      });
-    }
-
-    // 태그 필터링 (도심 드라이브 제외)
-    if (filters.selectedTags.length > 0) {
-      filtered = filtered.filter(car => {
-        const carTags = (car.tags || []).filter(tag => tag !== '도심 드라이브');
-        return filters.selectedTags.every(tag => carTags.includes(tag));
-      });
-    }
-
-    setFilteredCars(filtered);
+  // 이벤트 핸들러 메서드들
+  handleSearchChange = (event) => {
+    this.setState({ searchQuery: event.target.value });
   };
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const handleSearch = () => {
-    const searchTerm = searchQuery.toLowerCase().trim();
+  handleSearch = () => {
+    const searchTerm = this.state.searchQuery.toLowerCase().trim();
     if (!searchTerm) {
-      setFilteredCars(cars);
+      this.setState({ filteredCars: this.state.cars });
       return;
     }
 
-    const searchResults = cars.filter(car => {
-      // 각 필드에 대해 안전하게 검색
+    const searchResults = this.state.cars.filter(car => {
       const carName = (car.carName || '').toLowerCase();
       const carNumber = (car.carNumber || '').toLowerCase();
       const carBrand = (car.carBrand || '').toLowerCase();
@@ -534,190 +427,148 @@ function Rental({ isDarkMode }) {
       );
     });
 
-    setFilteredCars(searchResults);
+    this.setState({ filteredCars: searchResults });
   };
 
-  const handleKeyPress = (event) => {
+  handleKeyPress = (event) => {
     if (event.key === 'Enter') {
-      handleSearch();
+      this.handleSearch();
     }
   };
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
+  handlePageChange = (event, value) => {
+    this.setState({ page: value });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const getCurrentPageCars = () => {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return sortedCars.slice(startIndex, endIndex);
+  getCurrentPageCars = () => {
+    const startIndex = (this.state.page - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.state.filteredCars.slice(startIndex, endIndex);
   };
 
-  const getPageInfo = () => {
-    const totalPages = Math.ceil(sortedCars.length / itemsPerPage);
-    return `${page} / ${totalPages} 페이지`;
+  getPageInfo = () => {
+    const totalPages = Math.ceil(this.state.filteredCars.length / this.itemsPerPage);
+    return `${this.state.page} / ${totalPages} 페이지`;
   };
 
-  const handleRentClick = (car) => {
-    setSelectedCar(car);
-    setRentalData({
-      startTime: getCurrentKoreanTime(),
-      endTime: new Date(getCurrentKoreanTime().setDate(getCurrentKoreanTime().getDate() + 1)),
+  handleRentClick = (car) => {
+    this.setState({
+      selectedCar: car,
+      rentalData: {
+        startTime: this.getCurrentKoreanTime(),
+        endTime: new Date(this.getCurrentKoreanTime().setDate(this.getCurrentKoreanTime().getDate() + 1)),
       guestName: '',
       address: '',
       tags: []
+      },
+      openDialog: true
     });
-    setOpenDialog(true);
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedCar(null);
-    setError('');
+  handleCloseDialog = () => {
+    this.setState({
+      openDialog: false,
+      selectedCar: null,
+      error: ''
+    });
   };
 
-  const handleDateChange = (name) => (date) => {
-    setRentalData(prev => ({
-      ...prev,
-      [name]: date
-    }));
-  };
-
-  const handleInputChange = (e) => {
+  handleInputChange = (e) => {
     const { name, value } = e.target;
-    setRentalData((prev) => ({
-      ...prev,
-      [name]: value,
+    this.setState(prev => ({
+      rentalData: {
+        ...prev.rentalData,
+        [name]: value
+      }
     }));
   };
 
-  const handleTagClick = (tag) => {
-    setRentalData(prev => {
-      const newTags = prev.tags.includes(tag) 
-        ? prev.tags.filter(t => t !== tag)
-        : [...prev.tags, tag];
+  handleTagClick = (tag) => {
+    this.setState(prev => {
+      const newTags = prev.rentalData.tags.includes(tag)
+        ? prev.rentalData.tags.filter(t => t !== tag)
+        : [...prev.rentalData.tags, tag];
       return {
-        ...prev,
+        rentalData: {
+          ...prev.rentalData,
         tags: newTags
+        }
       };
     });
   };
 
-  const handleTagFilterClick = (tag) => {
-    setTempFilters(prev => {
-      const currentTags = prev.selectedTags;
+  handleTagFilterClick = (tag) => {
+    this.setState(prev => {
+      const currentTags = prev.tempFilters.selectedTags;
       if (currentTags.includes(tag)) {
         return {
-          ...prev,
+          tempFilters: {
+            ...prev.tempFilters,
           selectedTags: currentTags.filter(t => t !== tag)
+          }
         };
       } else {
         return {
-          ...prev,
+          tempFilters: {
+            ...prev.tempFilters,
           selectedTags: [...currentTags, tag]
+          }
         };
       }
     });
   };
 
-  const handleOpenFilterDialog = () => {
-    setTempFilters({
-      ...filters,
-      selectedTags: [...filters.selectedTags]
+  handleOpenFilterDialog = () => {
+    this.setState({
+      tempFilters: {
+        ...this.state.filters,
+        selectedTags: [...this.state.filters.selectedTags]
+      },
+      tempRentalFeeRange: [...this.state.rentalFeeRange],
+      filterDialogOpen: true
     });
-    setTempRentalFeeRange([...rentalFeeRange]);
-    setFilterDialogOpen(true);
   };
 
-  const handleCloseFilterDialog = () => {
-    setFilterDialogOpen(false);
+  handleCloseFilterDialog = () => {
+    this.setState({ filterDialogOpen: false });
   };
 
-  const handleApplyFilters = () => {
-    setFilters(tempFilters);
-    setRentalFeeRange(tempRentalFeeRange);
-    setFilterDialogOpen(false);
+  handleApplyFilters = () => {
+    // 필터 조건에 따라 차량 리스트를 다시 필터링
+    const { cars, tempFilters, tempRentalFeeRange } = this.state;
+    const { carTypes, carBrands, selectedTags } = tempFilters;
+    const [minFee, maxFee] = tempRentalFeeRange;
+
+    const filtered = cars.filter(car => {
+      // 차량 분류
+      if (carTypes.length > 0 && !carTypes.includes(car.carType)) return false;
+      // 제조사
+      if (carBrands.length > 0 && !carBrands.includes(car.carBrand)) return false;
+      // 대여료
+      const fee = parseInt(car.rentalFee, 10) || 0;
+      if (fee < minFee || fee > maxFee) return false;
+      // 태그
+      if (selectedTags.length > 0) {
+        const carTags = car.tags || [];
+        if (!selectedTags.every(tag => carTags.includes(tag))) return false;
+      }
+      return true;
+    });
+
+    this.setState({
+      filters: tempFilters,
+      rentalFeeRange: tempRentalFeeRange,
+      filteredCars: filtered,
+      filterDialogOpen: false
+    });
   };
 
-  const handleRentalSubmit = async () => {
-    if (!user) {
-      setError('로그인이 필요합니다.');
-      return;
-    }
-
-    try {
-      // 현재 시간을 한국 시간으로 정확하게 설정
-      const now = new Date();
-      const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-      
-      // 시간을 YY-MM-DD HH:mm:ss 형식으로 변환
-      const formatTime = 
-        String(koreanTime.getFullYear()).slice(-2) + '-' +
-        String(koreanTime.getMonth() + 1).padStart(2, '0') + '-' +
-        String(koreanTime.getDate()).padStart(2, '0') + ' ' +
-        String(koreanTime.getHours()).padStart(2, '0') + ':' +
-        String(koreanTime.getMinutes()).padStart(2, '0') + ':' +
-        String(koreanTime.getSeconds()).padStart(2, '0');
-      
-      // 대여 기간 계산 (종료일 - 시작일 + 1)
-      const startDate = new Date(rentalData.startTime);
-      const endDate = new Date(rentalData.endTime);
-      const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-      
-      // 요금 계산 (rentalFee를 숫자로 변환)
-      const rentalFee = parseInt(selectedCar.rentalFee); // 문자열을 숫자로 변환
-      const totalFee = rentalFee * rentalDays; // 총 대여료
-
-      const rentalRequest = {
-        carNumber: selectedCar.carNumber,
-        carName: selectedCar.carName,
-        carBrand: selectedCar.carBrand,
-        carType: selectedCar.carType,
-        guestId: user.uid,
-        guestName: rentalData.guestName,
-        hostId: selectedCar.hostID,
-        hostName: selectedCar.hostName,
-        startTime: rentalData.startTime,
-        endTime: rentalData.endTime,
-        address: rentalData.address,
-        tags: rentalData.tags,
-        status: '대기중',
-        rentalFee: rentalFee.toString(),
-        totalFee: totalFee
-      };
-
-      // 문서 ID 생성: "GuestID.carNumber.YY-MM-DD HH:mm:ss"
-      const docId = `${user.uid}.${selectedCar.carNumber}.${formatTime}`;
-      
-      // setDoc을 사용하여 지정된 ID로 문서 생성
-      await setDoc(doc(requestsRef, docId), rentalRequest);
-      
-      // 대여 다이얼로그 닫기
-      handleCloseDialog();
-      
-      // 장소 추천 데이터 설정 및 표시 (대여 시 입력한 데이터 사용)
-      setRecommendationData({
-        tags: rentalData.tags || [],  // 선택한 태그
-        address: rentalData.address || '',  // 입력한 주소
-        startTime: rentalData.startTime,  // 대여 시작 시간
-        endTime: rentalData.endTime  // 대여 종료 시간
-      });
-      
-      // 장소 추천 다이얼로그 표시
-      setOpenRecommendationDialog(true);
-    } catch (err) {
-      console.error('대여 요청 실패:', err);
-      setError('대여 요청 등록에 실패했습니다.');
-    }
-  };
-
-  // 정렬 옵션 핸들러 수정
-  const handleSortChange = (event) => {
+  handleSortChange = (event) => {
     const newSortOrder = event.target.value;
-    setSortOrder(newSortOrder);
+    this.setState({ sortOrder: newSortOrder });
     
-    let sorted = [...filteredCars];  // filteredCars를 기준으로 정렬
+    let sorted = [...this.state.filteredCars];
     
     switch (newSortOrder) {
       case 'numberAsc':
@@ -742,41 +593,16 @@ function Rental({ isDarkMode }) {
         sorted.sort((a, b) => koreanFirstSort(a.carName, b.carName));
     }
     
-    setSortedCars(sorted);
+    this.setState({ filteredCars: sorted });
   };
 
-  // filteredCars가 변경될 때마다 정렬 적용
-  useEffect(() => {
-    handleSortChange({ target: { value: sortOrder } });
-  }, [filteredCars]);
-
-  // 컴포넌트 마운트 시 초기 정렬 적용
-  useEffect(() => {
-    if (cars.length > 0) {
-      const initialSorted = [...cars].sort((a, b) => koreanFirstSort(a.carName, b.carName));
-      setSortedCars(initialSorted);
-      setFilteredCars(initialSorted);
+  calculateTotalFee = () => {
+    if (!this.state.selectedCar || !this.state.rentalData.startTime || !this.state.rentalData.endTime) {
+      return 0;
     }
-  }, [cars]);
-
-  const formatDateTime = (date) => {
-    const koreanDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-    return koreanDate.toLocaleString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZone: 'Asia/Seoul'
-    }).replace(/\. /g, '-').replace('.', '');
-  };
-
-  const calculateTotalFee = () => {
-    if (!selectedCar || !rentalData.startTime || !rentalData.endTime) return 0;
     
-    const startDate = new Date(rentalData.startTime);
-    const endDate = new Date(rentalData.endTime);
+    const startDate = new Date(this.state.rentalData.startTime);
+    const endDate = new Date(this.state.rentalData.endTime);
     
     // 날짜만 추출 (시간 제외)
     const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
@@ -784,253 +610,481 @@ function Rental({ isDarkMode }) {
     
     // 날짜 차이 계산 (종료일 - 시작일 + 1)
     const rentalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    const rentalFee = parseInt(selectedCar.rentalFee);
+    const rentalFee = parseInt(this.state.selectedCar.rentalFee);
     
     return rentalFee * rentalDays;
   };
 
+  handleRentalSubmit = async () => {
+    if (!this.user) {
+      this.setState({ error: '로그인이 필요합니다.' });
+      return;
+    }
+
+    try {
+      // 현재 시간을 한국 시간으로 정확하게 설정
+      const now = new Date();
+      const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      
+      // 시간을 YY-MM-DD HH:mm:ss 형식으로 변환
+      const formatTime = 
+        String(koreanTime.getFullYear()).slice(-2) + '-' +
+        String(koreanTime.getMonth() + 1).padStart(2, '0') + '-' +
+        String(koreanTime.getDate()).padStart(2, '0') + ' ' +
+        String(koreanTime.getHours()).padStart(2, '0') + ':' +
+        String(koreanTime.getMinutes()).padStart(2, '0') + ':' +
+        String(koreanTime.getSeconds()).padStart(2, '0');
+      
+      // 대여 기간 계산 (종료일 - 시작일 + 1)
+      const startDate = new Date(this.state.rentalData.startTime);
+      const endDate = new Date(this.state.rentalData.endTime);
+      const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      
+      // 요금 계산 (rentalFee를 숫자로 변환)
+      const rentalFee = parseInt(this.state.selectedCar.rentalFee);
+      const totalFee = rentalFee * rentalDays;
+
+      const rentalRequest = {
+        carNumber: this.state.selectedCar.carNumber,
+        carName: this.state.selectedCar.carName,
+        carBrand: this.state.selectedCar.carBrand,
+        carType: this.state.selectedCar.carType,
+        guestId: this.user.uid,
+        guestName: this.state.rentalData.guestName,
+        hostId: this.state.selectedCar.hostID,
+        hostName: this.state.selectedCar.hostName,
+        startTime: this.state.rentalData.startTime,
+        endTime: this.state.rentalData.endTime,
+        address: this.state.rentalData.address,
+        tags: this.state.rentalData.tags,
+        status: '대기중',
+        rentalFee: rentalFee.toString(),
+        totalFee: totalFee
+      };
+
+      // 문서 ID 생성: "GuestID.carNumber.YY-MM-DD HH:mm:ss"
+      const docId = `${this.user.uid}.${this.state.selectedCar.carNumber}.${formatTime}`;
+      
+      // setDoc을 사용하여 지정된 ID로 문서 생성
+      await setDoc(doc(db, 'requests', docId), rentalRequest);
+      
+      // 대여 다이얼로그 닫기
+      this.handleCloseDialog();
+      
+      // 성공 메시지 표시
+      this.setState({ success: '대여 요청이 성공적으로 등록되었습니다.', recommendationDialogOpen: true });
+    } catch (err) {
+      console.error('대여 요청 실패:', err);
+      this.setState({ error: '대여 요청 등록에 실패했습니다.' });
+    }
+  };
+
+  componentDidMount() {
+    this.fetchCars();
+  }
+
+  async fetchCars() {
+    try {
+      console.log('차량 데이터 로딩 시작...');
+      const registrationsCollection = collection(db, 'registrations');
+      const registrationsSnapshot = await getDocs(registrationsCollection);
+      
+      // 필수 정보가 있는 차량만 필터링
+      const carsList = registrationsSnapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+        .filter(car => {
+          // 필수 정보 체크
+          const hasRequiredInfo = 
+            car.carName && 
+            car.carNumber && 
+            car.carBrand && 
+            car.carType && 
+            car.rentalFee;
+          
+          if (!hasRequiredInfo) {
+            console.log('필수 정보가 누락된 차량 제외:', {
+              id: car.id,
+              carName: car.carName,
+              carNumber: car.carNumber,
+              carBrand: car.carBrand,
+              carType: car.carType,
+              rentalFee: car.rentalFee
+            });
+          }
+          
+          return hasRequiredInfo;
+        });
+
+      console.log('로드된 차량 데이터:', carsList);
+
+      if (carsList.length === 0) {
+        console.log('등록된 차량이 없습니다.');
+        this.setState({
+          cars: [],
+          filteredCars: [],
+          loading: false,
+          error: '등록된 차량이 없습니다.'
+        });
+        return;
+      }
+
+      // 모든 태그 수집 (필수 정보가 있는 차량의 태그만)
+      this.allTags = [...new Set(carsList.flatMap(car => car.tags || []))];
+
+      // 초기 정렬 적용
+      const sortedCars = this.sortCars(carsList, this.state.sortOrder);
+      
+      this.setState({
+        cars: sortedCars,
+        filteredCars: sortedCars,
+        loading: false
+      }, () => {
+        console.log('상태 업데이트 완료:', this.state);
+      });
+    } catch (error) {
+      console.error('차량 데이터 로딩 오류:', error);
+      this.setState({
+        error: '차량 데이터를 불러오는 중 오류가 발생했습니다.',
+        loading: false
+      });
+    }
+  }
+
+  sortCars = (cars, sortOrder) => {
+    let sorted = [...cars];
+    switch (sortOrder) {
+      case 'numberAsc':
+        sorted.sort((a, b) => (a.carNumber || '').localeCompare(b.carNumber || ''));
+        break;
+      case 'numberDesc':
+        sorted.sort((a, b) => (b.carNumber || '').localeCompare(a.carNumber || ''));
+        break;
+      case 'nameAsc':
+        sorted.sort((a, b) => koreanFirstSort(a.carName, b.carName));
+        break;
+      case 'nameDesc':
+        sorted.sort((a, b) => koreanFirstSort(b.carName, a.carName));
+        break;
+      case 'priceAsc':
+        sorted.sort((a, b) => (parseInt(a.rentalFee) || 0) - (parseInt(b.rentalFee) || 0));
+        break;
+      case 'priceDesc':
+        sorted.sort((a, b) => (parseInt(b.rentalFee) || 0) - (parseInt(a.rentalFee) || 0));
+        break;
+      default:
+        sorted.sort((a, b) => koreanFirstSort(a.carName, b.carName));
+    }
+    return sorted;
+  };
+
+  setTempRentalFeeRange = (newRange) => {
+    this.setState(prev => ({
+      tempRentalFeeRange: newRange
+    }));
+  };
+
+  setFilters = (newFilters) => {
+    this.setState(prev => ({
+      filters: { ...prev.filters, ...newFilters }
+    }));
+  };
+
+  setTempFilters = (newTempFilters) => {
+    this.setState(prev => ({
+      tempFilters: { ...prev.tempFilters, ...newTempFilters }
+    }));
+  };
+
+  setRentalFeeRange = (newRange) => {
+    this.setState(prev => ({
+      rentalFeeRange: newRange
+    }));
+  };
+
+  componentDidUpdate(prevProps) {
+    // 다크모드 상태가 변경되었을 때만 실행
+    // document.documentElement.setAttribute('data-theme', this.props.isDarkMode ? 'dark' : 'light');
+  }
+
+  render() {
+    const { 
+      loading, 
+      error, 
+      success, 
+      selectedCar, 
+      openDialog, 
+      rentalData, 
+      searchQuery, 
+      filterDialogOpen, 
+      page, 
+      filters, 
+      tempFilters, 
+      rentalFeeRange, 
+      tempRentalFeeRange,
+      filteredCars,
+      sortOrder,
+      recommendationDialogOpen
+    } = this.state;
+
   return (
-    <div className={`rental-container ${isDarkMode ? 'dark' : ''}`}>
-      <Link
-        to="/registration"
-        className={`registration-link-button ${isDarkMode ? 'dark' : ''}`}
-      >
-        차량 등록
-      </Link>
-      <div className={`rental-paper ${isDarkMode ? 'dark' : ''}`}>
-        <div className="rental-header">
-          <h1 className="rental-title">차량 대여</h1>
+      <div className={`rental-container ${this.props.isDarkMode ? 'dark' : ''}`}>
+        <div className="registration-link-container">
+          <Link
+            to="/registration"
+            className={`registration-link-button ${this.props.isDarkMode ? 'dark' : ''}`}
+          >
+            차량 등록
+          </Link>
         </div>
-        <div className="search-filter-container">
-          <div className="search-group">
-            <div className="search-field-wrapper">
-              <input
-                type="text"
-                className="search-field"
-                placeholder="차량명, 차량번호, 제조사, 차종, 태그 검색"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onKeyPress={handleKeyPress}
-              />
-              <button className={`search-button ${isDarkMode ? 'dark' : ''}`} onClick={handleSearch}>
-                검색
-              </button>
-            </div>
+        <div className={`rental-paper ${this.props.isDarkMode ? 'dark' : ''}`}>
+          <div className={`rental-header ${this.props.isDarkMode ? 'dark' : ''}`}>
+            <h1 className={`rental-title ${this.props.isDarkMode ? 'dark' : ''}`}>차량 대여</h1>
+          </div>
+          <div className={`search-filter-container ${this.props.isDarkMode ? 'dark' : ''}`}>
+            <div className={`search-group ${this.props.isDarkMode ? 'dark' : ''}`}>
+              <div className={`search-field-wrapper ${this.props.isDarkMode ? 'dark' : ''}`}>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  className={`search-field ${this.props.isDarkMode ? 'dark' : ''}`}
+                  placeholder="차량명, 차량번호, 제조사, 차종, 태그 검색"
+              value={searchQuery}
+                  onChange={this.handleSearchChange}
+                  onKeyPress={this.handleKeyPress}
+                />
+                <button className={`search-button ${this.props.isDarkMode ? 'dark' : ''}`} onClick={this.handleSearch}>
+              검색
+                </button>
           </div>
         </div>
-        <div className="sort-filter-row">
-          <select
-            className={`sort-select ${isDarkMode ? 'dark' : ''}`}
-            value={sortOrder}
-            onChange={handleSortChange}
-          >
-            <option value="nameAsc">차량명 (오름차순)</option>
-            <option value="nameDesc">차량명 (내림차순)</option>
-            <option value="numberAsc">차량번호 (오름차순)</option>
-            <option value="numberDesc">차량번호 (내림차순)</option>
-            <option value="priceAsc">대여료 (낮은순)</option>
-            <option value="priceDesc">대여료 (높은순)</option>
-          </select>
-          <button
-            className={`filter-button ${isDarkMode ? 'dark' : ''}`}
-            onClick={handleOpenFilterDialog}
+          </div>
+          <div className={`sort-filter-row ${this.props.isDarkMode ? 'dark' : ''}`}>
+            <select
+              className={`sort-select ${this.props.isDarkMode ? 'dark' : ''}`}
+              value={sortOrder}
+              onChange={this.handleSortChange}
+            >
+              <option value="nameAsc">차량명 (오름차순)</option>
+              <option value="nameDesc">차량명 (내림차순)</option>
+              <option value="numberAsc">차량번호 (오름차순)</option>
+              <option value="numberDesc">차량번호 (내림차순)</option>
+              <option value="priceAsc">대여료 (낮은순)</option>
+              <option value="priceDesc">대여료 (높은순)</option>
+            </select>
+            <button
+              className={`filter-button ${this.props.isDarkMode ? 'dark' : ''}`}
+              onClick={this.handleOpenFilterDialog}
           >
             필터
-          </button>
+            </button>
         </div>
         {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner" />
-          </div>
-        ) : error ? (
-          <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{error}</div>
-        ) : (
-          <>
-            <div className="car-grid">
-              {getCurrentPageCars().map((car) => (
-                <CarCard
-                  key={car.id}
-                  car={car}
-                  onRent={handleRentClick}
-                  onTagClick={handleTagFilterClick}
-                  isDarkMode={isDarkMode}
-                />
-              ))}
+            <div className={`loading-container ${this.props.isDarkMode ? 'dark' : ''}`}>
+              <div className={`loading-spinner ${this.props.isDarkMode ? 'dark' : ''}`} />
             </div>
-            {filteredCars.length > 0 && (
-              <div className="pagination-wrapper">
-                <div className="pagination">
-                  <button
-                    className="page-button"
-                    onClick={() => handlePageChange(null, Math.max(1, page - 1))}
-                    disabled={page === 1}
-                  >
-                    이전
-                  </button>
-                  <button
-                    className="page-button"
-                    onClick={() => handlePageChange(null, Math.min(Math.ceil(filteredCars.length / itemsPerPage), page + 1))}
-                    disabled={page === Math.ceil(filteredCars.length / itemsPerPage)}
-                  >
-                    다음
-                  </button>
-                </div>
-                <div className="pagination-info">{getPageInfo()}</div>
+        ) : error ? (
+            <div className={`alert error ${this.props.isDarkMode ? 'dark' : ''}`}>{error}</div>
+        ) : (
+            <>
+              <div className={`car-grid ${this.props.isDarkMode ? 'dark' : ''}`}>
+                {this.getCurrentPageCars().map((car) => (
+                  <CarCard
+                    key={car.id}
+                    car={car}
+                    onRent={this.handleRentClick}
+                    onTagClick={this.handleTagFilterClick}
+                    isDarkMode={this.props.isDarkMode}
+                  />
+              ))}
               </div>
+            {filteredCars.length > 0 && (
+                <div className={`pagination-wrapper ${this.props.isDarkMode ? 'dark' : ''}`}>
+                  <div className={`pagination ${this.props.isDarkMode ? 'dark' : ''}`}>
+                    <button
+                      className={`page-button ${this.props.isDarkMode ? 'dark' : ''}`}
+                      onClick={() => this.handlePageChange(null, Math.max(1, page - 1))}
+                      disabled={page === 1}
+                    >
+                      이전
+                    </button>
+                    <button
+                      className={`page-button ${this.props.isDarkMode ? 'dark' : ''}`}
+                      onClick={() => this.handlePageChange(null, Math.min(Math.ceil(filteredCars.length / this.itemsPerPage), page + 1))}
+                      disabled={page === Math.ceil(filteredCars.length / this.itemsPerPage)}
+                    >
+                      다음
+                    </button>
+                  </div>
+                  <div className={`pagination-info ${this.props.isDarkMode ? 'dark' : ''}`}>{this.getPageInfo()}</div>
+                </div>
+              )}
+            </>
             )}
-          </>
+        </div>
+        {filterDialogOpen && (
+          <FilterDialog
+            open={filterDialogOpen}
+            onClose={this.handleCloseFilterDialog}
+            onApply={this.handleApplyFilters}
+            filters={filters}
+            setFilters={this.setFilters}
+            tempFilters={tempFilters}
+            setTempFilters={this.setTempFilters}
+            rentalFeeRange={rentalFeeRange}
+            tempRentalFeeRange={tempRentalFeeRange}
+            setTempRentalFeeRange={this.setTempRentalFeeRange}
+            setRentalFeeRange={this.setRentalFeeRange}
+            allTags={this.allTags}
+            isDarkMode={this.props.isDarkMode}
+          />
+        )}
+        {openDialog && selectedCar && (
+          <div className={`rental-dialog-overlay ${this.props.isDarkMode ? 'dark' : ''}`}>
+            <div className={`rental-dialog ${this.props.isDarkMode ? 'dark' : ''}`}>
+              <div className={`rental-dialog-header ${this.props.isDarkMode ? 'dark' : ''}`}>
+                <h2 className={this.props.isDarkMode ? 'dark' : ''}>차량 대여</h2>
+              </div>
+              <div className={`rental-dialog-content ${this.props.isDarkMode ? 'dark' : ''}`}>
+                <div className={`car-info-box ${this.props.isDarkMode ? 'dark' : ''}`}>
+                  <h4 className={this.props.isDarkMode ? 'dark' : ''}>차량 정보</h4>
+                  <p className={this.props.isDarkMode ? 'dark' : ''} data-label="차량명: " data-value={selectedCar.carName}></p>
+                  <p className={this.props.isDarkMode ? 'dark' : ''} data-label="차량번호: " data-value={selectedCar.carNumber}></p>
+                  <p className={this.props.isDarkMode ? 'dark' : ''} data-label="제조사: " data-value={selectedCar.carBrand}></p>
+                  <p className={this.props.isDarkMode ? 'dark' : ''} data-label="차종: " data-value={selectedCar.carType}></p>
+                  <p className={this.props.isDarkMode ? 'dark' : ''} data-label="대여료: " data-value={`${selectedCar.rentalFee}원/일`}></p>
+                {rentalData.startTime && rentalData.endTime && (
+                    <p className={this.props.isDarkMode ? 'dark' : ''} data-label="총 대여료: " data-value={`${this.calculateTotalFee().toLocaleString()}원`}></p>
+                )}
+                </div>
+                <div className={`input-group ${this.props.isDarkMode ? 'dark' : ''}`}>
+                  <label className={this.props.isDarkMode ? 'dark' : ''}>대여자 이름</label>
+                  <input
+                    type="text"
+                    className={this.props.isDarkMode ? 'dark' : ''}
+                name="guestName"
+                value={rentalData.guestName}
+                    onChange={this.handleInputChange}
+                    placeholder="대여자 이름을 입력하세요"
+                  />
+                </div>
+                <div className={`input-group ${this.props.isDarkMode ? 'dark' : ''}`}>
+                  <label className={this.props.isDarkMode ? 'dark' : ''}>목적지</label>
+                  <input
+                    type="text"
+                    className={this.props.isDarkMode ? 'dark' : ''}
+                name="address"
+                value={rentalData.address}
+                    onChange={this.handleInputChange}
+                    placeholder="목적지를 입력하세요"
+                  />
+                </div>
+                <div className={`date-time-inputs ${this.isDarkMode ? 'dark' : ''}`}>
+                  <div className={`input-group ${this.isDarkMode ? 'dark' : ''}`}>
+                    <label className={this.isDarkMode ? 'dark' : ''}>대여 시작 시간</label>
+                    <input
+                      type="datetime-local"
+                      className={this.isDarkMode ? 'dark' : ''}
+                      name="startTime"
+                      value={this.formatDateTimeForInput(rentalData.startTime)}
+                      onChange={(e) => {
+                        const date = new Date(e.target.value + 'Z');
+                        this.setState(prev => ({
+                          rentalData: {
+                            ...prev.rentalData,
+                            startTime: date
+                          }
+                        }));
+                      }}
+                      min={this.formatDateTimeForInput(this.getCurrentKoreanTime())}
+                    />
+                  </div>
+                  <div className={`input-group ${this.isDarkMode ? 'dark' : ''}`}>
+                    <label className={this.isDarkMode ? 'dark' : ''}>대여 종료 시간</label>
+                    <input
+                      type="datetime-local"
+                      className={this.isDarkMode ? 'dark' : ''}
+                      name="endTime"
+                      value={this.formatDateTimeForInput(rentalData.endTime)}
+                      onChange={(e) => {
+                        const date = new Date(e.target.value + 'Z');
+                        this.setState(prev => ({
+                          rentalData: {
+                            ...prev.rentalData,
+                            endTime: date
+                    }
+                        }));
+                }}
+                      min={this.formatDateTimeForInput(rentalData.startTime)}
+              />
+                  </div>
+                </div>
+                <div className={`input-group ${this.isDarkMode ? 'dark' : ''}`}>
+                  <label className={this.isDarkMode ? 'dark' : ''}>태그</label>
+                  <div className="tag-group">
+                    {(selectedCar.tags || [])
+                      .filter(tag => tag !== '도심 드라이브' && tag.trim() !== '')
+                      .map((tag) => (
+                        <button
+                    key={tag}
+                          className={`tag-chip ${rentalData.tags.includes(tag) ? 'selected' : ''} ${this.isDarkMode ? 'dark' : ''}`}
+                          onClick={() => this.handleTagClick(tag)}
+                        >
+                          {rentalData.tags.includes(tag) && (
+                            <span className="tag-check" aria-label="선택됨" style={{marginRight: '4px'}}>✔️</span>
+                          )}
+                          {tag}
+                        </button>
+                ))}
+                  </div>
+                </div>
+              </div>
+              <div className={`rental-dialog-actions ${this.isDarkMode ? 'dark' : ''}`}>
+                <button className={`cancel-button ${this.isDarkMode ? 'dark' : ''}`} onClick={this.handleCloseDialog}>취소</button>
+                <button className={`apply-button ${this.isDarkMode ? 'dark' : ''}`} onClick={this.handleRentalSubmit}>대여하기</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {success && (
+          <div className={`alert info ${this.isDarkMode ? 'dark' : ''}`}>
+            {success}
+          </div>
+        )}
+        {error && (
+          <div className={`alert error ${this.isDarkMode ? 'dark' : ''}`}>
+            {error}
+          </div>
+        )}
+        {recommendationDialogOpen && (
+          <div className="filter-dialog-overlay" style={{zIndex: 2000}}>
+            <div className="filter-dialog-content" style={{zIndex: 2001, maxWidth: 1200, width: '90vw', margin: 'auto'}}>
+              <div className="filter-dialog-header">
+                <h2>장소 추천</h2>
+                <button className="close-button" onClick={() => this.setState({ recommendationDialogOpen: false })}>×</button>
+              </div>
+              <div className="filter-dialog-body">
+                <PlaceRecommendation
+                  isDarkMode={this.props.isDarkMode}
+                  address={this.state.rentalData.address}
+                  tags={this.state.rentalData.tags}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </div>
-      {filterDialogOpen && (
-        <FilterDialog
-          open={filterDialogOpen}
-          onClose={handleCloseFilterDialog}
-          onApply={handleApplyFilters}
-          filters={filters}
-          setFilters={setFilters}
-          tempFilters={tempFilters}
-          setTempFilters={setTempFilters}
-          rentalFeeRange={rentalFeeRange}
-          tempRentalFeeRange={tempRentalFeeRange}
-          setTempRentalFeeRange={setTempRentalFeeRange}
-          setRentalFeeRange={setRentalFeeRange}
-          allTags={allTags}
-          isDarkMode={isDarkMode}
-        />
-      )}
-      {openDialog && selectedCar && (
-        <div className="rental-dialog-overlay">
-          <div className={`rental-dialog ${isDarkMode ? 'dark' : ''}`}>
-            <div className="rental-dialog-header">
-              <h2>차량 대여</h2>
-              <button className="close-button" onClick={handleCloseDialog}>×</button>
-            </div>
-            <div className="rental-dialog-content">
-              <div className="car-info-box">
-                <h4>차량 정보</h4>
-                <p data-label="차량명: " data-value={selectedCar.carName}></p>
-                <p data-label="차량번호: " data-value={selectedCar.carNumber}></p>
-                <p data-label="제조사: " data-value={selectedCar.carBrand}></p>
-                <p data-label="차종: " data-value={selectedCar.carType}></p>
-                <p data-label="대여료: " data-value={`${selectedCar.rentalFee}원/일`}></p>
-                {rentalData.startTime && rentalData.endTime && (
-                  <p data-label="총 대여료: " data-value={`${calculateTotalFee().toLocaleString()}원`}></p>
-                )}
-              </div>
-              <div className="input-group">
-                <label>대여자 이름</label>
-                <input
-                  type="text"
-                  name="guestName"
-                  value={rentalData.guestName}
-                  onChange={handleInputChange}
-                  placeholder="대여자 이름을 입력하세요"
-                />
-              </div>
-              <div className="input-group">
-                <label>목적지</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={rentalData.address}
-                  onChange={handleInputChange}
-                  placeholder="목적지를 입력하세요"
-                />
-              </div>
-              <div className="date-time-inputs">
-                <div className="input-group">
-                  <label>대여 시작 시간</label>
-                  <input
-                    type="datetime-local"
-                    name="startTime"
-                    value={formatDateTimeForInput(rentalData.startTime)}
-                    onChange={(e) => {
-                      const date = new Date(e.target.value + 'Z');
-                      setRentalData(prev => ({
-                        ...prev,
-                        startTime: date
-                      }));
-                    }}
-                    min={formatDateTimeForInput(getCurrentKoreanTime())}
-                  />
-                </div>
-                <div className="input-group">
-                  <label>대여 종료 시간</label>
-                  <input
-                    type="datetime-local"
-                    name="endTime"
-                    value={formatDateTimeForInput(rentalData.endTime)}
-                    onChange={(e) => {
-                      const date = new Date(e.target.value + 'Z');
-                      setRentalData(prev => ({
-                        ...prev,
-                        endTime: date
-                      }));
-                    }}
-                    min={formatDateTimeForInput(rentalData.startTime)}
-                  />
-                </div>
-              </div>
-              <div className="input-group">
-                <label>태그</label>
-                <div className="tag-group">
-                  {(selectedCar.tags || [])
-                    .filter(tag => tag !== '도심 드라이브' && tag.trim() !== '')
-                    .map((tag) => (
-                      <button
-                        key={tag}
-                        className={`tag-chip ${rentalData.tags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
-                        onClick={() => handleTagClick(tag)}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                </div>
-              </div>
-            </div>
-            <div className="rental-dialog-actions">
-              <button className="cancel-button" onClick={handleCloseDialog}>취소</button>
-              <button className="apply-button" onClick={handleRentalSubmit}>대여하기</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {success && (
-        <div className={`alert info ${isDarkMode ? 'dark' : ''}`}>
-          {success}
-        </div>
-      )}
-      {error && (
-        <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>
-          {error}
-        </div>
-      )}
-
-      {/* 장소 추천 다이얼로그 */}
-      {openRecommendationDialog && (
-        <div className="recommendation-dialog-overlay">
-          <div className={`recommendation-dialog ${isDarkMode ? 'dark' : ''}`}>
-            <div className="recommendation-dialog-header">
-              <h2>장소 추천</h2>
-              <button className="close-button" onClick={() => setOpenRecommendationDialog(false)}>×</button>
-            </div>
-            <div className="recommendation-dialog-content">
-              <div className="recommendation-info">
-                <p>선택한 태그: {recommendationData.tags.join(', ') || '없음'}</p>
-                <p>목적지: {recommendationData.address || '입력되지 않음'}</p>
-                <p>대여 기간: {formatDateTime(recommendationData.startTime)} ~ {formatDateTime(recommendationData.endTime)}</p>
-              </div>
-              <PlaceRecommendation
-                isDarkMode={isDarkMode}
-                address={recommendationData.address}
-                tags={recommendationData.tags}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    );
+  }
 }
 
-export default Rental;
+// Rental 컴포넌트를 감싸는 함수형 컴포넌트
+function RentalWrapper({ isDarkMode }) {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  return <Rental isDarkMode={isDarkMode} user={user} navigate={navigate} />;
+}
+
+export default RentalWrapper;

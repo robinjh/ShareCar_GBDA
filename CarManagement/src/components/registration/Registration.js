@@ -21,277 +21,310 @@ const tags = [
   '#자연 감상'
 ];
 
-function Registration() {
-  const { user } = useContext(UserContext);
-  const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
-  const [formData, setFormData] = useState({
-    carNumber: '',
-    carType: '',
-    carName: '',
-    carBrand: '',
-    otherBrand: '',
-    rentalFee: '',
-    tags: [],
-    hostName: '',
-    hostID: user?.uid || ''
-  });
+class Registration extends React.Component {
+  constructor(props) {
+    super(props);
+    this.isDarkMode = props.isDarkMode;
+    this.user = props.user;
+    this.navigate = props.navigate;
+    this.state = {
+      carData: {
+        carNumber: '',
+        carName: '',
+        carBrand: '',
+        carType: '',
+        rentalFee: '',
+        tags: []
+      },
+      loading: false,
+      error: '',
+      success: '',
+      openDialog: false,
+      selectedTags: [],
+      tempTags: [],
+      tagDialogOpen: false,
+      allTags: []
+    };
+  }
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
-
-  useEffect(() => {
+  componentDidMount() {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleDarkModeChange = (e) => setIsDarkMode(e.matches);
+    const handleDarkModeChange = (e) => this.setState({ isDarkMode: e.matches });
     
     mediaQuery.addEventListener('change', handleDarkModeChange);
     return () => mediaQuery.removeEventListener('change', handleDarkModeChange);
-  }, []);
+  }
 
-  const handleChange = (e) => {
+  componentDidUpdate(prevProps) {
+    if (prevProps.isDarkMode !== this.props.isDarkMode) {
+      // document.documentElement.setAttribute('data-theme', this.props.isDarkMode ? 'dark' : 'light');
+    }
+  }
+
+  handleChange = (e) => {
     const { name, value } = e.target;
     
     if (name === 'rentalFee') {
       const numericValue = value.replace(/[^0-9]/g, '');
-      setFormData(prev => ({
-        ...prev,
-        [name]: numericValue
+      this.setState(prev => ({
+        carData: {
+          ...prev.carData,
+          [name]: numericValue
+        }
       }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
+      this.setState(prev => ({
+        carData: {
+          ...prev.carData,
+          [name]: value
+        }
       }));
     }
   };
 
-  const handleTagClick = (tag) => {
-    setFormData(prev => {
-      const currentTags = prev.tags;
+  handleTagClick = (tag) => {
+    this.setState(prev => {
+      const currentTags = prev.carData.tags;
       if (currentTags.includes(tag)) {
         return {
-          ...prev,
-          tags: currentTags.filter(t => t !== tag)
+          carData: {
+            ...prev.carData,
+            tags: currentTags.filter(t => t !== tag)
+          }
         };
       } else {
         return {
-          ...prev,
-          tags: [...currentTags, tag]
+          carData: {
+            ...prev.carData,
+            tags: [...currentTags, tag]
+          }
         };
       }
     });
   };
 
-  const handleSubmit = async (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    this.setState({ error: '', success: '' });
 
     try {
-      if (!formData.carNumber || !formData.carType || !formData.carName || 
-          !formData.carBrand || !formData.rentalFee) {
+      if (!this.state.carData.carNumber || !this.state.carData.carType || !this.state.carData.carName || 
+          !this.state.carData.carBrand || !this.state.carData.rentalFee) {
         throw new Error('모든 필수 항목을 입력해주세요.');
       }
 
-      if (formData.carBrand === '기타' && !formData.otherBrand) {
+      if (this.state.carData.carBrand === '기타' && !this.state.carData.otherBrand) {
         throw new Error('기타 제조사를 선택한 경우 제조사명을 입력해주세요.');
       }
 
-      if (!user) {
+      if (!this.user) {
         throw new Error('로그인이 필요합니다.');
       }
 
       const carData = {
-        carBrand: formData.carBrand === '기타' ? `기타(${formData.otherBrand})` : formData.carBrand,
-        carName: formData.carName,
-        carNumber: formData.carNumber,
-        carType: formData.carType,
-        hostID: user.uid,
-        hostName: formData.hostName,
-        rentalFee: formData.rentalFee,
-        tags: formData.tags
+        carBrand: this.state.carData.carBrand === '기타' ? `기타(${this.state.carData.otherBrand})` : this.state.carData.carBrand,
+        carName: this.state.carData.carName,
+        carNumber: this.state.carData.carNumber,
+        carType: this.state.carData.carType,
+        hostID: this.user.uid,
+        hostName: this.state.carData.hostName,
+        rentalFee: this.state.carData.rentalFee,
+        tags: this.state.carData.tags
       };
 
-      await setDoc(doc(db, 'registrations', formData.carNumber), carData);
+      await setDoc(doc(db, 'registrations', this.state.carData.carNumber), carData);
 
-      setSuccess('차량이 성공적으로 등록되었습니다!');
-      setFormData({
-        carNumber: '',
-        carType: '',
-        carName: '',
-        carBrand: '',
-        otherBrand: '',
-        rentalFee: '',
-        tags: [],
-        hostName: '',
-        hostID: user.uid
+      this.setState({
+        success: '차량이 성공적으로 등록되었습니다!',
+        carData: {
+          carNumber: '',
+          carType: '',
+          carName: '',
+          carBrand: '',
+          otherBrand: '',
+          rentalFee: '',
+          tags: [],
+          hostName: '',
+          hostID: this.user.uid
+        }
       });
     } catch (err) {
-      setError(err.message);
+      this.setState({ error: err.message });
     }
   };
 
-  return (
-    <div className={`registration-container ${isDarkMode ? 'dark' : ''}`}>
-      <Link
-        to="/rental"
-        className={`rental-link-button ${isDarkMode ? 'dark' : ''}`}
-      >
-        차량 대여
-      </Link>
-      <div className={`registration-paper ${isDarkMode ? 'dark' : ''}`}>
-        <div className={`registration-header ${isDarkMode ? 'dark' : ''}`}>
-          <h1 className={`registration-title ${isDarkMode ? 'dark' : ''}`}>
-            차량 등록
-          </h1>
+  render() {
+    const { carData, loading, error, success, openDialog, tagDialogOpen, selectedTags, tempTags } = this.state;
+    const { isDarkMode } = this.props;
+
+    return (
+      <div className={`registration-container ${isDarkMode ? 'dark' : ''}`}>
+        <div className="rental-link-container">
+          <Link
+            to="/rental"
+            className={`rental-link-button ${isDarkMode ? 'dark' : ''}`}
+          >
+            차량 대여
+          </Link>
         </div>
-
-        {!user && (
-          <div className={`alert warning ${isDarkMode ? 'dark' : ''}`}>
-            차량을 등록하려면 로그인이 필요합니다. 현재 로그인되어 있지 않습니다.
+        <div className={`registration-paper ${isDarkMode ? 'dark' : ''}`}>
+          <div className={`registration-header ${isDarkMode ? 'dark' : ''}`}>
+            <h1 className={`registration-title ${isDarkMode ? 'dark' : ''}`}>차량 등록</h1>
           </div>
-        )}
 
-        {error && <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{error}</div>}
-        {success && <div className={`alert success ${isDarkMode ? 'dark' : ''}`}>{success}</div>}
-
-        <form onSubmit={handleSubmit} className="registration-form">
-          <div className="form-grid">
-            <div className="form-group">
-              <label>등록자 이름</label>
-              <input
-                type="text"
-                name="hostName"
-                value={formData.hostName}
-                onChange={handleChange}
-                required
-                placeholder="차량 등록자의 이름을 입력해주세요"
-                className={isDarkMode ? 'dark' : ''}
-              />
+          {!this.user && (
+            <div className={`alert warning ${isDarkMode ? 'dark' : ''}`}>
+              차량을 등록하려면 로그인이 필요합니다. 현재 로그인되어 있지 않습니다.
             </div>
+          )}
 
-            <div className="form-group">
-              <label>차량번호</label>
-              <input
-                type="text"
-                name="carNumber"
-                value={formData.carNumber}
-                onChange={handleChange}
-                required
-                placeholder="차량번호를 입력해주세요"
-                className={isDarkMode ? 'dark' : ''}
-              />
-            </div>
+          {this.state.error && <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{this.state.error}</div>}
+          {this.state.success && <div className={`alert success ${isDarkMode ? 'dark' : ''}`}>{this.state.success}</div>}
 
-            <div className="form-group">
-              <label>차량 종류</label>
-              <select
-                name="carType"
-                value={formData.carType}
-                onChange={handleChange}
-                required
-                className={isDarkMode ? 'dark' : ''}
-              >
-                <option value="">전체</option>
-                {carTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>제조사</label>
-              <select
-                name="carBrand"
-                value={formData.carBrand}
-                onChange={handleChange}
-                required
-                className={isDarkMode ? 'dark' : ''}
-              >
-                <option value="">전체</option>
-                {carBrands.map((brand) => (
-                  <option key={brand} value={brand}>{brand}</option>
-                ))}
-              </select>
-            </div>
-
-            {formData.carBrand === '기타' && (
+          <form onSubmit={this.handleSubmit} className={`registration-form ${isDarkMode ? 'dark' : ''}`}>
+            <div className="form-grid">
               <div className="form-group">
-                <label>기타 제조사명</label>
+                <label>등록자 이름</label>
                 <input
                   type="text"
-                  name="otherBrand"
-                  value={formData.otherBrand}
-                  onChange={handleChange}
+                  name="hostName"
+                  value={this.state.carData.hostName}
+                  onChange={this.handleChange}
                   required
-                  placeholder="예: 제네시스, 포르쉐 등"
+                  placeholder="차량 등록자의 이름을 입력해주세요"
                   className={isDarkMode ? 'dark' : ''}
                 />
-                <span className="helper-text">기타 제조사를 선택한 경우 제조사명을 입력해주세요</span>
               </div>
-            )}
 
-            <div className="form-group">
-              <label>차량 이름</label>
-              <input
-                type="text"
-                name="carName"
-                value={formData.carName}
-                onChange={handleChange}
-                required
-                placeholder="차량명을 입력하세요"
-                className={isDarkMode ? 'dark' : ''}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>대여료(1일)</label>
-              <div className="input-with-suffix">
+              <div className="form-group">
+                <label>차량번호</label>
                 <input
                   type="text"
-                  name="rentalFee"
-                  value={formData.rentalFee}
-                  onChange={handleChange}
+                  name="carNumber"
+                  value={this.state.carData.carNumber}
+                  onChange={this.handleChange}
                   required
-                  placeholder="대여료를 입력하세요"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
+                  placeholder="차량번호를 입력해주세요"
                   className={isDarkMode ? 'dark' : ''}
                 />
-                <span className={`suffix ${isDarkMode ? 'dark' : ''}`}>원</span>
+              </div>
+
+              <div className="form-group">
+                <label>차량 종류</label>
+                <select
+                  name="carType"
+                  value={this.state.carData.carType}
+                  onChange={this.handleChange}
+                  required
+                  className={isDarkMode ? 'dark' : ''}
+                >
+                  <option value="">전체</option>
+                  {carTypes.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>제조사</label>
+                <select
+                  name="carBrand"
+                  value={this.state.carData.carBrand}
+                  onChange={this.handleChange}
+                  required
+                  className={isDarkMode ? 'dark' : ''}
+                >
+                  <option value="">전체</option>
+                  {carBrands.map((brand) => (
+                    <option key={brand} value={brand}>{brand}</option>
+                  ))}
+                </select>
+              </div>
+
+              {this.state.carData.carBrand === '기타' && (
+                <div className="form-group">
+                  <label>기타 제조사명</label>
+                  <input
+                    type="text"
+                    name="otherBrand"
+                    value={this.state.carData.otherBrand}
+                    onChange={this.handleChange}
+                    required
+                    placeholder="예: 제네시스, 포르쉐 등"
+                    className={isDarkMode ? 'dark' : ''}
+                  />
+                  <span className="helper-text">기타 제조사를 선택한 경우 제조사명을 입력해주세요</span>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>차량 이름</label>
+                <input
+                  type="text"
+                  name="carName"
+                  value={this.state.carData.carName}
+                  onChange={this.handleChange}
+                  required
+                  placeholder="차량명을 입력하세요"
+                  className={isDarkMode ? 'dark' : ''}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>대여료(1일)</label>
+                <div className="input-with-suffix">
+                  <input
+                    type="text"
+                    name="rentalFee"
+                    value={this.state.carData.rentalFee}
+                    onChange={this.handleChange}
+                    required
+                    placeholder="대여료를 입력하세요"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    className={isDarkMode ? 'dark' : ''}
+                  />
+                  <span className={`suffix ${isDarkMode ? 'dark' : ''}`}>원</span>
+                </div>
+              </div>
+
+              <div className={`form-group tag-section ${isDarkMode ? 'dark' : ''}`}>
+                <label>태그 선택</label>
+                <div className={`tag-stack ${isDarkMode ? 'dark' : ''}`}>
+                  {tags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      className={`tag-chip ${this.state.carData.tags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
+                      onClick={() => this.handleTagClick(tag)}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-group submit-group">
+                <button
+                  type="submit"
+                  className={`submit-button ${isDarkMode ? 'dark' : ''}`}
+                  disabled={!this.user}
+                >
+                  차량 등록
+                </button>
               </div>
             </div>
-
-            <div className={`form-group tag-section ${isDarkMode ? 'dark' : ''}`}>
-              <label>태그 선택</label>
-              <div className={`tag-stack ${isDarkMode ? 'dark' : ''}`}>
-                {tags.map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    className={`tag-chip ${formData.tags.includes(tag) ? 'selected' : ''} ${isDarkMode ? 'dark' : ''}`}
-                    onClick={() => handleTagClick(tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="form-group submit-group">
-              <button
-                type="submit"
-                className={`submit-button ${isDarkMode ? 'dark' : ''}`}
-                disabled={!user}
-              >
-                차량 등록
-              </button>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
-export default Registration; 
+function RegistrationWrapper({ isDarkMode }) {
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
+  return <Registration isDarkMode={isDarkMode} user={user} navigate={navigate} />;
+}
+
+export default RegistrationWrapper; 
