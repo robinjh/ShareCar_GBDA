@@ -76,7 +76,12 @@ function Header({ isDarkMode, toggleMode }) {
           <div
             className="modal" 
             onClick={(e) => e.stopPropagation()} 
-            style={{ padding: 20, width: '90%', maxWidth: 800, maxHeight: '90vh', overflowY: 'auto' }}
+            style={{
+          margin: "1rem",
+          padding: "0.5rem 1rem",
+          border: "1px solid var(--color-border)", 
+          borderRadius: "6px",
+        }}
           >
             <button className="close-button" onClick={() => setShowMyPageModal(false)}> 
               ×
