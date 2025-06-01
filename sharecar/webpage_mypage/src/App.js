@@ -62,6 +62,15 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
+
+   const body = document.body;
+    if (isDarkMode) {
+      body.classList.add('dark-mode'); // isDarkMode 플래그 값에 따른 'dark-mode' 클래스 변경
+      body.classList.remove('light-mode'); // light 모드 클래스가 있다면 제거
+    } else {
+      body.classList.remove('dark-mode'); 
+      body.classList.add('light-mode'); // light 모드 클래스 추가
+    }
   }, [isDarkMode]);
 
   const toggleMode = () => setIsDarkMode((prev) => !prev);
