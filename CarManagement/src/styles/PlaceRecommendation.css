@@ -1,0 +1,181 @@
+.recommend-container {
+    background: var(--color-surface);
+    display: flex;
+    height: 100vh;
+    min-height: 600px;
+  }
+  
+  .recommend-list {
+    width: 370px;
+    min-width: 260px;
+    max-width: 410px;
+    padding: 24px 16px 24px 26px;
+    background: var(--color-surface);
+    border-right: 1.5px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  .dark .recommend-list {
+    background: var(--color-surface-dark);
+  }
+  
+  .recommend-list h2 {
+    margin: 0 0 16px 0;
+    font-size: 1.33em;
+    font-weight: 800;
+    color: var(--color-text);
+  }
+  .dark .recommend-list h2 {
+    color: var(--color-text-dark);
+  }
+  
+  .recommend-search-group {
+    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .recommend-input {
+    flex: 1;
+    min-width: 0;
+    background: var(--color-input);
+    border: 1.5px solid var(--color-border);
+    color: var(--color-text);
+    height: 40px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  .dark .recommend-input {
+    background: var(--color-input-dark);
+    border: 1.5px solid var(--color-border-dark);
+    color: var(--color-text-dark);
+  }
+  
+  .recommend-btn {
+    background: var(--color-primary);
+    border: none;
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 18px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.16s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .recommend-btn:hover {
+    background: var(--color-accent);
+  }
+  
+  /* 스크롤 영역 높이 제한 */
+  .recommend-list-scroll {
+    flex: 1 1 0%;
+    overflow-y: auto;
+    min-height: 0;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: var(--color-surface);
+    box-shadow: 0 0 0.5px #dbeafe;
+    max-height: calc(100vh - 140px);
+  }
+  .dark .recommend-list-scroll {
+    background: var(--color-surface-dark);
+  }
+  
+  .recommend-list ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .recommend-list li {
+    background: inherit;
+    display: flex;
+    align-items: center;
+    padding: 16px 13px 16px 10px;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background 0.15s, box-shadow 0.15s;
+    color: var(--color-text);
+  }
+  .dark .recommend-list li {
+    border-bottom: 1px solid var(--color-border-dark);
+    color: var(--color-text-dark);
+  }
+  
+  .recommend-list li.selected {
+    background: var(--color-primary);
+    border-left: 4px solid var(--color-list-border);
+    box-shadow: 0 2px 10px 0 rgba(110,160,250,0.07);
+  }
+  
+  .recommend-item-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .recommend-item-text > div:first-child {
+    font-weight: 700;
+    color: inherit;
+    font-size: 1.06em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .recommend-address {
+    font-size: 13px;
+    color: var(--color-desc);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dark .recommend-address {
+    color: var(--color-desc-dark);
+  }
+  
+  /* 카카오맵 버튼 */
+  .recommend-link {
+    background: var(--color-kakao);
+    color: var(--color-text);
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    margin-left: 12px;
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 1px 4px rgba(50,70,130,0.03);
+    transition: background 0.18s;
+    white-space: nowrap;
+  }
+  .recommend-link:hover {
+    background: var(--color-kakaocheck);
+  }
+  
+  .recommend-empty {
+    color: var(--color-desc);
+    text-align: center;
+    margin-top: 32px;
+  }
+  .dark .recommend-empty {
+    color: var(--color-desc-dark);
+  }
+  
+  .recommend-map-area {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+  }
+  .recommend-map {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+  }
