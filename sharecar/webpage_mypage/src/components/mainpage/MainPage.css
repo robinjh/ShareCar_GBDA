@@ -31,6 +31,8 @@ body.dark-mode {
     color: var(--color-text, #333);
     background-color: var(--color-background, #fff);
     transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
 .main-page-header {
@@ -46,28 +48,6 @@ body.dark-mode {
 .main-page-header p {
     font-size: 1.3em;
     color: var(--color-text-secondary, #555);
-}
-
-.login-button {
-    display: inline-block;
-    margin-top: 30px;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #fff;
-    background-color: var(--color-primary, #007bff);
-    border: none;
-    border-radius: var(--radius, 8px);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.login-button:hover {
-    background-color: var(--color-primary-dark, #0056b3);
-}
-
-.login-button:active {
-    background-color: var(--color-accent, #004085);
 }
 
 .features-section {
