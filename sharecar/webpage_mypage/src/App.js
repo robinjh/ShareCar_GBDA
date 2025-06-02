@@ -3,12 +3,13 @@ import { UserProvider, UserContext } from "./UserContext";
 import Header from "./Header";
 import AuthForm from "./components/auth/AuthForm";
 import MyPage from "./components/mypage/MyPage";
-import PlaceRecommendation from "./components/recomendation/PlaceRecommendation";
+import PlaceRecommendation from "./components/recommendation/PlaceRecommendation";
 import MainPage from "./components/mainpage/MainPage";
 import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
 import Registration from "./components/registration/Registration";
+import Rental from "./components/rental/Rental";
 
 function AppContent() {
   const { user } = useContext(UserContext);
@@ -17,6 +18,10 @@ function AppContent() {
 
   const handlePageChange = (pageName) => {
     setCurrentPage(pageName);
+  };
+
+  const handleCloseModal = () => {
+    setCurrentPage('main'); 
   };
 
   if (!user) {
@@ -60,7 +65,9 @@ function AppContent() {
   if (currentPage === 'main') {
     return <MainPage onPageChange={handlePageChange} />;
   } else if (currentPage === 'registration') {
-    return <Registration />;
+    return <Registration onClose={handleCloseModal} />;
+  } else if (currentPage === 'rental') {
+    return <Rental onClose={handleCloseModal} />;
   }
 
   return null; // 일치하는 페이지가 없을 경우 아무것도 렌더링하지 않음 (또는 오류 페이지)
