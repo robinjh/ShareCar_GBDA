@@ -3,23 +3,34 @@ import './MainPage.css';
 
 // AppContent에서 넘겨준 onShowLoginClick 함수를 받아서
 function MainPage({ onPageChange }) {
+
 const handleGoToRegistration = () => {
   if (onPageChange) {
       onPageChange('registration');
     }
-}
+};
+
+const handleGoToRental = () => {
+  if (onPageChange) {
+    onPageChange('rental');
+  }
+};
 
   return (
     <div className="main-page"> 
-
       <header className="main-page-header">
         <h1>ShareCar 프로젝트</h1>
         <p>자율 주행을 언제 어디서나 쉽고 빠르게!</p>
          <button
           onClick={handleGoToRegistration}
-          style={{ marginTop: '20px', padding: '10px 20px', fontSize: '1em', cursor: 'pointer' }}
         >
-          차량 등록 페이지로 이동
+          내 차량 등록하기
+        </button>
+
+         <button
+          onClick={handleGoToRental}
+        >
+          차량 대여하기
         </button>
       </header>
 
