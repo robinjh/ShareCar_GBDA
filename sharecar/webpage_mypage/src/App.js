@@ -8,15 +8,21 @@ import MainPage from "./components/mainpage/MainPage";
 import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
+import Registration from "./components/registration/Registration";
 
-function AppContent({ toggleMode }) {
+function AppContent() {
   const { user } = useContext(UserContext);
 
-   if (!user) {
-    return <MainPage />;
+  const [currentPage, setCurrentPage] = useState('main');
+
+  const handlePageChange = (pageName) => {
+    setCurrentPage(pageName);
+  };
+
+  if (!user) {
+    return <AuthForm />;
   }
 
-  // 이메일 미인증 상태 안내 및 로그아웃만
   if (!user.emailVerified) {
     return (
       <div className="auth-box">
@@ -35,7 +41,7 @@ function AppContent({ toggleMode }) {
             onClick={() => {
               if (auth.currentUser) {
                 auth.currentUser.reload().then(() => {
-                  setTimeout(() => window.location.reload(), 1200); // 1.2초 후 새로고침
+                  setTimeout(() => window.location.reload(), 1200);
                 });
               } else {
                 alert("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
@@ -51,7 +57,13 @@ function AppContent({ toggleMode }) {
     );
   }
 
-  return <MainPage />;
+  if (currentPage === 'main') {
+    return <MainPage onPageChange={handlePageChange} />;
+  } else if (currentPage === 'registration') {
+    return <Registration />;
+  }
+
+  return null; // 일치하는 페이지가 없을 경우 아무것도 렌더링하지 않음 (또는 오류 페이지)
 }
 
 function App() {
@@ -63,13 +75,13 @@ function App() {
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
 
-   const body = document.body;
+    const body = document.body;
     if (isDarkMode) {
-      body.classList.add('dark-mode'); // isDarkMode 플래그 값에 따른 'dark-mode' 클래스 변경
-      body.classList.remove('light-mode'); // light 모드 클래스가 있다면 제거
+      body.classList.add('dark-mode');
+      body.classList.remove('light-mode');
     } else {
-      body.classList.remove('dark-mode'); 
-      body.classList.add('light-mode'); // light 모드 클래스 추가
+      body.classList.remove('dark-mode');
+      body.classList.add('light-mode');
     }
   }, [isDarkMode]);
 
@@ -79,7 +91,7 @@ function App() {
     <UserProvider>
       <div className={isDarkMode ? "dark" : "light"}>
         <Header isDarkMode={isDarkMode} toggleMode={toggleMode} />
-        <AppContent toggleMode={toggleMode} />
+        <AppContent />
       </div>
     </UserProvider>
   );
