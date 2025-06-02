@@ -182,6 +182,7 @@ function PlaceRecommendation({
                   seen.add(p.id);
                 }
               }
+              setPlaces(uniquePlaces);
               displayMarkers(uniquePlaces, mapRef, markersRef, setSelectedIdx);
             }
           },
