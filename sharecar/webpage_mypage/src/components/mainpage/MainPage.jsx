@@ -2,7 +2,12 @@ import React from 'react';
 import './MainPage.css'; 
 
 // AppContent에서 넘겨준 onShowLoginClick 함수를 받아서
-function MainPage() {
+function MainPage({ onPageChange }) {
+const handleGoToRegistration = () => {
+  if (onPageChange) {
+      onPageChange('registration');
+    }
+}
 
   return (
     <div className="main-page"> 
@@ -10,6 +15,12 @@ function MainPage() {
       <header className="main-page-header">
         <h1>ShareCar 프로젝트</h1>
         <p>자율 주행을 언제 어디서나 쉽고 빠르게!</p>
+         <button
+          onClick={handleGoToRegistration}
+          style={{ marginTop: '20px', padding: '10px 20px', fontSize: '1em', cursor: 'pointer' }}
+        >
+          차량 등록 페이지로 이동
+        </button>
       </header>
 
       <section className="features-section">
