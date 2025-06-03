@@ -43,3 +43,19 @@ jest.mock('./components/rental/Rental', () => ({ onClose }) => (
     <button onClick={onClose} data-testid="close-rental">Close Rental</button>
   </div>
 ));
+
+jest.mock('./firebase', () => ({
+  auth: {
+    currentUser: null, 
+  },
+}));
+jest.mock('firebase/auth', () => ({
+  signOut: jest.fn(), // signOut 함수 mock
+}));
+
+// window.location.reload Mock
+const mockReload = jest.fn();
+Object.defineProperty(window, 'location', {
+  value: { reload: mockReload },
+  writable: true,
+});
