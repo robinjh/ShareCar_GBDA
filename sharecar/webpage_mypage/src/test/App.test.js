@@ -130,3 +130,19 @@ describe('AppContent Component', () => {
 
     jest.useRealTimers(); // 타이머 mock 해제
   });
+
+  it('calls alert and window.location.reload if auth.currentUser is null on "인증 상태 새로고침" click', () => {
+    const mockUser = { emailVerified: false, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    auth.currentUser = null; // currentUser가 null인 상태
+
+    const mockAlert = jest.fn();
+    window.alert = mockAlert; // window.alert mock
+
+    render(<AppContent />);
+    const refreshButton = screen.getByText('인증 상태 새로고침');
+    fireEvent.click(refreshButton);
+
+    expect(mockAlert).toHaveBeenCalledWith("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
+    expect(mockReload).toHaveBeenCalled();
+  });
