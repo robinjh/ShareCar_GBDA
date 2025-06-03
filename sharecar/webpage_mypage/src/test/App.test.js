@@ -59,3 +59,23 @@ Object.defineProperty(window, 'location', {
   value: { reload: mockReload },
   writable: true,
 });
+
+// localStorage Mock
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  clear: jest.fn(),
+};
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
+
+// document.body.classList Mock
+const bodyClassListMock = {
+  add: jest.fn(),
+  remove: jest.fn(),
+  contains: jest.fn(),
+};
+Object.defineProperty(document.body, 'classList', {
+  value: bodyClassListMock,
+});
