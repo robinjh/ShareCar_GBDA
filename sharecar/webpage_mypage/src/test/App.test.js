@@ -2,13 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App, { AppContent } from './App';
-import { UserContext, UserProvider } from './UserContext'; // UserContext를 임포트합니다.
-import { auth } from './firebase'; // Firebase auth를 임포트합니다.
-import { signOut } from 'firebase/auth'; // Firebase signOut를 임포트합니다.
+import { UserContext, UserProvider } from './UserContext';
+import { auth } from './firebase'; 
+import { signOut } from 'firebase/auth'; 
 
 // 하위 컴포넌트 및 외부 모듈 Mocking
 jest.mock('./UserContext', () => ({
-  // UserProvider는 실제처럼 동작하게 하고, UserContext만 mocking하여 user 값을 제어합니다.
   UserProvider: ({ children }) => <div>{children}</div>,
   UserContext: React.createContext({ user: null }), // 기본값 설정
 }));
@@ -20,4 +19,13 @@ jest.mock('./Header', () => ({ isDarkMode, toggleMode }) => (
   </div>
 ));
 
-
+jest.mock('./components/auth/AuthForm', () => () => <div data-testid="auth-form">Auth Form</div>);
+jest.mock('./components/mypage/MyPage', () => () => <div data-testid="my-page">My Page</div>);
+jest.mock('./components/recommendation/PlaceRecommendation', () => () => <div data-testid="place-recommendation">Place Recommendation</div>);
+jest.mock('./components/mainpage/MainPage', () => ({ onPageChange }) => (
+  <div data-testid="main-page">
+    Main Page
+    <button onClick={() => onPageChange('registration')} data-testid="go-registration">Go Registration</button>
+    <button onClick={() => onPageChange('rental')} data-testid="go-rental">Go Rental</button>
+  </div>
+));
