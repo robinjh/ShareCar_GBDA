@@ -231,3 +231,38 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+
+   it('returns to MainPage when onClose is called from Rental', async () => {
+    const mockUser = { emailVerified: true, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    const mainPage = screen.getByTestId('main-page');
+    const goRentalButton = within(mainPage).getByTestId('go-rental');
+    fireEvent.click(goRentalButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rental')).toBeInTheDocument();
+    });
+
+    const rentalComp = screen.getByTestId('rental');
+    const closeButton = within(rentalComp).getByTestId('close-rental');
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('main-page')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  });
+});
+
+describe('App Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks(); // Mock 상태 초기화
+    // localStorage mock 초기화
+    localStorageMock.getItem.mockReturnValue(null); // 기본적으로 다크 모드 설정 없음
+    // UserContext mock의 value를 기본값으로 설정 (null user)
+    UserContext.Provider.valueOf = () => ({ user: null });
+  });
