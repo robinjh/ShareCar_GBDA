@@ -156,3 +156,15 @@ describe('AppContent Component', () => {
 
     expect(signOut).toHaveBeenCalledWith(auth);
   });
+
+   it('renders MainPage when user is emailVerified and currentPage is "main"', () => {
+    const mockUser = { emailVerified: true, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    expect(screen.getByTestId('main-page')).toBeInTheDocument();
+    expect(screen.queryByTestId('auth-form')).not.toBeInTheDocument();
+    expect(screen.queryByText(/이메일 인증 후/)).not.toBeInTheDocument();
+    expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  });
