@@ -94,3 +94,15 @@ describe('AppContent Component', () => {
     expect(screen.getByTestId('auth-form')).toBeInTheDocument();
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
+
+  it('renders email verification message when user is not emailVerified', () => {
+    const mockUser = { emailVerified: false, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    expect(screen.getByText(/이메일 인증 후 모든 기능을 사용할 수 있습니다/)).toBeInTheDocument();
+    expect(screen.getByText('Welcome, Test User!')).toBeInTheDocument();
+    expect(screen.getByText('인증 상태 새로고침')).toBeInTheDocument();
+    expect(screen.getByText('로그아웃')).toBeInTheDocument();
+    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+  });
