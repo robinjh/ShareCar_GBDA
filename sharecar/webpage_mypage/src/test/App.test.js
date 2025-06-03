@@ -288,3 +288,15 @@ describe('App Component', () => {
     expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
     expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('light-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
   });
+
+  it('defaults to light mode if no localStorage value', () => {
+    localStorageMock.getItem.mockReturnValue(null);
+    render(<App />);
+
+    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
+    expect(appDiv).toHaveClass('light');
+    expect(appDiv).not.toHaveClass('dark');
+    expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
+    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode');
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'false'); // 초기값 설정 시 localStorage에 저장
+  });
