@@ -168,3 +168,23 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+
+  it('renders Registration when onPageChange("registration") is called', async () => {
+    const mockUser = { emailVerified: true, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    // MainPage가 렌더링되고 onPageChange prop이 전달되었는지 확인
+    const mainPage = screen.getByTestId('main-page');
+    const goRegistrationButton = within(mainPage).getByTestId('go-registration');
+
+    fireEvent.click(goRegistrationButton);
+
+    // 상태 변경 후 렌더링될 때까지 기다림
+    await waitFor(() => {
+      expect(screen.getByTestId('registration')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  });
