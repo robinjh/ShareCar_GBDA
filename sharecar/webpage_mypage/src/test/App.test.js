@@ -79,3 +79,18 @@ const bodyClassListMock = {
 Object.defineProperty(document.body, 'classList', {
   value: bodyClassListMock,
 });
+
+describe('AppContent Component', () => {
+  // 각 테스트 전에 UserContext의 user 값을 null로
+  beforeEach(() => {
+    jest.clearAllMocks(); // Mock 상태 초기화
+    // UserContext mock의 value를 설정하여 useContext에서 반환될 값을 제어
+    UserContext.Provider.valueOf = () => ({ user: null });
+  });
+
+  it('renders AuthForm when user is null', () => {
+    UserContext.Provider.valueOf = () => ({ user: null });
+    render(<AppContent />);
+    expect(screen.getByTestId('auth-form')).toBeInTheDocument();
+    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+  });
