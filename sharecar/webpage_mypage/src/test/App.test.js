@@ -188,3 +188,17 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+
+   it('renders Rental when onPageChange("rental") is called', async () => {
+    const mockUser = { emailVerified: true, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    const mainPage = screen.getByTestId('main-page');
+    const goRentalButton = within(mainPage).getByTestId('go-rental');
+
+    fireEvent.click(goRentalButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('rental')).toBeInTheDocument();
+    });
