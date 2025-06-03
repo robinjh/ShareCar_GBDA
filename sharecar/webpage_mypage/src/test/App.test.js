@@ -266,3 +266,14 @@ describe('App Component', () => {
     // UserContext mock의 value를 기본값으로 설정 (null user)
     UserContext.Provider.valueOf = () => ({ user: null });
   });
+
+  it('initializes dark mode from localStorage (false)', () => {
+    localStorageMock.getItem.mockReturnValue('false');
+    render(<App />);
+
+    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
+    expect(appDiv).toHaveClass('light');
+    expect(appDiv).not.toHaveClass('dark');
+    expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
+    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
+  });
