@@ -189,7 +189,7 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
 
-   it('renders Rental when onPageChange("rental") is called', async () => {
+  it('renders Rental when onPageChange("rental") is called', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
     UserContext.Provider.valueOf = () => ({ user: mockUser });
     render(<AppContent />);
@@ -202,3 +202,7 @@ describe('AppContent Component', () => {
     await waitFor(() => {
       expect(screen.getByTestId('rental')).toBeInTheDocument();
     });
+
+    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+  });
