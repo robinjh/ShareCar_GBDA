@@ -277,3 +277,14 @@ describe('App Component', () => {
     expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
     expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
   });
+
+  it('initializes dark mode from localStorage (true)', () => {
+    localStorageMock.getItem.mockReturnValue('true');
+    render(<App />);
+
+    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
+    expect(appDiv).toHaveClass('dark');
+    expect(appDiv).not.toHaveClass('light');
+    expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
+    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('light-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
+  });
