@@ -29,3 +29,17 @@ jest.mock('./components/mainpage/MainPage', () => ({ onPageChange }) => (
     <button onClick={() => onPageChange('rental')} data-testid="go-rental">Go Rental</button>
   </div>
 ));
+
+jest.mock('./components/registration/Registration', () => ({ onClose }) => (
+  <div data-testid="registration">
+    Registration
+    <button onClick={onClose} data-testid="close-registration">Close Registration</button>
+  </div>
+));
+
+jest.mock('./components/rental/Rental', () => ({ onClose }) => (
+  <div data-testid="rental">
+    Rental
+    <button onClick={onClose} data-testid="close-rental">Close Rental</button>
+  </div>
+));
