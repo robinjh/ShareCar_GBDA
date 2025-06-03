@@ -300,3 +300,35 @@ describe('App Component', () => {
     expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode');
     expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'false'); // 초기값 설정 시 localStorage에 저장
   });
+
+  it('toggles dark mode and updates localStorage and body classes', async () => {
+    localStorageMock.getItem.mockReturnValue('false'); // Start in light mode
+    render(<App />);
+
+    const toggleButton = screen.getByTestId('toggle-mode-button');
+    const appDiv = screen.getByRole('main').parentNode;
+
+    fireEvent.click(toggleButton);
+
+    await waitFor(() => {
+      expect(appDiv).toHaveClass('dark');
+      expect(appDiv).not.toHaveClass('light');
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'true');
+      expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
+      expect(bodyClassListMock.remove).toHaveBeenCalledWith('light-mode');
+    });
+
+    bodyClassListMock.add.mockClear();
+    bodyClassListMock.remove.mockClear();
+    localStorageMock.setItem.mockClear();
+
+    fireEvent.click(toggleButton);
+
+    await waitFor(() => {
+      expect(appDiv).toHaveClass('light');
+      expect(appDiv).not.toHaveClass('dark');
+      expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'false');
+      expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
+      expect(bodyClassListMock.remove).toHaveBeenCalledWith('dark-mode');
+    });
+  });
