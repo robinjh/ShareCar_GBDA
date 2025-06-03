@@ -106,3 +106,27 @@ describe('AppContent Component', () => {
     expect(screen.getByText('로그아웃')).toBeInTheDocument();
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
+
+    it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
+    const mockUser = { emailVerified: false, displayName: 'Test User', reload: jest.fn().mockResolvedValue(undefined) };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    auth.currentUser = mockUser; // firebase mock에 currentUser 설정
+
+    // setTimeout을 mock하여 실제 지연 없이 바로 실행되게 함
+    jest.useFakeTimers();
+
+    render(<AppContent />);
+    const refreshButton = screen.getByText('인증 상태 새로고침');
+    fireEvent.click(refreshButton);
+
+    expect(mockUser.reload).toHaveBeenCalled();
+
+    // reload Promise가 해결된 후 setTimeout 내의 로직을 실행
+    await waitFor(() => {
+      jest.advanceTimersByTime(1200);
+    });
+
+    expect(mockReload).toHaveBeenCalled();
+
+    jest.useRealTimers(); // 타이머 mock 해제
+  });
