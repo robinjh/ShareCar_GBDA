@@ -206,3 +206,28 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
   });
+
+  it('returns to MainPage when onClose is called from Registration', async () => {
+    const mockUser = { emailVerified: true, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+
+    const mainPage = screen.getByTestId('main-page');
+    const goRegistrationButton = within(mainPage).getByTestId('go-registration');
+    fireEvent.click(goRegistrationButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('registration')).toBeInTheDocument();
+    });
+
+    const registrationComp = screen.getByTestId('registration');
+    const closeButton = within(registrationComp).getByTestId('close-registration');
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('main-page')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  });
