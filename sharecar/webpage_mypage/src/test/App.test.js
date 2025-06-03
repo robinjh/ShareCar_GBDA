@@ -332,3 +332,12 @@ describe('App Component', () => {
       expect(bodyClassListMock.remove).toHaveBeenCalledWith('dark-mode');
     });
   });
+
+  it('renders Header and AppContent within UserProvider', () => {
+    render(<App />);
+
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+    expect(screen.getByTestId('auth-form')).toBeInTheDocument();
+  });
+
+});
