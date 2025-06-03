@@ -146,3 +146,13 @@ describe('AppContent Component', () => {
     expect(mockAlert).toHaveBeenCalledWith("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
     expect(mockReload).toHaveBeenCalled();
   });
+
+  it('calls signOut on "로그아웃" click when not emailVerified', () => {
+    const mockUser = { emailVerified: false, displayName: 'Test User' };
+    UserContext.Provider.valueOf = () => ({ user: mockUser });
+    render(<AppContent />);
+    const logoutButton = screen.getByText('로그아웃');
+    fireEvent.click(logoutButton);
+
+    expect(signOut).toHaveBeenCalledWith(auth);
+  });
