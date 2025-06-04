@@ -1,5 +1,5 @@
 import React from 'react';
-import PlaceRecommendation from '../components/recommendation/PlaceRecommendation';
+import PlaceRecommendation from '../components/recomendation/PlaceRecommendation';
 import { useLocation } from 'react-router-dom';
 
 function PlaceRecommendationPage() {
