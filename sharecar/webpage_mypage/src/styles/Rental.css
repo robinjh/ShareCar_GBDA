@@ -190,12 +190,12 @@
 .filter-button {
   height: 40px;
   padding: 0 1.5rem;
-  background-color: var(--background-color);
+  background-color: white;
   color: var(--text-color);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -205,6 +205,12 @@
   box-sizing: border-box;
   margin: 0;
   line-height: 1;
+}
+
+.filter-button.dark {
+  background: white;     
+  color: #fff;              
+  border: 1.5px solid #767f9d;  
 }
 
 .filter-button:hover {
@@ -399,6 +405,7 @@
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
+  overflow-x: hidden;
 }
 
 .filter-dialog.open {
@@ -410,12 +417,15 @@
   background-color: var(--background-color);
   border-radius: 0;
   padding: 1.5rem;
-  width: 95%;
-  max-width: 500px;
+  width: 700px;
+  max-width: 98vw;
+  min-width: 600px;
   max-height: 95vh;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   box-shadow: var(--shadow);
+  box-sizing: border-box;
 }
 
 .filter-dialog-header {
@@ -546,11 +556,16 @@
 
 .rental-dialog {
   background-color: var(--background-color);
-  border-radius: 0;
-  width: 90%;
-  max-width: 600px;
+  border-radius: 16px;
+  width: 800px;         
+  max-width: 98vw;
+  min-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
+  margin: auto;         
+  box-shadow: var(--shadow);
+  padding: 2rem 2rem;
+  box-sizing: border-box;
 }
 
 .rental-dialog-header {
@@ -944,11 +959,11 @@
 
 .tag-chip {
   padding: 0.3rem 0.6rem;
-  background-color: var(--background-color-light);
+  background-color: white;
   color: var(--text-color);
   border-radius: 16px;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 700;
   border: 1px solid var(--border-color);
 }
 
