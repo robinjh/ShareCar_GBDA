@@ -276,6 +276,27 @@ function FilterDialog({
   );
 }
 
+// 모달 컴포넌트 추가
+function Modal({ open, onClose, children }) {
+  if (!open) return null;
+  return (
+    <div style={{
+      position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+      background: 'rgba(0,0,0,0.4)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center'
+    }}>
+      <div style={{ background: '#fff', borderRadius: 0, padding: 24, minWidth: 1300, maxWidth: '100vw', maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+        <button
+          onClick={onClose}
+          className="modal-close-btn"
+        >
+          ×
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function Rental({ onNavigate, onClose  }) {
   const { user } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -731,7 +752,7 @@ function Rental({ onNavigate, onClose  }) {
         <div className="rental-dialog-overlay">
           <div className={`rental-dialog ${isDarkMode ? 'dark' : ''}`}>
             <div className="rental-dialog-header">
-              <h2>차량 등록</h2>
+              <h2>차량 대여</h2>
               <button className="close-button" onClick={() => setOpenDialog(false)}>×</button>
             </div>
             <div className="rental-dialog-content">
@@ -818,13 +839,16 @@ function Rental({ onNavigate, onClose  }) {
         </div>
       )}
 
+      {/* 장소 추천 모달 */}
       {openRecommendationDialog && (
-        <PlaceRecommendation
-          open={openRecommendationDialog}
-          onClose={() => setOpenRecommendationDialog(false)}
-          data={recommendationData}
-          isDarkMode={isDarkMode}
-        />
+        <Modal open={openRecommendationDialog} onClose={() => setOpenRecommendationDialog(false)}>
+          <PlaceRecommendation
+            isDarkMode={isDarkMode}
+            address={recommendationData.address}
+            tags={recommendationData.tags}
+            onClose={() => setOpenRecommendationDialog(false)}
+          />
+        </Modal>
       )}
     </div>
   );
