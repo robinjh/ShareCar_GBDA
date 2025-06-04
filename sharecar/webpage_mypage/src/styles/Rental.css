@@ -549,10 +549,8 @@
   border-radius: 0;
   width: 90%;
   max-width: 600px;
-  max-height: 95vh;
+  max-height: 90vh;
   overflow-y: auto;
-  margin-top: 2vh;
-  margin-bottom: 2vh;
 }
 
 .rental-dialog-header {
@@ -656,9 +654,7 @@
 }
 
 .input-group input {
-  max-width: 320px;
   width: 100%;
-  box-sizing: border-box;
   height: 48px;
   padding: 0 14px;
   border: 1px solid var(--border-color);
@@ -1170,7 +1166,6 @@
   font-size: 0.9rem;
   color: var(--text-secondary);
   margin-bottom: 0.25rem;
-  margin-left: 0.5rem;
 }
 
 .rental-fee-input-group input {
@@ -1188,7 +1183,7 @@
 .rental-fee-input-group .unit {
   position: absolute;
   right: 0.75rem;
-  top: 60%;
+  top: 65%;
   transform: translateY(-50%);
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -1197,8 +1192,8 @@
 
 .separator {
   color: var(--text-secondary);
-  font-size: 2rem;
-  margin: 1.8rem 0.5rem 0.5rem 1.5rem;
+  font-size: 1rem;
+  margin: 2.5rem 0.5rem 0;
 }
 
 .rental-fee-slider-container {
@@ -1263,74 +1258,24 @@
   margin-top: 0.5rem;
   color: var(--text-secondary);
   font-size: 0.8rem;
-}
+} 
 
-/* 장소추천 모달 닫기 버튼 */
-.modal-close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 48px;
-  height: 48px;
-  font-size: 32px;
-  font-weight: bold;
-  color: #fff;
-  background: #1976d2;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+.recommend-modal-overlay {
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+.recommend-modal-dialog {
+  width: 80vw; min-width: 600px; max-width: 1100px;
+  min-height: 500px;
+  background: #252544;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10001;
-}
-.modal-close-btn:hover {
-  background: #0d47a1;
-}
-
-/* 대여료 입력 input에서 스핀 버튼(화살표) 제거 */
-.filter-dialog input[type="number"]::-webkit-outer-spin-button,
-.filter-dialog input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.filter-dialog input[type="number"] {
-  -moz-appearance: textfield;
-  padding-left: 0.7rem;
-  padding-right: 0.1rem;
-}
-
-.filter-dialog input[type="number"] {
-  -moz-appearance: textfield;
-  padding-left: 0.7rem;
-  padding-right: 0.1rem;
-}
-
-.rental-dialog .date-inputs {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.rental-dialog .date-inputs input[type="datetime-local"] {
-  max-width: 180px;
-}
-.rental-dialog .date-inputs span {
-  margin: 0 0.5rem;
-  font-size: 1.2rem;
-  vertical-align: middle;
-  line-height: 1.8;
-  position: relative;
-  top: -10px;
-}
-
-/* 다크모드에서 태그 버튼 글씨 흰색으로 */
-.dark .tag-chip {
-  color: #fff;
-}
-
-/* 다크모드에서 필터 버튼 글씨 흰색으로 */
-.dark .filter-button {
-  color: #fff;
+  flex-direction: column;
+  padding: 0;
 } 

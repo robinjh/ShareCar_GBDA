@@ -3,13 +3,13 @@
   --radius: 8px;
   --spacing: 16px;
   --border-color: #e0e0e0;
-  --border-color-dark: #424242;
+  --border-color-dark: #555;
   --background-color: #ffffff;
-  --background-color-dark: #121212;
+  --background-color-dark: #004085;
   --text-color: #333333;
-  --text-color-dark: #ffffff;
+  --text-color-dark: #ddd;
   --primary-color: #1976d2;
-  --primary-color-dark: #90caf9;
+  --primary-color-dark: #21a1f9;
   --error-color: #d32f2f;
   --warning-color: #ed6c02;
   --success-color: #2e7d32;
@@ -436,7 +436,20 @@
 
   .registration-paper {
     padding: 1.5rem;
+    position: relative;
   }
+
+  .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 10;
+}
 
   .form-grid {
     grid-template-columns: 1fr;
