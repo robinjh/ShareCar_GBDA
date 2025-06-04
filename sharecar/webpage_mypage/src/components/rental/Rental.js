@@ -824,12 +824,7 @@ const handleRentalSubmit = async () => {
       )}
 
 {openRecommendationDialog &&
-        (console.log("추천 모달로 넘기는 값:", {
-          address: recommendationData.address,
-          tags: recommendationData.tags,
-          isDarkMode,
-        }),
-        (
+        ((
           <div className="modal-overlay">
             <div
               className="modal"
