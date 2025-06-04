@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import '../../styles/Rental.css';
 import PlaceRecommendation from "../recommendation/PlaceRecommendation";
+import "../../styles/Common.css";
 
 // 유틸리티 함수
 function removeFunctions(obj) {
@@ -86,6 +87,7 @@ function CarCard({ car, onRent, onTagClick, isDarkMode }) {
           <div className="car-tags">
             <div className="tag-stack">
               {car.tags && car.tags.map((tag, index) => (
+                console.log("isDarkMode:", isDarkMode),
                 <button
                   key={index}
                   className={`tag-chip ${isDarkMode ? 'dark' : ''}`}
@@ -495,76 +497,79 @@ function Rental({ onNavigate, onClose  }) {
     setOpenDialog(true);
   };
 
-  const handleRentalSubmit = async () => {
-    if (!user) {
-      setError('로그인이 필요합니다.');
-      return;
-    }
+const handleRentalSubmit = async () => {
+  if (!user) {
+    setError('로그인이 필요합니다.');
+    return;
+  }
 
-    try {
-      const now = new Date();
-      const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
-      
-      const formatTime = 
-        String(koreanTime.getFullYear()).slice(-2) + '-' +
-        String(koreanTime.getMonth() + 1).padStart(2, '0') + '-' +
-        String(koreanTime.getDate()).padStart(2, '0') + ' ' +
-        String(koreanTime.getHours()).padStart(2, '0') + ':' +
-        String(koreanTime.getMinutes()).padStart(2, '0') + ':' +
-        String(koreanTime.getSeconds()).padStart(2, '0');
-      
-      const startDate = new Date(rentalData.startTime);
-      const endDate = new Date(rentalData.endTime);
-      const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-      
-      const rentalFee = parseInt(selectedCar.rentalFee);
-      const totalFee = rentalFee * rentalDays;
+  try {
+    const now = new Date();
+    const koreanTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
 
-      const rentalRequest = {
-        carNumber: selectedCar.carNumber,
-        carName: selectedCar.carName,
-        carBrand: selectedCar.carBrand,
-        carType: selectedCar.carType,
-        guestId: user.uid,
-        guestName: rentalData.guestName,
-        hostId: selectedCar.hostID,
-        hostName: selectedCar.hostName,
-        startTime: rentalData.startTime,
-        endTime: rentalData.endTime,
-        address: rentalData.address,
-        tags: rentalData.tags,
-        status: '대기중',
-        rentalFee: rentalFee.toString(),
-        totalFee: totalFee
-      };
+    const formatTime =
+      String(koreanTime.getFullYear()).slice(-2) + '-' +
+      String(koreanTime.getMonth() + 1).padStart(2, '0') + '-' +
+      String(koreanTime.getDate()).padStart(2, '0') + ' ' +
+      String(koreanTime.getHours()).padStart(2, '0') + ':' +
+      String(koreanTime.getMinutes()).padStart(2, '0') + ':' +
+      String(koreanTime.getSeconds()).padStart(2, '0');
 
-      const docId = `${user.uid}.${selectedCar.carNumber}.${formatTime}`;
-      await setDoc(doc(db, 'requests', docId), rentalRequest);
-      
-      setOpenDialog(false);
-      setSelectedCar(null);
-      setRentalData({
-        startTime: new Date(),
-        endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
-        guestName: '',
-        address: '',
-        tags: []
-      });
-      
-      setRecommendationData({
-        tags: rentalData.tags || [],
-        address: rentalData.address || '',
-        startTime: rentalData.startTime,
-        endTime: rentalData.endTime
-      });
-      
-      setOpenRecommendationDialog(true);
-      setSuccess('대여 요청이 성공적으로 등록되었습니다.');
+    const startDate = new Date(rentalData.startTime);
+    const endDate = new Date(rentalData.endTime);
+    const rentalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+    const rentalFee = parseInt(selectedCar.rentalFee);
+    const totalFee = rentalFee * rentalDays;
+
+    const rentalRequest = {
+      carNumber: selectedCar.carNumber,
+      carName: selectedCar.carName,
+      carBrand: selectedCar.carBrand,
+      carType: selectedCar.carType,
+      guestId: user.uid,
+      guestName: rentalData.guestName,
+      hostId: selectedCar.hostID,
+      hostName: selectedCar.hostName,
+      startTime: rentalData.startTime,
+      endTime: rentalData.endTime,
+      address: rentalData.address,
+      tags: rentalData.tags,
+      status: '대기중',
+      rentalFee: rentalFee.toString(),
+      totalFee: totalFee
+    };
+
+    const docId = `${user.uid}.${selectedCar.carNumber}.${formatTime}`;
+    await setDoc(doc(db, 'requests', docId), rentalRequest);
+
+    setOpenDialog(false); // 1. 기존 대여 모달 닫기
+
+    setRentalData({
+      startTime: new Date(),
+      endTime: new Date(new Date().setDate(new Date().getDate() + 1)),
+      guestName: '',
+      address: '',
+      tags: []
+    });
+    setSelectedCar(null);
+
+    setRecommendationData({
+      tags: rentalData.tags || [],
+      address: rentalData.address || '',
+      startTime: rentalData.startTime,
+      endTime: rentalData.endTime
+    });
+
+    // 2. 대여 모달이 닫히는 효과를 위해 약간의 딜레이(자연스러움, 0.3초 권장)
+    setTimeout(() => {
+        setOpenRecommendationDialog(true);
+        setSuccess("대여 요청이 성공적으로 등록되었습니다.");
+      }, 30);
     } catch (err) {
-      console.error('대여 요청 실패:', err);
-      setError('대여 요청 등록에 실패했습니다.');
+      setError("대여 요청 등록에 실패했습니다.");
     }
-  };
+  }
 
   const getCurrentPageCars = () => {
     const startIndex = (page - 1) * itemsPerPage;
@@ -727,7 +732,7 @@ function Rental({ onNavigate, onClose  }) {
         />
       )}
 
-      {openDialog && selectedCar && (
+      {openDialog && !openRecommendationDialog && selectedCar && (
         <div className="rental-dialog-overlay">
           <div className={`rental-dialog ${isDarkMode ? 'dark' : ''}`}>
             <div className="rental-dialog-header">
@@ -818,16 +823,56 @@ function Rental({ onNavigate, onClose  }) {
         </div>
       )}
 
-      {openRecommendationDialog && (
-        <PlaceRecommendation
-          open={openRecommendationDialog}
-          onClose={() => setOpenRecommendationDialog(false)}
-          data={recommendationData}
-          isDarkMode={isDarkMode}
-        />
-      )}
+{openRecommendationDialog &&
+        ((
+          <div className="modal-overlay">
+            <div
+              className="modal"
+              style={{
+                width: "1200px",
+                height: "700px",
+                maxWidth: "98vw",
+                maxHeight: "95vh",
+                minWidth: "750px",
+                minHeight: "450px",
+                padding: 0,
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                boxSizing: "border-box", overflow: "hidden"
+              }}
+            >
+              <button
+                className="close-button"
+                style={{
+                  fontSize: "2.1rem",
+                  fontWeight: 800,
+                  color: "#fff",
+                  background: "rgba(3, 3, 247, 0.18)",
+                  position: "absolute",
+                  top: 18,
+                  right: 26,
+                  zIndex: 9999,
+                  lineHeight: 1,
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                onClick={() => setOpenRecommendationDialog(false)}
+                aria-label="장소 추천 모달 닫기"
+              >
+                ×
+              </button>
+
+              <PlaceRecommendation
+                isDarkMode={isDarkMode}
+                address={recommendationData.address}
+                tags={recommendationData.tags}
+              />
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
 
-export default Rental; 
+export default Rental;

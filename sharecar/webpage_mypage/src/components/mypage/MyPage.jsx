@@ -7,6 +7,7 @@ import RentalHistory from "./RentalHistory";
 import MyInfo from "./MyInfo";
 import "../../styles/Common.css";
 import "../../styles/MyPage.css";
+import Registrarion from "../registration/Registration";
 
 function MyPage({ isDarkMode }) {
   const [modalContent, setModalContent] = useState(null);

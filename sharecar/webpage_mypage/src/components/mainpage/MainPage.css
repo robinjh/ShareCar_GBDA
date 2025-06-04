@@ -12,12 +12,12 @@
 }
 
 body.dark-mode {
-  --color-text: #ddd;
+  --color-text: #ddd; 
   --color-background: #1e1e1e;
   --color-heading: #eee;
   --color-text-secondary: #aaa;
   --color-primary: #61dafb;
-  --color-primary-dark: #21a1f9;
+  --color-primary-dark: #21a1f9; 
   --color-accent: #0f7ab4;
   --color-border: #555;
   --color-card-background: #2d2d2d;
@@ -37,6 +37,11 @@ body.dark-mode {
 
 .main-page-header {
     margin-bottom: 60px;
+}
+
+.main-page-header button {
+    margin-right: 20px;
+    margin-left: 20px;
 }
 
 .main-page-header h1 {
