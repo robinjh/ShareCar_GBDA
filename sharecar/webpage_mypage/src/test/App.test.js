@@ -268,4 +268,41 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+
+  describe('App Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    localStorageMock.getItem.mockReturnValue(null); // 초기값
+  });
+
+  it('renders Header and AppContent (AuthForm) when not logged in', () => {
+    render(<App />);
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+    expect(screen.getByTestId('auth-form')).toBeInTheDocument();
+  });
+
+  it('toggles dark mode', () => {
+    render(<App />);
+    const toggleButton = screen.getByTestId('toggle-mode-button');
+    const rootDiv = screen.getByTestId('header').closest('div');
+    expect(rootDiv.className).toMatch(/light/);
+
+    fireEvent.click(toggleButton);
+    expect(rootDiv.className).toMatch(/dark/);
+
+    fireEvent.click(toggleButton);
+    expect(rootDiv.className).toMatch(/light/);
+  });
+
+  it('calls localStorage and body.classList when toggling dark mode', () => {
+    render(<App />);
+    const toggleButton = screen.getByTestId('toggle-mode-button');
+
+    fireEvent.click(toggleButton);
+    expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'true');
+    expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
+    expect(bodyClassListMock.remove).toHaveBeenCalledWith('light-mode');
+  });
+});
+
 });
