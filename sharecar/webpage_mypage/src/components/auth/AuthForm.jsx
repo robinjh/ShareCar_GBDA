@@ -139,7 +139,7 @@ function AuthForm() {
 
     // 로그인/회원가입 폼
     return (
-      <div className="auth-box">
+      <div className="auth-box" data-testid="auth-form">
         <form onSubmit={handleSubmit} className="auth-form">
           <h3>{isLogin ? "로그인" : "회원가입"}</h3>
           <button type="button" className="google-btn" onClick={handleGoogleLogin}>
