@@ -13,17 +13,10 @@ import Rental from "./components/rental/Rental";
 
 export function AppContent() {
   const { user } = useContext(UserContext);
-
   const [currentPage, setCurrentPage] = useState('main');
 
-  const handlePageChange = (pageName) => {
-    setCurrentPage(pageName);
-  };
-  
-
-  const handleCloseModal = () => {
-    setCurrentPage('main'); 
-  };
+  const handlePageChange = (pageName) => setCurrentPage(pageName);
+  const handleCloseModal = () => setCurrentPage('main');
 
   if (!user) {
     return <AuthForm />;
@@ -45,12 +38,12 @@ export function AppContent() {
         <div className="auth-action-group">
           <button
             onClick={() => {
-              if (auth.currentUser) {
+              if (auth.currentUser && typeof auth.currentUser.reload === "function") {
                 auth.currentUser.reload().then(() => {
                   setTimeout(() => window.location.reload(), 1200);
                 });
               } else {
-                alert("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
+                window.alert("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
                 window.location.reload();
               }
             }}
@@ -65,13 +58,15 @@ export function AppContent() {
 
   if (currentPage === 'main') {
     return <MainPage onPageChange={handlePageChange} />;
-  } else if (currentPage === 'registration') {
+  }
+  if (currentPage === 'registration') {
     return <Registration onClose={handleCloseModal} />;
-  } else if (currentPage === 'rental') {
+  }
+  if (currentPage === 'rental') {
     return <Rental onClose={handleCloseModal} />;
   }
 
-  return null; // 일치하는 페이지가 없을 경우 아무것도 렌더링하지 않음 (또는 오류 페이지)
+  return null; // fallback
 }
 
 function App() {
@@ -82,7 +77,6 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
-
     const body = document.body;
     if (isDarkMode) {
       body.classList.add('dark-mode');
