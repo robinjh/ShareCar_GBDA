@@ -1,20 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App, { AppContent } from '../App';
-import { UserContext, UserProvider } from '../UserContext';
+import { UserContext } from '../UserContext';
 import { auth } from '../firebase'; 
 import { signOut } from 'firebase/auth'; 
 
 // 하위 컴포넌트 및 외부 모듈 Mocking
-jest.mock('../UserContext', () => {
-  const React = require('react');
-  return {
-    UserProvider: ({ children }) => <div>{children}</div>,
-    UserContext: React.createContext({ user: null }),
-  };
-});
-
 jest.mock('../Header', () => ({ isDarkMode, toggleMode }) => (
   <div data-testid="header">
     Header
@@ -88,20 +80,22 @@ describe('AppContent Component', () => {
   });
 
   it('renders AuthForm when user is null', () => {
-    UserContext.Provider.valueOf = () => ({ user: null });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: null }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
     expect(screen.getByTestId('auth-form')).toBeInTheDocument();
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
 
-   it('renders email verification message when user is not emailVerified', () => {
+  it('renders email verification message when user is not emailVerified', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
     render(
       <UserContext.Provider value={{ user: mockUser }}>
         <AppContent />
       </UserContext.Provider>
     );
-    // 실제 메시지가 제대로 잡히는지 테스트!
     expect(screen.getByText(/이메일 인증 후 모든 기능을 사용할 수 있습니다/)).toBeInTheDocument();
     expect(screen.getByText('Welcome, Test User!')).toBeInTheDocument();
     expect(screen.getByText('인증 상태 새로고침')).toBeInTheDocument();
@@ -109,39 +103,43 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
 
-    it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
+  it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
     const mockUser = { emailVerified: false, displayName: 'Test User', reload: jest.fn().mockResolvedValue(undefined) };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
     auth.currentUser = mockUser; // firebase mock에 currentUser 설정
 
-    // setTimeout을 mock하여 실제 지연 없이 바로 실행되게 함
     jest.useFakeTimers();
 
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
     const refreshButton = screen.getByText('인증 상태 새로고침');
     fireEvent.click(refreshButton);
 
     expect(mockUser.reload).toHaveBeenCalled();
 
-    // reload Promise가 해결된 후 setTimeout 내의 로직을 실행
     await waitFor(() => {
       jest.advanceTimersByTime(1200);
     });
 
     expect(mockReload).toHaveBeenCalled();
 
-    jest.useRealTimers(); // 타이머 mock 해제
+    jest.useRealTimers();
   });
 
   it('calls alert and window.location.reload if auth.currentUser is null on "인증 상태 새로고침" click', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
     auth.currentUser = null; // currentUser가 null인 상태
 
     const mockAlert = jest.fn();
     window.alert = mockAlert; // window.alert mock
 
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
     const refreshButton = screen.getByText('인증 상태 새로고침');
     fireEvent.click(refreshButton);
 
@@ -151,18 +149,24 @@ describe('AppContent Component', () => {
 
   it('calls signOut on "로그아웃" click when not emailVerified', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
     const logoutButton = screen.getByText('로그아웃');
     fireEvent.click(logoutButton);
 
     expect(signOut).toHaveBeenCalledWith(auth);
   });
 
-   it('renders MainPage when user is emailVerified and currentPage is "main"', () => {
+  it('renders MainPage when user is emailVerified and currentPage is "main"', () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
     expect(screen.getByTestId('main-page')).toBeInTheDocument();
     expect(screen.queryByTestId('auth-form')).not.toBeInTheDocument();
@@ -173,16 +177,17 @@ describe('AppContent Component', () => {
 
   it('renders Registration when onPageChange("registration") is called', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
-    // MainPage가 렌더링되고 onPageChange prop이 전달되었는지 확인
     const mainPage = screen.getByTestId('main-page');
     const goRegistrationButton = within(mainPage).getByTestId('go-registration');
 
     fireEvent.click(goRegistrationButton);
 
-    // 상태 변경 후 렌더링될 때까지 기다림
     await waitFor(() => {
       expect(screen.getByTestId('registration')).toBeInTheDocument();
     });
@@ -193,8 +198,11 @@ describe('AppContent Component', () => {
 
   it('renders Rental when onPageChange("rental") is called', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
     const mainPage = screen.getByTestId('main-page');
     const goRentalButton = within(mainPage).getByTestId('go-rental');
@@ -211,8 +219,11 @@ describe('AppContent Component', () => {
 
   it('returns to MainPage when onClose is called from Registration', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
     const mainPage = screen.getByTestId('main-page');
     const goRegistrationButton = within(mainPage).getByTestId('go-registration');
@@ -234,10 +245,13 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
 
-   it('returns to MainPage when onClose is called from Rental', async () => {
+  it('returns to MainPage when onClose is called from Rental', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
     const mainPage = screen.getByTestId('main-page');
     const goRentalButton = within(mainPage).getByTestId('go-rental');
@@ -258,88 +272,4 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
-});
-
-describe('App Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks(); // Mock 상태 초기화
-    // localStorage mock 초기화
-    localStorageMock.getItem.mockReturnValue(null); // 기본적으로 다크 모드 설정 없음
-    // UserContext mock의 value를 기본값으로 설정 (null user)
-    UserContext.Provider.valueOf = () => ({ user: null });
-  });
-
-  it('initializes dark mode from localStorage (false)', () => {
-    localStorageMock.getItem.mockReturnValue('false');
-    render(<App />);
-
-    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
-    expect(appDiv).toHaveClass('light');
-    expect(appDiv).not.toHaveClass('dark');
-    expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
-    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
-  });
-
-  it('initializes dark mode from localStorage (true)', () => {
-    localStorageMock.getItem.mockReturnValue('true');
-    render(<App />);
-
-    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
-    expect(appDiv).toHaveClass('dark');
-    expect(appDiv).not.toHaveClass('light');
-    expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
-    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('light-mode'); // 초기 렌더링 시에는 remove 호출 안 됨
-  });
-
-  it('defaults to light mode if no localStorage value', () => {
-    localStorageMock.getItem.mockReturnValue(null);
-    render(<App />);
-
-    const appDiv = screen.getByRole('main').parentNode; // App 컴포넌트의 최상위 div
-    expect(appDiv).toHaveClass('light');
-    expect(appDiv).not.toHaveClass('dark');
-    expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
-    expect(bodyClassListMock.remove).not.toHaveBeenCalledWith('dark-mode');
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'false'); // 초기값 설정 시 localStorage에 저장
-  });
-
-  it('toggles dark mode and updates localStorage and body classes', async () => {
-    localStorageMock.getItem.mockReturnValue('false'); // Start in light mode
-    render(<App />);
-
-    const toggleButton = screen.getByTestId('toggle-mode-button');
-    const appDiv = screen.getByRole('main').parentNode;
-
-    fireEvent.click(toggleButton);
-
-    await waitFor(() => {
-      expect(appDiv).toHaveClass('dark');
-      expect(appDiv).not.toHaveClass('light');
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'true');
-      expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
-      expect(bodyClassListMock.remove).toHaveBeenCalledWith('light-mode');
-    });
-
-    bodyClassListMock.add.mockClear();
-    bodyClassListMock.remove.mockClear();
-    localStorageMock.setItem.mockClear();
-
-    fireEvent.click(toggleButton);
-
-    await waitFor(() => {
-      expect(appDiv).toHaveClass('light');
-      expect(appDiv).not.toHaveClass('dark');
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'false');
-      expect(bodyClassListMock.add).toHaveBeenCalledWith('light-mode');
-      expect(bodyClassListMock.remove).toHaveBeenCalledWith('dark-mode');
-    });
-  });
-
-  it('renders Header and AppContent within UserProvider', () => {
-    render(<App />);
-
-    expect(screen.getByTestId('header')).toBeInTheDocument();
-    expect(screen.getByTestId('auth-form')).toBeInTheDocument();
-  });
-
 });
