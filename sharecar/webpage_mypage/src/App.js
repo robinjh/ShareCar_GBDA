@@ -11,7 +11,7 @@ import { signOut } from "firebase/auth";
 import Registration from "./components/registration/Registration";
 import Rental from "./components/rental/Rental";
 
-function AppContent() {
+export function AppContent() {
   const { user } = useContext(UserContext);
 
   const [currentPage, setCurrentPage] = useState('main');
@@ -19,6 +19,7 @@ function AppContent() {
   const handlePageChange = (pageName) => {
     setCurrentPage(pageName);
   };
+  
 
   const handleCloseModal = () => {
     setCurrentPage('main'); 
@@ -30,7 +31,7 @@ function AppContent() {
 
   if (!user.emailVerified) {
     return (
-      <div className="auth-box">
+      <div className="auth-box" data-testid="verify-notice">
         <h3>Welcome, {user.displayName || user.email}!</h3>
         <div className="auth-warn">
           이메일 인증 후 모든 기능을 사용할 수 있습니다.
