@@ -22,7 +22,6 @@ jest.mock('../Header', () => ({ isDarkMode, toggleMode }) => (
   </div>
 ));
 
-jest.mock('../components/auth/AuthForm', () => () => <div data-testid="auth-form">Auth Form</div>);
 jest.mock('../components/mypage/MyPage', () => () => <div data-testid="my-page">My Page</div>);
 jest.mock('../components/recommendation/PlaceRecommendation', () => () => <div data-testid="place-recommendation">Place Recommendation</div>);
 jest.mock('../components/mainpage/MainPage', () => ({ onPageChange }) => (
@@ -84,11 +83,8 @@ Object.defineProperty(document.body, 'classList', {
 });
 
 describe('AppContent Component', () => {
-  // 각 테스트 전에 UserContext의 user 값을 null로
   beforeEach(() => {
-    jest.clearAllMocks(); // Mock 상태 초기화
-    // UserContext mock의 value를 설정하여 useContext에서 반환될 값을 제어
-    UserContext.Provider.valueOf = () => ({ user: null });
+    jest.clearAllMocks();
   });
 
   it('renders AuthForm when user is null', () => {
@@ -98,11 +94,14 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
 
-  it('renders email verification message when user is not emailVerified', () => {
+   it('renders email verification message when user is not emailVerified', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
-    UserContext.Provider.valueOf = () => ({ user: mockUser });
-    render(<AppContent />);
-
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
+    // 실제 메시지가 제대로 잡히는지 테스트!
     expect(screen.getByText(/이메일 인증 후 모든 기능을 사용할 수 있습니다/)).toBeInTheDocument();
     expect(screen.getByText('Welcome, Test User!')).toBeInTheDocument();
     expect(screen.getByText('인증 상태 새로고침')).toBeInTheDocument();
