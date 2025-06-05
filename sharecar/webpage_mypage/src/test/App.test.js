@@ -310,4 +310,17 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
   });
 });
 
+it('toggles dark mode and updates localStorage and body classes', async () => {
+  localStorageMock.getItem.mockReturnValue('false');
+  render(<App />);
+  const toggleButton = screen.getByTestId('toggle-mode-button');
+  const appDiv = screen.getByTestId('app-root');
+
+  expect(appDiv.className).toMatch(/light/);
+
+  fireEvent.click(toggleButton);
+
+  expect(appDiv.className).toMatch(/dark/);
+});
+
 });
