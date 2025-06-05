@@ -17,7 +17,7 @@ const handleGoToRental = () => {
 };
 
   return (
-    <div className="main-page"> 
+    <div className="main-page" data-testid="main-page"> 
       <header className="main-page-header">
         <h1>ShareCar 프로젝트</h1>
         <p>자율 주행을 언제 어디서나 쉽고 빠르게!</p>
