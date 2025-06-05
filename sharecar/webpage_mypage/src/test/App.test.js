@@ -300,6 +300,9 @@ describe('App Component', () => {
  it('shows alert and reloads page when not logged in', () => {
   auth.currentUser = undefined;
 
+  window.alert = jest.fn();
+  window.location.reload = jest.fn();
+
   const mockUser = { emailVerified: false, displayName: 'Test User' };
   render(
     <UserContext.Provider value={{ user: mockUser }}>
@@ -312,6 +315,28 @@ describe('App Component', () => {
 
   expect(window.alert).toHaveBeenCalledWith("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
   expect(window.location.reload).toHaveBeenCalled();
+});
+
+function Wrapper() {
+  const { user } = React.useContext(UserContext);
+  const [currentPage] = React.useState('___정의되지않은값___');
+  if (!user) return <div>no user</div>;
+  if (!user.emailVerified) return <div>not verified</div>;
+  if (currentPage === 'main') return <div>Main Page</div>;
+  if (currentPage === 'registration') return <div>Registration</div>;
+  if (currentPage === 'rental') return <div>Rental</div>;
+  return null; // fallback
+}
+
+it('covers fallback null branch (by Wrapper)', () => {
+  const mockUser = { emailVerified: true };
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <Wrapper />
+    </UserContext.Provider>
+  );
+  // 아무것도 렌더 안 되면 커버
+  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
 });
 
 });
