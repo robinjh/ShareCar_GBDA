@@ -43,13 +43,17 @@ jest.mock('../firebase', () => ({
     currentUser: null, 
   },
 }));
-jest.mock('firebase/auth', () => ({
-  signOut: jest.fn(),
-  onAuthStateChanged: jest.fn((authObj, callback) => {
-    callback(null);
-    return jest.fn();
-  }),
-}));
+jest.mock('firebase/auth', () => {
+  const original = jest.requireActual('firebase/auth');
+  return {
+    ...original,
+    signOut: jest.fn(),
+    onAuthStateChanged: jest.fn((auth, cb) => {
+      // 필요한 경우 cb(null) 등 호출
+      return jest.fn(); // 반드시 함수 반환!
+    }),
+  };
+});
 
 
 const mockReload = jest.fn();
@@ -287,17 +291,19 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
   });
 
   it('toggles dark mode', () => {
-    render(<App />);
-    const toggleButton = screen.getByTestId('toggle-mode-button');
-    const rootDiv = screen.getByTestId('header').closest('div');
-    expect(rootDiv.className).toMatch(/light/);
+  render(<App />);
+  const toggleButton = screen.getByTestId('toggle-mode-button');
+  const appDiv = screen.getByTestId('app-root');
+  console.log('appDiv:', appDiv, 'className:', appDiv.className, 'outerHTML:', appDiv.outerHTML);
 
-    fireEvent.click(toggleButton);
-    expect(rootDiv.className).toMatch(/dark/);
+  expect(appDiv.className).toMatch(/light/);
 
-    fireEvent.click(toggleButton);
-    expect(rootDiv.className).toMatch(/light/);
-  });
+  fireEvent.click(toggleButton);
+  expect(appDiv.className).toMatch(/dark/);
+
+  fireEvent.click(toggleButton);
+  expect(appDiv.className).toMatch(/light/);
+});
 
   it('calls localStorage and body.classList when toggling dark mode', () => {
     render(<App />);
@@ -315,7 +321,7 @@ it('toggles dark mode and updates localStorage and body classes', async () => {
   render(<App />);
   const toggleButton = screen.getByTestId('toggle-mode-button');
   const appDiv = screen.getByTestId('app-root');
-
+console.log('appDiv:', appDiv, 'className:', appDiv.className, 'outerHTML:', appDiv.outerHTML);
   expect(appDiv.className).toMatch(/light/);
 
   fireEvent.click(toggleButton);
