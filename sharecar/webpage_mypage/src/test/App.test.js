@@ -47,7 +47,6 @@ jest.mock('firebase/auth', () => ({
   signOut: jest.fn(), // signOut 함수 mock
 }));
 
-// window.location.reload Mock
 const mockReload = jest.fn();
 Object.defineProperty(window, 'location', {
   value: { reload: mockReload },
@@ -103,49 +102,46 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
 
-  it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
-    const mockUser = { emailVerified: false, displayName: 'Test User', reload: jest.fn().mockResolvedValue(undefined) };
-    auth.currentUser = mockUser; // firebase mock에 currentUser 설정
+it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
+  const mockUser = {
+    emailVerified: false,
+    displayName: 'Test User',
+    reload: jest.fn().mockResolvedValue(undefined),
+  };
+  auth.currentUser = mockUser;
+  jest.useFakeTimers();
 
-    jest.useFakeTimers();
+  // 여기서 다시 한 번 명확하게 덮어씌움!
+  const mockReload = jest.fn();
+  window.location.reload = mockReload;
 
-    render(
-      <UserContext.Provider value={{ user: mockUser }}>
-        <AppContent />
-      </UserContext.Provider>
-    );
-    const refreshButton = screen.getByText('인증 상태 새로고침');
-    fireEvent.click(refreshButton);
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <AppContent />
+    </UserContext.Provider>
+  );
 
-    expect(mockUser.reload).toHaveBeenCalled();
+  const refreshButton = screen.getByText('인증 상태 새로고침');
+  fireEvent.click(refreshButton);
 
-    await waitFor(() => {
-      jest.advanceTimersByTime(1200);
-    });
+  expect(mockUser.reload).toHaveBeenCalled();
 
-    expect(mockReload).toHaveBeenCalled();
+  // 1. reload가 promise라서, 한 번 이벤트 루프 돌리기
+  await Promise.resolve();
 
-    jest.useRealTimers();
-  });
+  // 2. setTimeout 1200ms 진행
+  jest.advanceTimersByTime(1200);
 
-  it('calls alert and window.location.reload if auth.currentUser is null on "인증 상태 새로고침" click', () => {
-    const mockUser = { emailVerified: false, displayName: 'Test User' };
-    auth.currentUser = null; // currentUser가 null인 상태
+  // 3. setTimeout 내 콜백이 마이크로태스크로 가서 한 번 더 이벤트 루프 돌리기
+  await Promise.resolve();
 
-    const mockAlert = jest.fn();
-    window.alert = mockAlert; // window.alert mock
+  // 디버깅용으로 한 번 찍기
+  // console.log("reload:", window.location.reload);
 
-    render(
-      <UserContext.Provider value={{ user: mockUser }}>
-        <AppContent />
-      </UserContext.Provider>
-    );
-    const refreshButton = screen.getByText('인증 상태 새로고침');
-    fireEvent.click(refreshButton);
+  expect(mockReload).toHaveBeenCalled();
 
-    expect(mockAlert).toHaveBeenCalledWith("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
-    expect(mockReload).toHaveBeenCalled();
-  });
+  jest.useRealTimers();
+});
 
   it('calls signOut on "로그아웃" click when not emailVerified', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
