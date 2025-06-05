@@ -91,7 +91,7 @@ function App() {
 
   return (
     <UserProvider>
-      <div className={isDarkMode ? "dark" : "light"}>
+      <div data-testid="app-root" className={isDarkMode ? "dark" : "light"}>
         <Header isDarkMode={isDarkMode} toggleMode={toggleMode} />
         <AppContent />
       </div>
