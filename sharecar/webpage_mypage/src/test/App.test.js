@@ -44,8 +44,13 @@ jest.mock('../firebase', () => ({
   },
 }));
 jest.mock('firebase/auth', () => ({
-  signOut: jest.fn(), // signOut 함수 mock
+  signOut: jest.fn(),
+  onAuthStateChanged: jest.fn((authObj, callback) => {
+    callback(null);
+    return jest.fn();
+  }),
 }));
+
 
 const mockReload = jest.fn();
 Object.defineProperty(window, 'location', {
