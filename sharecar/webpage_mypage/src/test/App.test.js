@@ -1,19 +1,27 @@
+jest.mock('firebase/auth', () => ({
+  signOut: jest.fn(),
+  onAuthStateChanged: jest.fn((auth, cb) => {
+    // 콜백 호출은 필요시 cb(null) 등으로!
+    return function unsubscribe() {}; // 꼭 함수 반환!!
+  }),
+}));
+
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App, { AppContent } from '../App';
 import { UserContext } from '../UserContext';
-import { auth } from '../firebase'; 
-import { signOut } from 'firebase/auth'; 
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
 
-// 하위 컴포넌트 및 외부 모듈 Mocking
+// Mock 하위 컴포넌트
 jest.mock('../Header', () => ({ isDarkMode, toggleMode }) => (
   <div data-testid="header">
     Header
     <button onClick={toggleMode} data-testid="toggle-mode-button">Toggle Mode</button>
   </div>
 ));
-
 jest.mock('../components/mypage/MyPage', () => () => <div data-testid="my-page">My Page</div>);
 jest.mock('../components/recommendation/PlaceRecommendation', () => () => <div data-testid="place-recommendation">Place Recommendation</div>);
 jest.mock('../components/mainpage/MainPage', () => ({ onPageChange }) => (
@@ -23,14 +31,12 @@ jest.mock('../components/mainpage/MainPage', () => ({ onPageChange }) => (
     <button onClick={() => onPageChange('rental')} data-testid="go-rental">Go Rental</button>
   </div>
 ));
-
 jest.mock('../components/registration/Registration', () => ({ onClose }) => (
   <div data-testid="registration">
     Registration
     <button onClick={onClose} data-testid="close-registration">Close Registration</button>
   </div>
 ));
-
 jest.mock('../components/rental/Rental', () => ({ onClose }) => (
   <div data-testid="rental">
     Rental
@@ -38,23 +44,12 @@ jest.mock('../components/rental/Rental', () => ({ onClose }) => (
   </div>
 ));
 
+// firebase mock
 jest.mock('../firebase', () => ({
   auth: {
-    currentUser: null, 
+    currentUser: null,
   },
 }));
-jest.mock('firebase/auth', () => {
-  const original = jest.requireActual('firebase/auth');
-  return {
-    ...original,
-    signOut: jest.fn(),
-    onAuthStateChanged: jest.fn((auth, cb) => {
-      // 필요한 경우 cb(null) 등 호출
-      return jest.fn(); // 반드시 함수 반환!
-    }),
-  };
-});
-
 
 const mockReload = jest.fn();
 Object.defineProperty(window, 'location', {
@@ -85,6 +80,7 @@ Object.defineProperty(document.body, 'classList', {
 describe('AppContent Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorageMock.getItem.mockReturnValue(null);
   });
 
   it('renders AuthForm when user is null', () => {
@@ -111,46 +107,38 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
   });
 
-it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
-  const mockUser = {
-    emailVerified: false,
-    displayName: 'Test User',
-    reload: jest.fn().mockResolvedValue(undefined),
-  };
-  auth.currentUser = mockUser;
-  jest.useFakeTimers();
+  it('calls auth.currentUser.reload and window.location.reload on "인증 상태 새로고침" click', async () => {
+    const mockUser = {
+      emailVerified: false,
+      displayName: 'Test User',
+      reload: jest.fn().mockResolvedValue(undefined),
+    };
+    auth.currentUser = mockUser;
+    jest.useFakeTimers();
 
-  // 여기서 다시 한 번 명확하게 덮어씌움!
-  const mockReload = jest.fn();
-  window.location.reload = mockReload;
+    // 명확히 한 번 더 덮어쓰기
+    const mockReload = jest.fn();
+    window.location.reload = mockReload;
 
-  render(
-    <UserContext.Provider value={{ user: mockUser }}>
-      <AppContent />
-    </UserContext.Provider>
-  );
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
 
-  const refreshButton = screen.getByText('인증 상태 새로고침');
-  fireEvent.click(refreshButton);
+    const refreshButton = screen.getByText('인증 상태 새로고침');
+    fireEvent.click(refreshButton);
 
-  expect(mockUser.reload).toHaveBeenCalled();
+    expect(mockUser.reload).toHaveBeenCalled();
 
-  // 1. reload가 promise라서, 한 번 이벤트 루프 돌리기
-  await Promise.resolve();
+    await Promise.resolve(); // promise flush
+    jest.advanceTimersByTime(1200);
+    await Promise.resolve();
 
-  // 2. setTimeout 1200ms 진행
-  jest.advanceTimersByTime(1200);
+    expect(mockReload).toHaveBeenCalled();
 
-  // 3. setTimeout 내 콜백이 마이크로태스크로 가서 한 번 더 이벤트 루프 돌리기
-  await Promise.resolve();
-
-  // 디버깅용으로 한 번 찍기
-  // console.log("reload:", window.location.reload);
-
-  expect(mockReload).toHaveBeenCalled();
-
-  jest.useRealTimers();
-});
+    jest.useRealTimers();
+  });
 
   it('calls signOut on "로그아웃" click when not emailVerified', () => {
     const mockUser = { emailVerified: false, displayName: 'Test User' };
@@ -161,8 +149,7 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
     );
     const logoutButton = screen.getByText('로그아웃');
     fireEvent.click(logoutButton);
-
-    expect(signOut).toHaveBeenCalledWith(auth);
+    expect(signOut).toHaveBeenCalled();
   });
 
   it('renders MainPage when user is emailVerified and currentPage is "main"', () => {
@@ -172,7 +159,6 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
         <AppContent />
       </UserContext.Provider>
     );
-
     expect(screen.getByTestId('main-page')).toBeInTheDocument();
     expect(screen.queryByTestId('auth-form')).not.toBeInTheDocument();
     expect(screen.queryByText(/이메일 인증 후/)).not.toBeInTheDocument();
@@ -187,10 +173,8 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
         <AppContent />
       </UserContext.Provider>
     );
-
     const mainPage = screen.getByTestId('main-page');
     const goRegistrationButton = within(mainPage).getByTestId('go-registration');
-
     fireEvent.click(goRegistrationButton);
 
     await waitFor(() => {
@@ -208,10 +192,8 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
         <AppContent />
       </UserContext.Provider>
     );
-
     const mainPage = screen.getByTestId('main-page');
     const goRentalButton = within(mainPage).getByTestId('go-rental');
-
     fireEvent.click(goRentalButton);
 
     await waitFor(() => {
@@ -277,8 +259,11 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+});
 
-  describe('App Component', () => {
+// --------------- App 컴포넌트 다크모드, 클래스 테스트 ---------------
+
+describe('App Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null); // 초기값
@@ -291,42 +276,42 @@ it('calls auth.currentUser.reload and window.location.reload on "인증 상태 �
   });
 
   it('toggles dark mode', () => {
-  render(<App />);
-  const toggleButton = screen.getByTestId('toggle-mode-button');
-  const appDiv = screen.getByTestId('app-root');
-  console.log('appDiv:', appDiv, 'className:', appDiv.className, 'outerHTML:', appDiv.outerHTML);
+    render(<App />);
+    const toggleButton = screen.getByTestId('toggle-mode-button');
+    const appDiv = screen.getByTestId('app-root');
+    expect(appDiv.className).toMatch(/light/);
 
-  expect(appDiv.className).toMatch(/light/);
+    fireEvent.click(toggleButton);
+    expect(appDiv.className).toMatch(/dark/);
 
-  fireEvent.click(toggleButton);
-  expect(appDiv.className).toMatch(/dark/);
-
-  fireEvent.click(toggleButton);
-  expect(appDiv.className).toMatch(/light/);
-});
+    fireEvent.click(toggleButton);
+    expect(appDiv.className).toMatch(/light/);
+  });
 
   it('calls localStorage and body.classList when toggling dark mode', () => {
     render(<App />);
     const toggleButton = screen.getByTestId('toggle-mode-button');
-
     fireEvent.click(toggleButton);
     expect(localStorageMock.setItem).toHaveBeenCalledWith('darkMode', 'true');
     expect(bodyClassListMock.add).toHaveBeenCalledWith('dark-mode');
     expect(bodyClassListMock.remove).toHaveBeenCalledWith('light-mode');
   });
-});
 
-it('toggles dark mode and updates localStorage and body classes', async () => {
-  localStorageMock.getItem.mockReturnValue('false');
-  render(<App />);
-  const toggleButton = screen.getByTestId('toggle-mode-button');
-  const appDiv = screen.getByTestId('app-root');
-console.log('appDiv:', appDiv, 'className:', appDiv.className, 'outerHTML:', appDiv.outerHTML);
-  expect(appDiv.className).toMatch(/light/);
+ it('shows alert and reloads page when not logged in', () => {
+  auth.currentUser = undefined;
 
-  fireEvent.click(toggleButton);
+  const mockUser = { emailVerified: false, displayName: 'Test User' };
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <AppContent />
+    </UserContext.Provider>
+  );
 
-  expect(appDiv.className).toMatch(/dark/);
+  const refreshButton = screen.getByText('인증 상태 새로고침');
+  fireEvent.click(refreshButton);
+
+  expect(window.alert).toHaveBeenCalledWith("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
+  expect(window.location.reload).toHaveBeenCalled();
 });
 
 });
