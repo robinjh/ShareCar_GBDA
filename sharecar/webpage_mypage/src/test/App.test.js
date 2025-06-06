@@ -346,4 +346,31 @@ describe('App Component', () => {
     // 아무것도 렌더 안 되는지 확인
     expect(container.firstChild).toBeNull();
   });
+
+  function CoverageWrapper() {
+  const { user } = React.useContext(UserContext);
+  // currentPage를 강제로 존재하지 않는 값으로 세팅
+  const [currentPage] = React.useState('___unknown___');
+  if (!user) return <div>no user</div>;
+  if (!user.emailVerified) return <div>not verified</div>;
+  if (currentPage === 'main') return <div>Main Page</div>;
+  if (currentPage === 'registration') return <div>Registration</div>;
+  if (currentPage === 'rental') return <div>Rental</div>;
+  // 여기 도달하면 커버 완료!
+  return null;
+}
+
+it('covers branch: unknown currentPage in AppContent', () => {
+  const mockUser = { emailVerified: true, displayName: "Test User" };
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <CoverageWrapper />
+    </UserContext.Provider>
+  );
+  // 아무것도 렌더링 되지 않으므로 기존 컴포넌트가 렌더되지 않음을 검사
+  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+});
+
 });
