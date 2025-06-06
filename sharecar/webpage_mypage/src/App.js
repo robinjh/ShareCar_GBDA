@@ -3,7 +3,6 @@ import { UserProvider, UserContext } from "./UserContext";
 import Header from "./Header";
 import AuthForm from "./components/auth/AuthForm";
 import MyPage from "./components/mypage/MyPage";
-import PlaceRecommendation from "./components/recommendation/PlaceRecommendation";
 import MainPage from "./components/mainpage/MainPage";
 import "./App.css";
 import { auth } from "./firebase";
@@ -65,8 +64,7 @@ export function AppContent() {
   if (currentPage === 'rental') {
     return <Rental onClose={handleCloseModal} />;
   }
-
-  return null; // fallback
+  return null;
 }
 
 function App() {
@@ -98,5 +96,21 @@ function App() {
     </UserProvider>
   );
 }
+
+it('renders nothing when currentPage is unknown (fallback return null branch)', () => {
+  const mockUser = { emailVerified: true, displayName: 'Test User' };
+  const realUseState = React.useState;
+  jest.spyOn(React, 'useState').mockImplementationOnce(() => ['___unknown___', () => {}]);
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <AppContent />
+    </UserContext.Provider>
+  );
+  // 메이저 분기들이 렌더되지 않는지 확인
+  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  React.useState = realUseState;
+});
 
 export default App;
