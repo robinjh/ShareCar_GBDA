@@ -27,7 +27,7 @@ describe("Header component", () => {
     jest.clearAllMocks();
   });
 
-  it("renders login button when user is not logged in", () => {
+ it("renders login button when user is not logged in", () => {
     render(
       <UserContext.Provider value={{ user: null }}>
         <Header isDarkMode={false} toggleMode={toggleModeMock} />
@@ -59,7 +59,7 @@ describe("Header component", () => {
     expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
   });
 
-   it("renders user info, 마이페이지/로그아웃/다크모드 버튼 when logged in", () => {
+  it("renders user info, 마이페이지/로그아웃/다크모드 버튼 when logged in", () => {
     const mockUser = { displayName: "홍길동", email: "hong@test.com" };
     render(
       <UserContext.Provider value={{ user: mockUser }}>
@@ -70,7 +70,7 @@ describe("Header component", () => {
     expect(screen.getByRole("button", { name: /마이페이지/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /로그아웃/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /☀️ Light/ })).toBeInTheDocument();
-  });   
+  });
 
   it("shows MyPage modal when 마이페이지 button is clicked, closes on overlay/click", () => {
     const mockUser = { displayName: "홍길동", email: "hong@test.com" };
@@ -122,9 +122,9 @@ describe("Header component", () => {
     );
     fireEvent.click(screen.getByText(/☀️ Light/));
     expect(toggleModeMock).toHaveBeenCalled();
-  });       
+  });
 
-  it("closes AuthForm modal when user logs in while modal is open", async () => {
+ it("closes AuthForm modal when user logs in while modal is open", async () => {
   let setUser;
   function Wrapper() {
     const [user, _setUser] = React.useState(null);
@@ -150,7 +150,7 @@ describe("Header component", () => {
   await waitFor(() => {
     expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
   });
-});       
+});
 
 it("closes MyPage modal when user logs out while modal is open", async () => {
   let setUser;
@@ -180,4 +180,14 @@ it("closes MyPage modal when user logs out while modal is open", async () => {
   });
 });
 
-});          
+it("shows welcome message with email if displayName is missing", () => {
+  const mockUser = { email: "test@example.com" };
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <Header isDarkMode={false} toggleMode={jest.fn()} />
+    </UserContext.Provider>
+  );
+  expect(screen.getByText("test@example.com님 환영합니다")).toBeInTheDocument();
+});
+
+}); 
