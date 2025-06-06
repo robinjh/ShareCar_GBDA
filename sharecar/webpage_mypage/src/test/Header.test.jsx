@@ -58,3 +58,16 @@ describe("Header component", () => {
     fireEvent.click(screen.getByText(/AuthForm Content/).closest(".modal-overlay"));
     expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
   });
+
+   it("renders user info, 마이페이지/로그아웃/다크모드 버튼 when logged in", () => {
+    const mockUser = { displayName: "홍길동", email: "hong@test.com" };
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <Header isDarkMode={true} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    expect(screen.getByText(/홍길동|hong@test.com/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /마이페이지/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /로그아웃/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /☀️ Light/ })).toBeInTheDocument();
+  });      
