@@ -151,3 +151,33 @@ describe("Header component", () => {
     expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
   });
 });       
+
+it("closes MyPage modal when user logs out while modal is open", async () => {
+  let setUser;
+  function Wrapper() {
+    const [user, _setUser] = React.useState({ displayName: "홍길동" });
+    setUser = _setUser;
+    return (
+      <UserContext.Provider value={{ user }}>
+        <Header isDarkMode={true} toggleMode={jest.fn()} />
+      </UserContext.Provider>
+    );
+  }
+
+  render(<Wrapper />);
+  // 로그인 상태에서 마이페이지 모달 열기
+  fireEvent.click(screen.getByText(/마이페이지/));
+  expect(screen.getByTestId("mypage-content")).toBeInTheDocument();
+
+  // 로그아웃 시나리오: user 값을 null로 변경
+  await act(async () => {
+    setUser(null);
+  });
+
+  // 모달이 자동으로 닫혀야 함
+  await waitFor(() => {
+    expect(screen.queryByTestId("mypage-content")).not.toBeInTheDocument();
+  });
+});
+
+});          
