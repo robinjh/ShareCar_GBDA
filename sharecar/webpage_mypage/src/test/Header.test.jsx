@@ -37,3 +37,24 @@ describe("Header component", () => {
     expect(screen.getByRole("button", { name: /로그인 \/ 회원가입/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /🌙 Dark/ })).toBeInTheDocument();
   });
+
+  it("shows AuthForm modal when login button is clicked, closes on overlay/click", () => {
+    render(
+      <UserContext.Provider value={{ user: null }}>
+        <Header isDarkMode={false} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    // 모달 오픈
+    fireEvent.click(screen.getByText(/로그인 \/ 회원가입/));
+    expect(screen.getByTestId("authform-content")).toBeInTheDocument();
+
+    // 모달 닫기 (X 버튼)
+    fireEvent.click(screen.getByText("×"));
+    expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
+
+    // 모달 다시 오픈
+    fireEvent.click(screen.getByText(/로그인 \/ 회원가입/));
+    // 모달 닫기 (Overlay 클릭)
+    fireEvent.click(screen.getByText(/AuthForm Content/).closest(".modal-overlay"));
+    expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
+  });
