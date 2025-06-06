@@ -96,21 +96,4 @@ function App() {
     </UserProvider>
   );
 }
-
-it('renders nothing when currentPage is unknown (fallback return null branch)', () => {
-  const mockUser = { emailVerified: true, displayName: 'Test User' };
-  const realUseState = React.useState;
-  jest.spyOn(React, 'useState').mockImplementationOnce(() => ['___unknown___', () => {}]);
-  render(
-    <UserContext.Provider value={{ user: mockUser }}>
-      <AppContent />
-    </UserContext.Provider>
-  );
-  // 메이저 분기들이 렌더되지 않는지 확인
-  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
-  React.useState = realUseState;
-});
-
 export default App;
