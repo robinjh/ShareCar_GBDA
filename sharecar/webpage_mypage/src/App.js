@@ -64,7 +64,6 @@ export function AppContent() {
   if (currentPage === 'rental') {
     return <Rental onClose={handleCloseModal} />;
   }
-  return null;
 }
 
 function App() {
@@ -96,4 +95,5 @@ function App() {
     </UserProvider>
   );
 }
+
 export default App;
