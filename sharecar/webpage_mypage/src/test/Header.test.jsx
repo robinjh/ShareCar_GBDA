@@ -70,4 +70,26 @@ describe("Header component", () => {
     expect(screen.getByRole("button", { name: /마이페이지/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /로그아웃/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /☀️ Light/ })).toBeInTheDocument();
-  });      
+  });   
+
+  it("shows MyPage modal when 마이페이지 button is clicked, closes on overlay/click", () => {
+    const mockUser = { displayName: "홍길동", email: "hong@test.com" };
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <Header isDarkMode={true} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    // 마이페이지 모달 오픈
+    fireEvent.click(screen.getByText(/마이페이지/));
+    expect(screen.getByTestId("mypage-content")).toBeInTheDocument();
+
+    // 닫기 (X 버튼)
+    fireEvent.click(screen.getAllByText("×")[0]);
+    expect(screen.queryByTestId("mypage-content")).not.toBeInTheDocument();
+
+    // 다시 열기
+    fireEvent.click(screen.getByText(/마이페이지/));
+    // 닫기 (Overlay)
+    fireEvent.click(screen.getByTestId("mypage-content").closest(".modal-overlay"));
+    expect(screen.queryByTestId("mypage-content")).not.toBeInTheDocument();
+  });
