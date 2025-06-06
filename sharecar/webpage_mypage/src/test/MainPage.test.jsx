@@ -34,3 +34,12 @@ describe("MainPage", () => {
     fireEvent.click(screen.getByText("차량 대여하기"));
     expect(onPageChange).toHaveBeenCalledWith("rental");
   });
+
+  it("renders with no onPageChange without crashing", () => {
+    // onPageChange가 undefined여도 동작
+    render(<MainPage />);
+    fireEvent.click(screen.getByText("내 차량 등록하기"));
+    fireEvent.click(screen.getByText("차량 대여하기"));
+    // crash 없이 통과하면 성공!
+  });
+});
