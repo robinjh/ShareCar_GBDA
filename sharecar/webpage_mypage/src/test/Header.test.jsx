@@ -27,4 +27,13 @@ describe("Header component", () => {
     jest.clearAllMocks();
   });
 
-  
+  it("renders login button when user is not logged in", () => {
+    render(
+      <UserContext.Provider value={{ user: null }}>
+        <Header isDarkMode={false} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    expect(screen.getByText(/로그인 \/ 회원가입/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /로그인 \/ 회원가입/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /🌙 Dark/ })).toBeInTheDocument();
+  });
