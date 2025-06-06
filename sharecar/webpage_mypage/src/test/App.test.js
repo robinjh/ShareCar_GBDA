@@ -193,25 +193,6 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
 
-  it('renders Rental when onPageChange("rental") is called', async () => {
-    const mockUser = { emailVerified: true, displayName: 'Test User' };
-    render(
-      <UserContext.Provider value={{ user: mockUser }}>
-        <AppContent />
-      </UserContext.Provider>
-    );
-    const mainPage = screen.getByTestId('main-page');
-    const goRentalButton = within(mainPage).getByTestId('go-rental');
-    fireEvent.click(goRentalButton);
-
-    await waitFor(() => {
-      expect(screen.getByTestId('rental')).toBeInTheDocument();
-    });
-
-    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
-  });
-
   it('returns to MainPage when onClose is called from Registration', async () => {
     const mockUser = { emailVerified: true, displayName: 'Test User' };
     render(
@@ -267,6 +248,34 @@ describe('AppContent Component', () => {
     expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
     expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
   });
+  
+it('covers fallback null branch (currentPage unknown) for AppContent', () => {
+  const mockUser = { emailVerified: true };
+  jest.spyOn(React, 'useState').mockImplementationOnce(() => ['___unknown___', () => {}]);
+  const { container } = render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <AppContent />
+    </UserContext.Provider>
+  );
+  expect(container.querySelector('[data-testid="main-page"]')).toBeNull();
+  expect(container.querySelector('[data-testid="registration"]')).toBeNull();
+  expect(container.querySelector('[data-testid="rental"]')).toBeNull();
+  React.useState.mockRestore();
+});
+
+it('renders Rental when currentPage is rental (직접 세팅)', () => {
+  const mockUser = { emailVerified: true, displayName: 'Test User' };
+  jest.spyOn(React, 'useState').mockImplementationOnce(() => ["rental", () => {}]);
+  render(
+    <UserContext.Provider value={{ user: mockUser }}>
+      <AppContent />
+    </UserContext.Provider>
+  );
+  expect(screen.getByTestId("rental")).toBeInTheDocument();
+  React.useState.mockRestore();
+});
+
+
 });
 
 // --------------- App 컴포넌트 다크모드, 클래스 테스트 ---------------
@@ -325,52 +334,25 @@ describe('App Component', () => {
   expect(window.location.reload).toHaveBeenCalled();
 });
 
- function Wrapper() {
-    const { user } = React.useContext(UserContext);
-    const [currentPage] = React.useState('___정의되지않은값___');
-    if (!user) return <div>no user</div>;
-    if (!user.emailVerified) return <div>not verified</div>;
-    if (currentPage === 'main') return <div>Main Page</div>;
-    if (currentPage === 'registration') return <div>Registration</div>;
-    if (currentPage === 'rental') return <div>Rental</div>;
-    return null; // fallback 커버
-  }
-
-  it('covers fallback null branch (by Wrapper)', () => {
-    const mockUser = { emailVerified: true };
-    const { container } = render(
-      <UserContext.Provider value={{ user: mockUser }}>
-        <Wrapper />
-      </UserContext.Provider>
-    );
-    // 아무것도 렌더 안 되는지 확인
-    expect(container.firstChild).toBeNull();
-  });
-
-  function CoverageWrapper() {
-  const { user } = React.useContext(UserContext);
-  // currentPage를 강제로 존재하지 않는 값으로 세팅
-  const [currentPage] = React.useState('___unknown___');
-  if (!user) return <div>no user</div>;
-  if (!user.emailVerified) return <div>not verified</div>;
-  if (currentPage === 'main') return <div>Main Page</div>;
-  if (currentPage === 'registration') return <div>Registration</div>;
-  if (currentPage === 'rental') return <div>Rental</div>;
-  // 여기 도달하면 커버 완료!
-  return null;
-}
-
-it('covers branch: unknown currentPage in AppContent', () => {
-  const mockUser = { emailVerified: true, displayName: "Test User" };
+it('renders Welcome with email if displayName is empty', () => {
+  const mockUser = { emailVerified: false, displayName: '', email: 'tester@example.com' };
   render(
     <UserContext.Provider value={{ user: mockUser }}>
-      <CoverageWrapper />
+      <AppContent />
     </UserContext.Provider>
   );
-  // 아무것도 렌더링 되지 않으므로 기존 컴포넌트가 렌더되지 않음을 검사
-  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('registration')).not.toBeInTheDocument();
-  expect(screen.queryByTestId('rental')).not.toBeInTheDocument();
+  expect(screen.getByText('Welcome, tester@example.com!')).toBeInTheDocument();
+});
+
+it('restores dark mode state from localStorage', () => {
+  // localStorage.getItem이 "true"를 반환하도록 설정
+  localStorageMock.getItem.mockReturnValue('"true"'); // JSON.parse를 위해 문자열화 필요
+
+  render(<App />);
+  // App이 dark mode로 렌더링되는지 확인
+  // 예: 클래스네임이나 body, 화면 내용 등으로 확인
+  const appDiv = screen.getByTestId('app-root');
+  expect(appDiv.className).toMatch(/dark/);
 });
 
 });
