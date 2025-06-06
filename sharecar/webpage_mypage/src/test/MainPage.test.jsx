@@ -27,3 +27,10 @@ describe("MainPage", () => {
     fireEvent.click(screen.getByText("내 차량 등록하기"));
     expect(onPageChange).toHaveBeenCalledWith("registration");
   });
+
+  it("calls onPageChange('rental') when '차량 대여하기' clicked", () => {
+    const onPageChange = jest.fn();
+    render(<MainPage onPageChange={onPageChange} />);
+    fireEvent.click(screen.getByText("차량 대여하기"));
+    expect(onPageChange).toHaveBeenCalledWith("rental");
+  });
