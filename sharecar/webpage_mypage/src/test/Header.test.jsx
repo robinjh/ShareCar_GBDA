@@ -123,3 +123,31 @@ describe("Header component", () => {
     fireEvent.click(screen.getByText(/☀️ Light/));
     expect(toggleModeMock).toHaveBeenCalled();
   });       
+
+  it("closes AuthForm modal when user logs in while modal is open", async () => {
+  let setUser;
+  function Wrapper() {
+    const [user, _setUser] = React.useState(null);
+    setUser = _setUser;
+    return (
+      <UserContext.Provider value={{ user }}>
+        <Header isDarkMode={false} toggleMode={jest.fn()} />
+      </UserContext.Provider>
+    );
+  }
+
+  render(<Wrapper />);
+  // 비로그인 상태에서 로그인 모달 열기
+  fireEvent.click(screen.getByText(/로그인 \/ 회원가입/));
+  expect(screen.getByTestId("authform-content")).toBeInTheDocument();
+
+  // 로그인 시나리오: user 값을 변경(로그인)
+  await act(async () => {
+    setUser({ displayName: "홍길동" });
+  });
+
+  // 모달이 자동으로 닫혀야 함
+  await waitFor(() => {
+    expect(screen.queryByTestId("authform-content")).not.toBeInTheDocument();
+  });
+});       
