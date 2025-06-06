@@ -93,3 +93,14 @@ describe("Header component", () => {
     fireEvent.click(screen.getByTestId("mypage-content").closest(".modal-overlay"));
     expect(screen.queryByTestId("mypage-content")).not.toBeInTheDocument();
   });
+
+  it("calls signOut when 로그아웃 button is clicked", () => {
+    const mockUser = { displayName: "홍길동", email: "hong@test.com" };
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <Header isDarkMode={true} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    fireEvent.click(screen.getByText(/로그아웃/));
+    expect(signOut).toHaveBeenCalled();
+  });
