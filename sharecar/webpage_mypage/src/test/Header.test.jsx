@@ -104,3 +104,22 @@ describe("Header component", () => {
     fireEvent.click(screen.getByText(/로그아웃/));
     expect(signOut).toHaveBeenCalled();
   });
+
+  it("calls toggleMode when 다크/라이트 버튼 클릭", () => {
+    render(
+      <UserContext.Provider value={{ user: null }}>
+        <Header isDarkMode={false} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    fireEvent.click(screen.getByText(/🌙 Dark/));
+    expect(toggleModeMock).toHaveBeenCalled();
+
+    // 라이트모드 버튼도 커버
+    render(
+      <UserContext.Provider value={{ user: { displayName: "홍길동" } }}>
+        <Header isDarkMode={true} toggleMode={toggleModeMock} />
+      </UserContext.Provider>
+    );
+    fireEvent.click(screen.getByText(/☀️ Light/));
+    expect(toggleModeMock).toHaveBeenCalled();
+  });       
