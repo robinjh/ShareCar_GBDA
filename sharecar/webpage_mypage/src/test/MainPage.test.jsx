@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import MainPage from "./MainPage";
+import MainPage from "../components/mainpage/MainPage";
 
 describe("MainPage", () => {
   it("renders all main sections and text", () => {
@@ -19,4 +19,11 @@ describe("MainPage", () => {
     // 서비스 소개
     expect(screen.getByText("서비스 소개")).toBeInTheDocument();
     expect(screen.getByText(/우리 Sharecar는 여러 유용한 서비스를 지원합니다/)).toBeInTheDocument();
+  });
+
+  it("calls onPageChange('registration') when '내 차량 등록하기' clicked", () => {
+    const onPageChange = jest.fn();
+    render(<MainPage onPageChange={onPageChange} />);
+    fireEvent.click(screen.getByText("내 차량 등록하기"));
+    expect(onPageChange).toHaveBeenCalledWith("registration");
   });
