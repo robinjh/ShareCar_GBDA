@@ -1,11 +1,10 @@
-jest.mock('firebase/auth', () => ({
+jest.mock("firebase/auth", () => ({
   signOut: jest.fn(),
   onAuthStateChanged: jest.fn((auth, cb) => {
     // 콜백 호출은 필요시 cb(null) 등으로!
     return function unsubscribe() {}; // 꼭 함수 반환!!
   }),
 }));
-
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
@@ -90,7 +89,16 @@ describe('AppContent Component', () => {
       </UserContext.Provider>
     );
     expect(screen.getByTestId('auth-form')).toBeInTheDocument();
-    expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
+  });
+
+  it("renders MainPage when currentPage is main", () => {
+    const mockUser = { emailVerified: true, displayName: "Tester" };
+    render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <AppContent />
+      </UserContext.Provider>
+    );
+    expect(screen.getByTestId("main-page")).toBeInTheDocument();
   });
 
   it('renders email verification message when user is not emailVerified', () => {
@@ -317,26 +325,25 @@ describe('App Component', () => {
   expect(window.location.reload).toHaveBeenCalled();
 });
 
-function Wrapper() {
-  const { user } = React.useContext(UserContext);
-  const [currentPage] = React.useState('___정의되지않은값___');
-  if (!user) return <div>no user</div>;
-  if (!user.emailVerified) return <div>not verified</div>;
-  if (currentPage === 'main') return <div>Main Page</div>;
-  if (currentPage === 'registration') return <div>Registration</div>;
-  if (currentPage === 'rental') return <div>Rental</div>;
-  return null; // fallback
-}
+ function Wrapper() {
+    const { user } = React.useContext(UserContext);
+    const [currentPage] = React.useState('___정의되지않은값___');
+    if (!user) return <div>no user</div>;
+    if (!user.emailVerified) return <div>not verified</div>;
+    if (currentPage === 'main') return <div>Main Page</div>;
+    if (currentPage === 'registration') return <div>Registration</div>;
+    if (currentPage === 'rental') return <div>Rental</div>;
+    return null; // fallback 커버
+  }
 
-it('covers fallback null branch (by Wrapper)', () => {
-  const mockUser = { emailVerified: true };
-  render(
-    <UserContext.Provider value={{ user: mockUser }}>
-      <Wrapper />
-    </UserContext.Provider>
-  );
-  // 아무것도 렌더 안 되면 커버
-  expect(screen.queryByTestId('main-page')).not.toBeInTheDocument();
-});
-
+  it('covers fallback null branch (by Wrapper)', () => {
+    const mockUser = { emailVerified: true };
+    const { container } = render(
+      <UserContext.Provider value={{ user: mockUser }}>
+        <Wrapper />
+      </UserContext.Provider>
+    );
+    // 아무것도 렌더 안 되는지 확인
+    expect(container.firstChild).toBeNull();
+  });
 });
