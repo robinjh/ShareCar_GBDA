@@ -10,13 +10,16 @@
     "firebase": "^11.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --maxWorkers=4 --runInBand=false",
+    "test:coverage": "react-scripts test --coverage --watchAll=false --maxWorkers=4 --runInBand=false",
+    "test:rental": "react-scripts test Rental.test.js --coverage --watchAll=false --maxWorkers=4 --runInBand=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

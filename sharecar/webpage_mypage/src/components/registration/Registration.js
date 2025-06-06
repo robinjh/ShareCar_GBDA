@@ -91,7 +91,7 @@ function Registration({ onNavigate, onClose }) {
         throw new Error('모든 필수 항목을 입력해주세요.');
       }
 
-      if (formData.carBrand === '기타' && !formData.otherBrand) {
+      if (formData.carBrand === '기타' && !formData.otherBrand.trim()) {
         throw new Error('기타 제조사를 선택한 경우 제조사명을 입력해주세요.');
       }
 
@@ -148,7 +148,7 @@ function Registration({ onNavigate, onClose }) {
           </div>
         )}
 
-        {error && <div className={`alert error ${isDarkMode ? 'dark' : ''}`}>{error}</div>}
+        {error && <div className={`alert error ${isDarkMode ? 'dark' : ''}`} role="alert">{error}</div>}
         {success && <div className={`alert success ${isDarkMode ? 'dark' : ''}`}>{success}</div>}
 
         <form onSubmit={handleSubmit} className="registration-form">
