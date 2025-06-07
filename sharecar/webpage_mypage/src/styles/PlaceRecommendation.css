@@ -144,7 +144,7 @@
 /* 카카오맵 버튼 */
 .recommend-link {
   background: var(--color-kakao);
-  color: var(--color-text);
+  color: #181829;
   font-weight: 600;
   border: none;
   border-radius: 8px;

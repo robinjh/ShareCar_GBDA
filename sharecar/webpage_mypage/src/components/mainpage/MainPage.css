@@ -1,0 +1,151 @@
+:root {
+  --color-text: #333;
+  --color-background: #fff;
+  --color-heading: #222;
+  --color-text-secondary: #555;
+  --color-primary: #007bff;
+  --color-primary-dark: #0056b3;
+  --color-accent: #004085;
+  --color-border: #ddd;
+  --color-card-background: #f9f9f9;
+  --radius: 8px;
+}
+
+body.dark-mode {
+  --color-text: #ddd; 
+  --color-background: #1e1e1e;
+  --color-heading: #eee;
+  --color-text-secondary: #aaa;
+  --color-primary: #61dafb;
+  --color-primary-dark: #21a1f9; 
+  --color-accent: #0f7ab4;
+  --color-border: #555;
+  --color-card-background: #2d2d2d;
+}
+
+.main-page {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--color-text, #333);
+    background-color: var(--color-background, #fff);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-page-header {
+    margin-bottom: 60px;
+}
+
+.main-page-header button {
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.main-page-header h1 {
+    font-size: 2.8em;
+    margin-bottom: 10px;
+    color: var(--color-heading, #222);
+}
+
+.main-page-header p {
+    font-size: 1.3em;
+    color: var(--color-text-secondary, #555);
+}
+
+.features-section {
+    margin-bottom: 60px;
+}
+
+.features-section h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
+    color: var(--color-heading, #222);
+}
+
+.features-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.feature-item {
+    text-align: left;
+    flex: 1;
+    min-width: 250px;
+    padding: 30px;
+    border: 1px solid var(--color-border, #ddd);
+    border-radius: var(--radius, 12px);
+    background-color: var(--color-card-background, #f9f9f9);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feature-item h3 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: var(--color-heading, #222);
+}
+
+.feature-item p {
+    font-size: 1em;
+    color: var(--color-text-secondary, #555);
+}
+
+.about-section {
+    margin-bottom: 60px;
+}
+
+.about-section h2 {
+     font-size: 2em;
+    margin-bottom: 30px;
+    color: var(--color-heading, #222);
+}
+
+.about-section p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: var(--color-text-secondary, #555);
+    text-align: left;
+}
+
+/* 이후로 메인 페이지 다크모드에 관한 색상 변수 설정(헤더와 같음) */
+.dark .main-page {
+    background-color: var(--color-background-dark);
+    color: var(--color-text-dark);
+}
+
+.dark .main-page-header h1 {
+    color: var(--color-text-dark);
+}
+
+.dark .main-page-header p {
+     color: var(--color-text-secondary-dark);
+}
+
+.dark .feature-item {
+    background-color: var(--color-card-background-dark);
+    border: 1px solid var(--color-border-dark);
+}
+
+.dark .feature-item h3 {
+    color: var(--color-text-dark);
+}
+
+.dark .feature-item p {
+    color: var(--color-text-secondary-dark);
+}
+
+.dark .about-section h2 {
+     color: var(--color-text-dark);
+}
+
+.dark .about-section p {
+    color: var(--color-text-secondary-dark);
+}
