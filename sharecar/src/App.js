@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserProvider, UserContext } from "./UserContext";
 import Header from "./Header";
 import AuthForm from "./components/auth/AuthForm";
-import MyPage from "./components/mypage/MyPage";
 import MainPage from "./components/mainpage/MainPage";
 import "./App.css";
 import { auth } from "./firebase";
