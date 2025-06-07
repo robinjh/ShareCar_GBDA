@@ -1,0 +1,13 @@
+export const onAuthStateChanged = (auth, callback) => {
+  callback({
+    uid: "guest_uid_100",
+    email: "test@test.com",
+    emailVerified: true, // ← 이메일 인증 완료!
+    displayName: "테스트유저"
+    // 필요한 필드 추가 가능
+  });
+  return () => {};
+};
+
+export const signOut = jest.fn();
+export const auth = {}; // 실제 코드에서 import할 때를 위해 빈 객체로 선언
