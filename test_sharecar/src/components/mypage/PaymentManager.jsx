@@ -54,7 +54,7 @@ function PaymentManager() {
       name === "number" || name === "cvc"
         ? value.replace(/[^\d]/g, "") // 숫자만 남김
         : name === "expiry"
-        ? value.replace(/[^\d/]/g, "") // 숫자 + 슬래시만 허용
+        ? value.replace(/[^\d\/]/g, "") // 숫자 + 슬래시만 허용
         : value;
     setForm((prev) => ({ ...prev, [name]: cleanedValue }));
   };
