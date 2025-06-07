@@ -38,14 +38,16 @@
     margin-right: 6px;
 }
 .header-logout-btn {
-    background: var(--color-primary);
-    color: var(--color-text-dark);
-    border: none;
-    border-radius: 8px;
-    padding: 7px 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background var(--transition), color var(--transition);
+  background: var(--color-primary);
+  color: var(--color-text-dark);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 7px 0;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
 }
 .header-logout-btn:hover {
     background: var(--color-accent);
