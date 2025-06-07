@@ -179,7 +179,6 @@ function MyInfo() {
       setMsgType("info");
     } catch (err) {
       setMsg(`저장 실패! ${err.message || "다시 시도해 주세요."}`);
-      console.log(user.providerData);
       setMsgType("error");
     }
   };

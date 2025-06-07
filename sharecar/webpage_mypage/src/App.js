@@ -3,20 +3,31 @@ import { UserProvider, UserContext } from "./UserContext";
 import Header from "./Header";
 import AuthForm from "./components/auth/AuthForm";
 import MyPage from "./components/mypage/MyPage";
-import PlaceRecommendation from "./components/recomendation/PlaceRecommendation";
+import PlaceRecommendation from "./components/recommendation/PlaceRecommendation";
 import MainPage from "./components/mainpage/MainPage";
 import "./App.css";
 import { auth } from "./firebase";
 import { signOut } from "firebase/auth";
+import Registration from "./components/registration/Registration";
+import Rental from "./components/rental/Rental";
 
-function AppContent({ toggleMode }) {
+function AppContent() {
   const { user } = useContext(UserContext);
 
-   if (!user) {
-    return <MainPage />;
+  const [currentPage, setCurrentPage] = useState('main');
+
+  const handlePageChange = (pageName) => {
+    setCurrentPage(pageName);
+  };
+
+  const handleCloseModal = () => {
+    setCurrentPage('main'); 
+  };
+
+  if (!user) {
+    return <AuthForm />;
   }
 
-  // 이메일 미인증 상태 안내 및 로그아웃만
   if (!user.emailVerified) {
     return (
       <div className="auth-box">
@@ -35,7 +46,7 @@ function AppContent({ toggleMode }) {
             onClick={() => {
               if (auth.currentUser) {
                 auth.currentUser.reload().then(() => {
-                  setTimeout(() => window.location.reload(), 1200); // 1.2초 후 새로고침
+                  setTimeout(() => window.location.reload(), 1200);
                 });
               } else {
                 alert("로그인 상태가 아닙니다. 다시 로그인해 주세요.");
@@ -51,30 +62,15 @@ function AppContent({ toggleMode }) {
     );
   }
 
-  // 인증 완료된 경우에만 서비스 UI 노출
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "flex-start",
-        minHeight: "calc(100vh - 65px)",
-      }}
-    >
-      <div
-        style={{
-          flex: "0 0 370px",
-          borderRight: "1px solid var(--color-border)",
-          minHeight: "100%",
-        }}
-      >
-        <MyPage toggleMode={toggleMode} user={user} />
-      </div>
-      <div style={{ flex: 1 }}>
-        <PlaceRecommendation user={user} />
-      </div>
-    </div>
-  );
+  if (currentPage === 'main') {
+    return <MainPage onPageChange={handlePageChange} />;
+  } else if (currentPage === 'registration') {
+    return <Registration onClose={handleCloseModal} />;
+  } else if (currentPage === 'rental') {
+    return <Rental onClose={handleCloseModal} />;
+  }
+
+  return null; // 일치하는 페이지가 없을 경우 아무것도 렌더링하지 않음 (또는 오류 페이지)
 }
 
 function App() {
@@ -85,6 +81,15 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
+
+    const body = document.body;
+    if (isDarkMode) {
+      body.classList.add('dark-mode');
+      body.classList.remove('light-mode');
+    } else {
+      body.classList.remove('dark-mode');
+      body.classList.add('light-mode');
+    }
   }, [isDarkMode]);
 
   const toggleMode = () => setIsDarkMode((prev) => !prev);
@@ -93,7 +98,7 @@ function App() {
     <UserProvider>
       <div className={isDarkMode ? "dark" : "light"}>
         <Header isDarkMode={isDarkMode} toggleMode={toggleMode} />
-        <AppContent toggleMode={toggleMode} />
+        <AppContent />
       </div>
     </UserProvider>
   );

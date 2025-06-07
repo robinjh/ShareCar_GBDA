@@ -2,18 +2,23 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
-import AuthForm from "./components/auth/AuthForm"; // 경로 확인 필요
+import AuthForm from "./components/auth/AuthForm"; 
+import MyPage from "./components/mypage/MyPage"; 
 import "./styles/Header.css";
 
 function Header({ isDarkMode, toggleMode }) {
   const { user } = useContext(UserContext);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showMyPageModal, setShowMyPageModal] = useState(false);
 
   useEffect(() => {
     if (user && showAuthModal) {
       setShowAuthModal(false);
     }
-  }, [user, showAuthModal]);
+    if (!user && showMyPageModal) {
+      setShowMyPageModal(false);
+    }
+  }, [user, showAuthModal, showMyPageModal]);
   
 
   return (
@@ -25,6 +30,15 @@ function Header({ isDarkMode, toggleMode }) {
             <span className="header-user">
               {user.displayName || user.email}님 환영합니다
             </span>
+
+            <button
+              className="header-mypage-btn" onClick={() => {
+                setShowMyPageModal(true);
+              }}
+            >
+              마이페이지
+            </button>
+
             <button className="header-logout-btn" onClick={() => signOut(auth)}>
               로그아웃
             </button>
@@ -53,6 +67,26 @@ function Header({ isDarkMode, toggleMode }) {
               ×
             </button>
             <AuthForm />
+          </div>
+        </div>
+      )}
+
+       {showMyPageModal && ( 
+        <div className="modal-overlay" onClick={() => setShowMyPageModal(false)}> 
+          <div
+            className="modal" 
+            onClick={(e) => e.stopPropagation()} 
+            style={{
+          margin: "1rem",
+          padding: "0.5rem 1rem",
+          border: "1px solid var(--color-border)", 
+          borderRadius: "6px",
+        }}
+          >
+            <button className="close-button" onClick={() => setShowMyPageModal(false)}> 
+              ×
+            </button>
+            <MyPage user={user} toggleMode={toggleMode} /> 
           </div>
         </div>
       )}
