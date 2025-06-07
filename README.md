@@ -51,5 +51,5 @@ SOFTWARE.
 
 # Members
 - 캄퓨터공학과 김재환(팀장, email: robinjh0314@gmail.com)
-- 컴퓨터공학과 배수현(email: ) 
+- 컴퓨터공학과 배수현(email: soohyun3586@gmail.com) 
 - 컴퓨터공학과 윤현섭(email: clue0113@naver.com)
