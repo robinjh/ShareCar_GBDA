@@ -87,7 +87,6 @@ function CarCard({ car, onRent, onTagClick, isDarkMode }) {
           <div className="car-tags">
             <div className="tag-stack">
               {car.tags && car.tags.map((tag, index) => (
-                console.log("isDarkMode:", isDarkMode),
                 <button
                   key={index}
                   className={`tag-chip ${isDarkMode ? 'dark' : ''}`}

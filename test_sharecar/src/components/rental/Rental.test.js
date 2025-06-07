@@ -5,7 +5,6 @@ import Rental from './Rental';
 import { collection, getDocs, setDoc, doc, getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { BrowserRouter } from 'react-router-dom';
 import { UserContext, UserProvider } from '../../UserContext';
 import { db } from '../../firebase';
 
@@ -226,11 +225,9 @@ const renderRental = async (user = mockUser, isDarkMode = false, shouldFail = fa
   let utils;
   await act(async () => {
     utils = render(
-      <BrowserRouter>
         <MockUserProvider user={user}>
           <Rental isDarkMode={isDarkMode} onNavigate={() => {}} onClose={() => {}} />
         </MockUserProvider>
-      </BrowserRouter>
     );
   });
 
