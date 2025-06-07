@@ -18,8 +18,13 @@
 # Dependency
 - node.js: v22.15.0
 - npm: 10.9.2
-- react: 19.1.0
+- react: 19.1.0- 
 - 이 외 package.json 파일의 dependency 확인
+
+# ⚠️ Testing Environment Notice
+**테스트 코드가 Jest 27 이상/React 18 이상 환경에서는 일부 정상 동작하지 않을 수 있습니다.**
+- 본 프로젝트의 테스트(mocking)는 Jest 26 이하 환경에서만 정상 동작을 보장합니다.
+- Jest 27+ / React 18+ 환경에서 테스트가 실패하는 경우, 구버전 환경에서 테스트해 주세요.
 
 # License
 MIT License
