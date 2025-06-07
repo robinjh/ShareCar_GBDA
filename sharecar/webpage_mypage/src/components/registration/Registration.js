@@ -131,7 +131,7 @@ function Registration({ onNavigate, onClose }) {
 
   return (
     
-    <div className={`registration-container ${isDarkMode ? 'dark' : ''}`}>
+    <div data-testid="registration" className={`registration-container ${isDarkMode ? 'dark' : ''}`}>
       <div className={`registration-paper ${isDarkMode ? 'dark' : ''}`}>
         <button className="close-btn" onClick={onClose}> X </button>
         <div className={`registration-header ${isDarkMode ? 'dark' : ''}`}>

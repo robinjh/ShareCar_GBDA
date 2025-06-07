@@ -12,6 +12,28 @@ import {
 } from "firebase/firestore";
 import { UserContext } from "../../UserContext";
 
+  // archives로 복사 + 요청에서 삭제
+  export const archiveRequest = async (req, resultStatus = "사용중") => {
+    const now = new Date().toISOString();
+    await setDoc(doc(db, "archives", req.id), {
+      carNumber: req.carNumber,
+      hostID: req.hostID,
+      guestID: req.guestID,
+      guestName: req.guestName,
+      startTime: req.startTime,
+      endTime: req.endTime,
+      totalFee: req.totalFee,
+      rentalFee: req.rentalFee,
+      status: resultStatus, // "사용중" or "거부"
+      tags: req.tags,
+      rate: null,
+      show: true,
+      archivedAt: now,
+      requestedAt: req.requestedAt || null,
+    });
+    await deleteDoc(doc(db, "requests", req.id));
+  };
+
 // 날짜 포맷
 function formatDate(s) {
   if (!s) return "";
@@ -58,28 +80,6 @@ function RequestManager() {
     };
     fetchRequests();
   }, [user]);
-
-  // archives로 복사 + 요청에서 삭제
-  const archiveRequest = async (req, resultStatus = "사용중") => {
-    const now = new Date().toISOString();
-    await setDoc(doc(db, "archives", req.id), {
-      carNumber: req.carNumber,
-      hostID: req.hostID,
-      guestID: req.guestID,
-      guestName: req.guestName,
-      startTime: req.startTime,
-      endTime: req.endTime,
-      totalFee: req.totalFee,
-      rentalFee: req.rentalFee,
-      status: resultStatus, // "사용중" or "거부"
-      tags: req.tags,
-      rate: null,
-      show: true,
-      archivedAt: now,
-      requestedAt: req.requestedAt || null,
-    });
-    await deleteDoc(doc(db, "requests", req.id));
-  };
 
   // 승인 처리 (겹치는 요청 자동 거부)
   const handleApprove = async (req) => {

@@ -616,7 +616,8 @@ const handleRentalSubmit = async () => {
   };
 
   return (
-    <div className={`rental-container ${isDarkMode ? 'dark' : ''}`}>
+    <div className={`rental-container ${isDarkMode ? 'dark' : ''}`}
+    data-testid="rental">
       <button
         className={`modalclose-button ${isDarkMode ? 'dark' : ''}`}
         onClick = {onClose}
