@@ -1,0 +1,1296 @@
+/* 기본 변수 */
+:root {
+  --radius: 8px;
+  --spacing: 16px;
+  --border-color: #e0e0e0;
+  --background-color: #ffffff;
+  --background-color-light: #f5f5f5;
+  --text-color: #333333;
+  --text-secondary: #666666;
+  --color-primary: #1976d2;
+  --color-accent: #1565c0;
+  --color-surface: #f5f5f5;
+  --input-background: #ffffff;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --primary-color: #1976d2;
+  --primary-hover: #1565c0;
+  --error-color: #d32f2f;
+  --warning-color: #ed6c02;
+  --success-color: #2e7d32;
+  --card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 다크 모드 변수 */
+[data-theme="dark"] {
+  --border-color: #424242;
+  --background-color: #121212;
+  --background-color-light: #1e1e1e;
+  --text-color: #ffffff;
+  --text-secondary: #b0b0b0;
+  --color-primary: #90caf9;
+  --color-accent: #64b5f6;
+  --color-surface: #1e1e1e;
+  --input-background: #1e1e1e;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --card-hover-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  --primary-color: #90caf9;
+  --primary-hover: #64b5f6;
+  --error-color: #ef5350;
+  --warning-color: #ffb74d;
+  --success-color: #66bb6a;
+}
+
+/* 컨테이너 */
+.rental-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background-color: var(--background-color);
+  transition: background-color 0.3s ease;
+}
+
+.rental-paper {
+  background-color: var(--background-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+/* 헤더 */
+.rental-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.rental-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  width: 100%;
+}
+
+.registration-link-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+  align-self: flex-end;
+}
+
+.registration-link-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.registration-link-button.dark {
+  background-color: var(--primary-color-dark);
+  color: var(--background-color-dark);
+}
+
+.registration-link-button.dark:hover {
+  background-color: #64b5f6;
+}
+
+/* 검색 영역 */
+.search-filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0 1rem 0;
+}
+
+.search-group {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+}
+
+.search-field-wrapper {
+  display: flex;
+  width: 80%;
+  max-width: 800px;
+  gap: 0;
+  margin: 0 auto;
+  height: 48px;
+}
+
+.search-field {
+  flex: 1;
+  height: 100%;
+  padding: 0 1rem;
+  border: 1px solid var(--border-color);
+  border-right: none;
+  border-radius: var(--radius) 0 0 var(--radius);
+  font-size: 1rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: all 0.2s;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.search-button {
+  height: 100%;
+  padding: 0 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: 1px solid var(--primary-color);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.search-button:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.search-button.dark {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.search-button.dark:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.filter-button {
+  height: 40px;
+  padding: 0 1.5rem;
+  background-color: white;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  margin: 0;
+  line-height: 1;
+}
+
+.filter-button.dark {
+  background: white;     
+  color: #fff;              
+  border: 1.5px solid #767f9d;  
+}
+
+.filter-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 정렬 및 필터 영역 */
+.sort-filter-row {
+  display: flex;
+  gap: var(--spacing);
+  margin-bottom: 4rem;
+  width: 80%;
+  max-width: 800px;
+  margin-left: 10%;
+  padding: 0;
+  align-items: flex-start;
+  margin-top: 0.5rem;
+}
+
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 80%;
+  max-width: 800px;
+  padding: 0;
+  margin-left: 10%;
+}
+
+.sort-select {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* 차량 카드 */
+.car-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+.car-card {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  cursor: pointer;
+  width: 100%;
+}
+
+.car-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.car-content {
+  padding: 1rem;
+}
+
+.car-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.car-title-left {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.car-name {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+.car-fee {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  white-space: nowrap;
+  padding-bottom: -0.1rem;
+}
+
+.car-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.car-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.car-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.car-price {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-top: auto;
+}
+
+.car-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.car-tag {
+  padding: 4px 8px;
+  background-color: rgba(25, 118, 210, 0.1);
+  color: var(--primary-color);
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.car-actions {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 0rem;
+}
+
+.rent-button {
+  padding: 8px 24px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.rent-button:hover {
+  background-color: var(--color-accent);
+}
+
+.rent-button:disabled {
+  background-color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+/* 필터 다이얼로그 */
+.filter-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  overflow-x: hidden;
+}
+
+.filter-dialog.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.filter-dialog-content {
+  background-color: var(--background-color);
+  border-radius: 0;
+  padding: 1.5rem;
+  width: 700px;
+  max-width: 98vw;
+  min-width: 600px;
+  max-height: 95vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+}
+
+.filter-dialog-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  text-align: center;
+  width: 100%;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.filter-dialog-body {
+  margin-top: 1rem;
+}
+
+.close-button {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.filter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.filter-group select {
+  height: 48px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: all 0.2s;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.filter-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing);
+  margin-top: 1.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.filter-dialog-actions .cancel-button,
+.filter-dialog-actions .apply-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 80px;
+}
+
+.apply-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+}
+
+.apply-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.reset-button {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.reset-button:hover {
+  background-color: var(--border-color);
+}
+
+/* 대여 다이얼로그 */
+.rental-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rental-dialog {
+  background-color: var(--background-color);
+  border-radius: 16px;
+  width: 800px;         
+  max-width: 98vw;
+  min-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;         
+  box-shadow: var(--shadow);
+  padding: 2rem 2rem;
+  box-sizing: border-box;
+}
+
+.rental-dialog-header {
+  padding: var(--spacing);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.rental-dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  right: var(--spacing);
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.rental-dialog-content {
+  padding: var(--spacing);
+}
+
+.car-info-box {
+  background-color: var(--background-color-light);
+  padding: var(--spacing);
+  border-radius: var(--radius);
+  margin-bottom: var(--spacing);
+}
+
+.car-info-box h4 {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.car-info-box p {
+  margin: 4px 0;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+.car-info-box p::before {
+  content: attr(data-label);
+  font-weight: 500;
+  min-width: 70px;
+  color: var(--text-color);
+}
+
+.car-info-box p::after {
+  content: attr(data-value);
+  color: var(--text-secondary);
+}
+
+.car-info-box p[data-label="총 대여료: "] {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-top: 0.5rem;
+}
+
+.car-info-box p[data-label="총 대여료: "]::before {
+  content: "총 대여료: ";
+  margin-right: 0.5rem;
+}
+
+.car-info-box p[data-label="총 대여료: "]::after {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.total-fee {
+  margin-top: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+}
+
+.input-group {
+  margin-bottom: var(--spacing);
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.input-group input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+.input-group input[type="datetime-local"] {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.input-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(var(--calendar-icon-invert));
+}
+
+.input-group input[type="datetime-local"]::-webkit-clear-button,
+.input-group input[type="datetime-local"]::-webkit-inner-spin-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
+/* 다크 모드에서 달력 아이콘 색상 조정 */
+[data-theme="dark"] .input-group input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.input-group input[type="datetime-local"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.date-time-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing);
+  margin-bottom: var(--spacing);
+}
+
+.rental-dialog-actions {
+  padding: var(--spacing);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing);
+  align-items: center;
+}
+
+.rental-dialog-actions .apply-button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rental-dialog-actions .apply-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.rental-dialog-actions .cancel-button {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* 페이지네이션 */
+.pagination-container {
+  margin-top: var(--spacing);
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.page-button {
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-button:hover:not(.active):not(:disabled) {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.page-button.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.page-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* 로딩 스피너 */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 알림 */
+.alert {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+}
+
+.alert.error {
+  background-color: #fdecea;
+  color: var(--error-color);
+  border-color: #fbe9e7;
+}
+
+.alert.info {
+  background-color: #e3f2fd;
+  color: var(--primary-color);
+  border-color: #bbdefb;
+}
+
+/* 다크 모드 */
+.dark {
+  --border-color: #424242;
+  --background-color: #121212;
+  --background-color-light: #1e1e1e;
+  --text-color: #ffffff;
+  --text-secondary: #b0b0b0;
+  --color-primary: #90caf9;
+  --color-accent: #64b5f6;
+  --color-surface: #1e1e1e;
+  --input-background: #1e1e1e;
+}
+
+.dark .alert.error {
+  background-color: #2c1810;
+  color: var(--error-color);
+  border-color: #3e2723;
+}
+
+.dark .alert.info {
+  background-color: #1a237e;
+  color: var(--primary-color);
+  border-color: #283593;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .rental-container {
+    padding: 1rem;
+  }
+
+  .rental-paper {
+    padding: 1.5rem;
+  }
+
+  .search-filter-container {
+    margin: 1rem 0;
+  }
+
+  .search-field-wrapper {
+    width: 95%;
+  }
+
+  .filter-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .car-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .filter-dialog-content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rental-paper {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.car-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.detail-value {
+  color: var(--text-secondary);
+}
+
+.tag-chip {
+  padding: 0.3rem 0.6rem;
+  background-color: white;
+  color: var(--text-color);
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid var(--border-color);
+}
+
+.tag-chip.selected {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.tag-chip.dark {
+  background-color: var(--background-color-light);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+.tag-chip.dark.selected {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  border-color: var(--primary-color);
+}
+
+.cancel-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.filter-dialog-actions .cancel-button,
+.rental-dialog-actions .cancel-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.date-picker-container {
+  position: relative;
+}
+
+.date-picker-popup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0;
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: var(--shadow);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.date-picker-popup input[type="datetime-local"] {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.date-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.date-picker-actions .cancel-button,
+.date-picker-actions .apply-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.recommendation-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recommendation-dialog {
+  background-color: var(--background-color);
+  border-radius: 0;
+  width: 98%;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+
+.recommendation-dialog-header {
+  padding: var(--spacing);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.recommendation-dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.recommendation-dialog-content {
+  padding: var(--spacing) 3rem;
+}
+
+.recommendation-dialog-actions {
+  padding: var(--spacing);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing);
+  align-items: center;
+}
+
+.recommendation-section {
+  margin-top: 2rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.place-recommendation-section {
+  padding: var(--spacing);
+}
+
+.recommendation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.recommendation-info {
+  background-color: var(--background-color-light);
+  padding: var(--spacing);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+}
+
+.recommendation-info p {
+  margin: 0.5rem 0;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.recommendation-info p:first-child {
+  margin-top: 0;
+}
+
+.recommendation-info p:last-child {
+  margin-bottom: 0;
+}
+
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+.filter-section:last-child {
+  margin-bottom: 0;
+}
+
+.filter-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.rental-fee-range {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rental-fee-inputs {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.rental-fee-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  position: relative;
+}
+
+.rental-fee-input-group label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.rental-fee-input-group input {
+  width: 100%;
+  height: 40px;
+  padding: 0 0.75rem;
+  padding-right: 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.rental-fee-input-group .unit {
+  position: absolute;
+  right: 0.75rem;
+  top: 65%;
+  transform: translateY(-50%);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.separator {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 2.5rem 0.5rem 0;
+}
+
+.rental-fee-slider-container {
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+}
+
+.rental-fee-slider-track {
+  position: relative;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  margin: 1rem 0;
+}
+
+.rental-fee-slider-range {
+  position: absolute;
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 2px;
+}
+
+.rental-fee-slider {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.rental-fee-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: var(--primary-color);
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.rental-fee-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: var(--primary-color);
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.rental-fee-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+} 
+
+.recommend-modal-overlay {
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+}
+.recommend-modal-dialog {
+  width: 80vw; min-width: 600px; max-width: 1100px;
+  min-height: 500px;
+  background: #252544;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+} 

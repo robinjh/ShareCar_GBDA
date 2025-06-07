@@ -1,0 +1,54 @@
+.header {
+    width: 100%;
+    background: var(--color-surface);
+    color: var(--color-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 24px;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 600;
+    font-size: 1.05rem;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    box-sizing: border-box;
+}
+.dark .header {
+    background: var(--color-surface-dark);
+    color: var(--color-text-dark);
+    border-bottom: 1px solid var(--color-border-dark);
+}
+.header-title {
+    color: var(--color-text);
+    font-size: 1.14em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: color var(--transition);
+}
+.dark .header-title {
+    color: var(--color-text-dark);
+}
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.header-user {
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-right: 6px;
+}
+.header-logout-btn {
+  background: var(--color-primary);
+  color: var(--color-text-dark);
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 7px 0;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.header-logout-btn:hover {
+    background: var(--color-accent);
+}
